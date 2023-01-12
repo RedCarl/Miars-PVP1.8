@@ -1,0 +1,15 @@
+main: cn.mcarl.miars.core.MiarsCore
+name: MiarsCore
+version: ${project.version}
+
+authors:
+  - Red_Carl
+
+api-version: 1.8
+
+depend:
+  - LuckPerms
+  - Citizens
+  - HolographicDisplays
+  - PlaceholderAPI
+  - MiarsStorage

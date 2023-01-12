@@ -1,0 +1,11 @@
+name: MiarsStorage
+main: cn.mcarl.miars.storage.MiarsStorage
+version: ${project.version}
+
+authors:
+  - Red_Carl
+
+api-version: 1.8
+
+depend:
+  - MiarsCore

@@ -1,0 +1,11 @@
+main: cn.mcarl.miars.practiceffa.MiarsPracticeFFA
+name: MiarsPracticeFFA
+version: ${project.version}
+
+authors:
+  - Red_Carl
+
+api-version: 1.8
+
+depend:
+  - MiarsCore

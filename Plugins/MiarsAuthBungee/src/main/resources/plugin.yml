@@ -1,0 +1,6 @@
+name: MiarsAuthBungee
+main: cn.mcarl.bungee.auth.MiarsAuthBungee
+version: ${project.version}
+
+authors:
+  - Red_Carl

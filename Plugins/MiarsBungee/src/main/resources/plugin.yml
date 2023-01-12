@@ -1,0 +1,6 @@
+name: MiarsBungee
+main: cn.mcarl.bungee.MiarsBungee
+version: ${project.version}
+
+authors:
+  - Red_Carl
