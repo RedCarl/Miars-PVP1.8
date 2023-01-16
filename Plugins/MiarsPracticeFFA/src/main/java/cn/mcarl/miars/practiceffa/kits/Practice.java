@@ -21,7 +21,7 @@ public class Practice {
         itemCote.put(2, new ItemBuilder(Material.GOLD_SWORD).setName("§c团队模式 §7(右键选择)").setNbtBoolean("stopClick",true).setUnbreakable().toItemStack());
         itemCote.put(3, new ItemBuilder(Material.WOOD_SWORD).setName("§c人机模式 §7(右键选择)").setNbtBoolean("stopClick",true).setUnbreakable().toItemStack());
         itemCote.put(5, new ItemBuilder(Material.BOOK).setName("§c编辑模式 §7(右键选择)").setNbtBoolean("stopClick",true).setNbtString("gui","SelectFKitTypeGUI").toItemStack());
-//        itemCote.put(8, new ItemBuilder(Material.BED).setName("§c返回大厅 §7(右键选择)").setNbtBoolean("isClick",false).toItemStack());
+        itemCote.put(8, new ItemBuilder(Material.BED).setName("§c返回大厅 §7(右键选择)").setNbtBoolean("stopClick",false).setNbtString("server","lobby").toItemStack());
 
         inv.setItemCote(itemCote);
 

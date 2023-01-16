@@ -26,4 +26,14 @@ public class PluginConfig extends ConfigurationRoot {
         public static final ConfigValue<String> TABLE_NAME = ConfiguredValue.of(String.class, "ud_data");
 
     }
+    @HeaderComment({"Redis连接信息"})
+    public static final class REDIS extends ConfigurationRoot {
+
+        @HeaderComment({"地址"})
+        public static final ConfigValue<String> URL = ConfiguredValue.of(String.class, "127.0.0.1:6379");
+
+        @HeaderComment({"密码"})
+        public static final ConfigValue<String> PASSWORD = ConfiguredValue.of(String.class, "630669");
+
+    }
 }

@@ -1,22 +1,18 @@
-package cn.mcarl.miars.lobby;
+package cn.mcarl.miars.practice;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
-import cn.mcarl.miars.lobby.conf.PluginConfig;
-import cn.mcarl.miars.lobby.listener.BlockListener;
-import cn.mcarl.miars.lobby.listener.CitizensListener;
-import cn.mcarl.miars.lobby.listener.PlayerListener;
-import cn.mcarl.miars.lobby.manager.CitizensManager;
-import cn.mcarl.miars.lobby.manager.ConfigManager;
+import cn.mcarl.miars.practice.manager.ArenaManager;
+import cn.mcarl.miars.practice.manager.ConfigManager;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class MiarsLobby extends JavaPlugin {
+public class MiarsPractice extends JavaPlugin {
 
-    private static MiarsLobby instance;
-    public static MiarsLobby getInstance() {
+    private static MiarsPractice instance;
+    public static MiarsPractice getInstance() {
         return instance;
     }
     protected ConfigManager configManager;
@@ -33,13 +29,10 @@ public class MiarsLobby extends JavaPlugin {
         log("正在初始化配置文件...");
         this.configManager = new ConfigManager(getDataFolder());
 
-        log("正在注册监听器...");
-        regListener(new PlayerListener());
-        regListener(new BlockListener());
-        regListener(new CitizensListener());
+        log("正在初始化房间数据...");
+        ArenaManager.getInstance().init();
 
-        log("正在初始化世界NPC...");
-        CitizensManager.getInstance().init(PluginConfig.LOBBY_SITE.LOCATION.get().getWorld());
+        log("正在注册监听器...");
 
         log("加载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 

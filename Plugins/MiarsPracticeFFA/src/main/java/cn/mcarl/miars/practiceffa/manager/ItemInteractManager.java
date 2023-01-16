@@ -1,9 +1,12 @@
 package cn.mcarl.miars.practiceffa.manager;
 
+import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.practiceffa.ui.SelectFKitTypeGUI;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Objects;
 
 /**
  * @Author: carl0
@@ -24,6 +27,11 @@ public class ItemInteractManager {
             case "SelectFKitTypeGUI" -> {
                 SelectFKitTypeGUI.open(p);
             }
+        }
+
+        //Server
+        if (nbtItem.getString("server")!=null && !Objects.equals(nbtItem.getString("server"), "")){
+            MiarsCore.getBungeeApi().connect(p,nbtItem.getString("server"));
         }
     }
 }

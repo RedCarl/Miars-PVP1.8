@@ -86,7 +86,7 @@ public class CitizensManager {
 
     public NPC getNpc(String npcType) {
         for (NPC n : npcList.values()) {
-            if (n.data().get("mcarl_lobby").equals(npcType)) {
+            if (n.data().get("miars_lobby").equals(npcType)) {
                 return n;
             }
         }
@@ -94,7 +94,7 @@ public class CitizensManager {
     }
 
     public String getNpcType(NPC npc) {
-        return npc.data().get("mcarl_lobby");
+        return npc.data().get("miars_lobby");
     }
 
     public Map<String,NPC> getAllNpc() {

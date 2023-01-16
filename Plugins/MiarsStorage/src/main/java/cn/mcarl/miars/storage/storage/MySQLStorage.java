@@ -10,6 +10,8 @@ import cn.mcarl.miars.storage.utils.BukkitUtils;
 import cn.mcarl.miars.storage.utils.DatabaseTable;
 import com.alibaba.fastjson.JSONArray;
 import com.google.gson.Gson;
+import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -28,12 +30,14 @@ public class MySQLStorage {
 	DatabaseTable fPlayerDataTable;
 	DatabaseTable fKitDataTable;
 
+	DatabaseTable arenaDataTable;
+
 	private Gson gson = new Gson();
 
 	public boolean initialize() {
 
 		try {
-			MiarsStorage.getInstance().log("	尝试连接到数据库...");
+			MiarsStorage.getInstance().log("	尝试连接到 MySQL 数据库...");
 			this.sqlManager = EasySQL.createManager(PluginConfig.DATABASE.DRIVER_NAME.get(), PluginConfig.DATABASE.URL.get(), PluginConfig.DATABASE.USERNAME.get(), PluginConfig.DATABASE.PASSWORD.get());
 			this.sqlManager.setDebugMode(false);
 		} catch (Exception exception) {
@@ -105,6 +109,28 @@ public class MySQLStorage {
 					});
 			getFKitDataTable().createTable(sqlManager);
 
+
+			// 竞技场房间信息
+			this.arenaDataTable = new DatabaseTable(
+					PluginConfig.DATABASE.TABLE_NAME.get() + "_arenas",
+					new String[]{
+							"`id` int(11) NOT NULL AUTO_INCREMENT",
+							"`mode` varchar(255) DEFAULT NULL",
+							"`name` varchar(255) DEFAULT NULL",
+							"`displayName` varchar(255) DEFAULT NULL",
+							"`build` varchar(255) DEFAULT NULL",
+							"`loc1` longtext",
+							"`loc2` longtext",
+							"`corner1` longtext",
+							"`corner2` longtext",
+							"`center` longtext",
+							"`icon` longtext",
+							"`update_time` datetime DEFAULT NULL",
+							"`create_time` datetime DEFAULT NULL",
+							"PRIMARY KEY (`id`)"
+					});
+			getArenaDataTable().createTable(sqlManager);
+
 		} catch (SQLException exception) {
 			MiarsStorage.getInstance().log("无法创建插件所需的表，请检查数据库权限。");
 			exception.printStackTrace();
@@ -115,7 +141,7 @@ public class MySQLStorage {
 	}
 
 	public void shutdown() {
-		MiarsStorage.getInstance().log("	关闭数据库连接...");
+		MiarsStorage.getInstance().log("	关闭 MySQL 数据库连接...");
 		EasySQL.shutdownManager(getSQLManager());
 	}
 
@@ -190,6 +216,41 @@ public class MySQLStorage {
 								return data;
 							}
 							return null;
+						},
+						((exception, sqlAction) -> { /*SQL异常处理-SQLExceptionHandler*/ })
+				);
+	}
+
+
+	/**
+	 * 查询数据库中所有的头衔数据
+	 * @return
+	 */
+	public List<MRank> queryRankDataList() {
+		return getSQLManager().createQuery()
+				.inTable(getRankDataTable().getTableName())
+				.selectColumns("id", "name", "prefix", "suffix", "nameColor", "permissions", "group", "update_time", "create_time")
+				.build()
+				.execute(
+						(query) -> {
+							ResultSet result = query.getResultSet();
+							List<MRank> datas = new ArrayList<>();
+
+							while (result.next()){
+								MRank data = new MRank();
+								data.setId(result.getInt("id"));
+								data.setName(result.getString("name"));
+								data.setPrefix(result.getString("prefix"));
+								data.setSuffix(result.getString("suffix"));
+								data.setNameColor(result.getString("nameColor"));
+								data.setPermissions(result.getString("permissions"));
+								data.setGroup(result.getString("group"));
+								data.setUpdateTime(result.getDate("update_time"));
+								data.setCreateTime(result.getDate("create_time"));
+								datas.add(data);
+							}
+
+							return datas;
 						},
 						((exception, sqlAction) -> { /*SQL异常处理-SQLExceptionHandler*/ })
 				);
@@ -287,29 +348,49 @@ public class MySQLStorage {
 				);
 	}
 
+
 	/**
-	 * 查询数据库中所有的头衔数据
+	 * 保存新增更新新的房间
+	 *
+	 * @param data
+	 * @throws Exception
+	 */
+	public void replaceArenaData(@NotNull Arena data) throws Exception {
+		getSQLManager().createReplace(getArenaDataTable().getTableName())
+				.setColumnNames("id", "mode", "name", "displayName", "build", "loc1", "loc2", "corner1", "corner2", "center", "icon", "update_time", "create_time")
+				.setParams(data.getId(), data.getMode().name(), data.getName(), data.getDisplayName(), data.getBuild().toString(), gson.toJson(data.getLoc1()), gson.toJson(data.getLoc2()), gson.toJson(data.getCorner1()), gson.toJson(data.getCorner2()), gson.toJson(BukkitUtils.write(data.getIcon())), data.getUpdateTime(), data.getCreateTime())
+				.execute();
+	}
+
+	/**
+	 * 根据模式类型查询房间
+	 *
 	 * @return
 	 */
-	public List<MRank> queryRankDataList() {
+	public List<Arena> queryArenaDataList(FKitType mode) {
 		return getSQLManager().createQuery()
-				.inTable(getRankDataTable().getTableName())
-				.selectColumns("id", "name", "prefix", "suffix", "nameColor", "permissions", "group", "update_time", "create_time")
+				.inTable(getArenaDataTable().getTableName())
+				.selectColumns("id", "mode", "name", "displayName", "build", "loc1", "loc2", "corner1", "corner2", "center", "icon", "update_time", "create_time")
+				.addCondition("mode", mode.name())
 				.build()
 				.execute(
 						(query) -> {
 							ResultSet result = query.getResultSet();
-							List<MRank> datas = new ArrayList<>();
+							List<Arena> datas = new ArrayList<>();
 
-							while (result.next()){
-								MRank data = new MRank();
+							while (result.next()) {
+								Arena data = new Arena();
 								data.setId(result.getInt("id"));
+								data.setMode(FKitType.valueOf(result.getString("mode")));
 								data.setName(result.getString("name"));
-								data.setPrefix(result.getString("prefix"));
-								data.setSuffix(result.getString("suffix"));
-								data.setNameColor(result.getString("nameColor"));
-								data.setPermissions(result.getString("permissions"));
-								data.setGroup(result.getString("group"));
+								data.setDisplayName(result.getString("displayName"));
+								data.setBuild(result.getBoolean("build"));
+								data.setLoc1(gson.fromJson(result.getString("loc1"), Location.class));
+								data.setLoc2(gson.fromJson(result.getString("loc2"), Location.class));
+								data.setCorner1(gson.fromJson(result.getString("corner1"), Location.class));
+								data.setCorner2(gson.fromJson(result.getString("corner2"), Location.class));
+								data.setCenter(gson.fromJson(result.getString("center"), Location.class));
+								data.setIcon(BukkitUtils.read(gson.fromJson(result.getString("icon"), byte[].class)));
 								data.setUpdateTime(result.getDate("update_time"));
 								data.setCreateTime(result.getDate("create_time"));
 								datas.add(data);
@@ -320,6 +401,7 @@ public class MySQLStorage {
 						((exception, sqlAction) -> { /*SQL异常处理-SQLExceptionHandler*/ })
 				);
 	}
+
 
 	private SQLManager getSQLManager() {
 		return sqlManager;
@@ -336,6 +418,9 @@ public class MySQLStorage {
 	}
 	public DatabaseTable getFKitDataTable() {
 		return fKitDataTable;
+	}
+	public DatabaseTable getArenaDataTable() {
+		return arenaDataTable;
 	}
 
 }

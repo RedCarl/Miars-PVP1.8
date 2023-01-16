@@ -1,0 +1,11 @@
+name: MiarsPractice
+main: cn.mcarl.miars.practice.MiarsPractice
+version: ${project.version}
+
+authors:
+  - Red_Carl
+
+api-version: 1.8
+
+depend:
+  - MiarsCore

@@ -16,6 +16,7 @@
         <module>Plugins/MiarsAuthBungee</module>
         <module>Plugins/MiarsLobby</module>
         <module>Plugins/MiarsStorage</module>
+        <module>Plugins/MiarsPractice</module>
     </modules>
 
     <properties>

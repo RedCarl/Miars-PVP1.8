@@ -3,6 +3,7 @@ package cn.mcarl.miars.storage;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.storage.manager.ConfigManager;
 import cn.mcarl.miars.storage.storage.MySQLStorage;
+import cn.mcarl.miars.storage.storage.RedisStorage;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -19,6 +20,10 @@ public class MiarsStorage extends JavaPlugin {
     public static MySQLStorage getMySQLStorage() {
         return mySQLStorage;
     }
+    private static RedisStorage redisStorage;
+    public static RedisStorage getRedisStorage() {
+        return redisStorage;
+    }
     protected ConfigManager configManager;
 
     @SneakyThrows
@@ -26,6 +31,7 @@ public class MiarsStorage extends JavaPlugin {
     public void onEnable() {
         instance = this;
         mySQLStorage = new MySQLStorage();
+        redisStorage = new RedisStorage();
 
         log(getName() + " " + getDescription().getVersion() + " &7开始加载...");
 
@@ -36,6 +42,7 @@ public class MiarsStorage extends JavaPlugin {
 
         log("初始化存储方式...");
         getMySQLStorage().initialize();
+        getRedisStorage().initialize();
 
         log("加载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 
@@ -53,6 +60,7 @@ public class MiarsStorage extends JavaPlugin {
 
         log("释放存储源...");
         getMySQLStorage().shutdown();
+        getRedisStorage().shutdown();
 
         log("卸载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 
