@@ -30,7 +30,10 @@ public class PluginConfig extends ConfigurationRoot {
     public static final class REDIS extends ConfigurationRoot {
 
         @HeaderComment({"地址"})
-        public static final ConfigValue<String> URL = ConfiguredValue.of(String.class, "127.0.0.1:6379");
+        public static final ConfigValue<String> URL = ConfiguredValue.of(String.class, "127.0.0.1");
+
+        @HeaderComment({"端口"})
+        public static final ConfigValue<Integer> PORT = ConfiguredValue.of(Integer.class, 6379);
 
         @HeaderComment({"密码"})
         public static final ConfigValue<String> PASSWORD = ConfiguredValue.of(String.class, "630669");

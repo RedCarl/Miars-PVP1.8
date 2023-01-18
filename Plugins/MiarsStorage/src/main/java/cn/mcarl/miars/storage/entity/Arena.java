@@ -16,49 +16,33 @@ import java.sql.Date;
 public class Arena {
 
     // 编号
-    Integer id;
+    private Integer id;
     // 模式
-    FKitType mode;
+    private FKitType mode;
     // 竞技场名称
-    String name;
+    private String name;
     // 竞技场显示名称
-    String displayName;
+    private String displayName;
     // 是否可以建筑
-    Boolean build;
+    private Boolean build;
 
     // 玩家出生点位置
-    Location loc1;
-    Location loc2;
+    private Location loc1;
+    private Location loc2;
 
     // 竞技场范围
-    Location corner1;
-    Location corner2;
+    private Location corner1;
+    private Location corner2;
 
     // 中心点
-    Location center;
+    private Location center;
 
     // 图标
-    ItemStack icon;
+    private ItemStack icon;
 
     // 更新时间
     private Date updateTime;
 
     // 创建时间
     private Date createTime;
-
-
-
-
-    // 0 空闲 | 1 正在使用 | 2 故障
-    private Integer state;
-
-    // 玩家
-    private Player a;
-    private Player b;
-
-    // 对局开始时间
-    private Long startTime;
-
-    // 对局结束时间
-    private Long endTime;
 }

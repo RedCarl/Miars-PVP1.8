@@ -17,7 +17,7 @@ public class RedisStorage {
         try {
             MiarsStorage.getInstance().log("	尝试连接到 Redis 数据库...");
 
-            jedis = new Jedis(PluginConfig.REDIS.URL.get());
+            jedis = new Jedis(PluginConfig.REDIS.URL.get(),PluginConfig.REDIS.PORT.get());
             jedis.auth(PluginConfig.REDIS.PASSWORD.get());
         } catch (Exception exception) {
             MiarsStorage.getInstance().log("无法连接到数据库，请检查配置文件。");

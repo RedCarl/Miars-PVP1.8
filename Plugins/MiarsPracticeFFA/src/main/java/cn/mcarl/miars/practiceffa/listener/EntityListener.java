@@ -12,7 +12,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 public class EntityListener implements Listener {
 
     @EventHandler
-    public void s(EntityDamageByEntityEvent e){
+    public void EntityDamageByEntityEvent(EntityDamageByEntityEvent e){
         if (e.getDamager() instanceof Player attacker && e.getEntity() instanceof Player attacked){
 
             // 判断两人是否有人在安全区
@@ -29,7 +29,7 @@ public class EntityListener implements Listener {
     }
 
     @EventHandler
-    public void onEntityDamage(EntityDamageEvent event) {
+    public void EntityDamageEvent(EntityDamageEvent event) {
         if(event.getEntity() instanceof Player player) {
             // 判断攻击者是否在安全区内
             if (FFAUtil.isRange(player, PluginConfig.FFA_SITE.LOCATION.get(),PluginConfig.FFA_SITE.RADIUS.get())){
