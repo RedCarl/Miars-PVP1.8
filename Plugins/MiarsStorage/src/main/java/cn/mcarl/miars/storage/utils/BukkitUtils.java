@@ -1,7 +1,7 @@
 package cn.mcarl.miars.storage.utils;
 
-import cn.mcarl.miars.storage.entity.FInventory;
-import cn.mcarl.miars.storage.entity.FInventoryByte;
+import cn.mcarl.miars.storage.entity.ffa.FInventory;
+import cn.mcarl.miars.storage.entity.ffa.FInventoryByte;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;

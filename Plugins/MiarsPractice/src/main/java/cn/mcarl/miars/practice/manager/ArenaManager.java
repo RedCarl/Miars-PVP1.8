@@ -2,8 +2,8 @@ package cn.mcarl.miars.practice.manager;
 
 import cn.mcarl.miars.practice.conf.PluginConfig;
 import cn.mcarl.miars.storage.MiarsStorage;
-import cn.mcarl.miars.storage.entity.Arena;
-import cn.mcarl.miars.storage.entity.ArenaState;
+import cn.mcarl.miars.storage.entity.practice.Arena;
+import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.enums.FKitType;
 import cn.mcarl.miars.storage.storage.data.ArenaDataStorage;
 import org.bukkit.entity.Player;
@@ -91,6 +91,10 @@ public class ArenaManager {
 
         // 更新Redis房间信息
         MiarsStorage.getRedisStorage().setList(PluginConfig.PRACTICE_SITE.MODE.get(), arenaState);
+    }
+
+    public void clear(){
+        MiarsStorage.getRedisStorage().setList(PluginConfig.PRACTICE_SITE.MODE.get(), null);
     }
 
 

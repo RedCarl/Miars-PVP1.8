@@ -1,7 +1,7 @@
 package cn.mcarl.miars.practiceffa.manager;
 
 import cn.mcarl.miars.practiceffa.MiarsPracticeFFA;
-import cn.mcarl.miars.storage.entity.FCombatInfo;
+import cn.mcarl.miars.storage.entity.ffa.FCombatInfo;
 import cn.mcarl.miars.practiceffa.utils.FFAUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;

@@ -19,7 +19,7 @@ public class SelectFKitTypeGUI extends GUI {
         super(GUIType.ONE_BY_NINE, "&0请选择模式...");
         this.player = player;
 
-        setItem(0,new GUIItem(CommunityGUIItem.getKitTypeItem(FKitType.FFAGAME)){
+        setItem(0,new GUIItem(CommunityGUIItem.getPracticeTypeItem(player,FKitType.FFAGAME,null)){
             @Override
             public void onClick(Player clicker, ClickType type) {
                 SelectFKitEditGUI.open(player,FKitType.FFAGAME);

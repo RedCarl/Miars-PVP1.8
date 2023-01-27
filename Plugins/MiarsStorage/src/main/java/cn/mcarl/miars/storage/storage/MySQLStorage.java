@@ -5,19 +5,25 @@ import cc.carm.lib.easysql.api.SQLManager;
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.conf.PluginConfig;
 import cn.mcarl.miars.storage.entity.*;
+import cn.mcarl.miars.storage.entity.ffa.FInventoryByte;
+import cn.mcarl.miars.storage.entity.ffa.FKit;
+import cn.mcarl.miars.storage.entity.ffa.FPlayer;
+import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.enums.FKitType;
 import cn.mcarl.miars.storage.utils.BukkitUtils;
 import cn.mcarl.miars.storage.utils.DatabaseTable;
 import com.alibaba.fastjson.JSONArray;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.bukkit.Location;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Type;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class MySQLStorage {
@@ -358,7 +364,20 @@ public class MySQLStorage {
 	public void replaceArenaData(@NotNull Arena data) throws Exception {
 		getSQLManager().createReplace(getArenaDataTable().getTableName())
 				.setColumnNames("id", "mode", "name", "displayName", "build", "loc1", "loc2", "corner1", "corner2", "center", "icon", "update_time", "create_time")
-				.setParams(data.getId(), data.getMode().name(), data.getName(), data.getDisplayName(), data.getBuild().toString(), gson.toJson(data.getLoc1()), gson.toJson(data.getLoc2()), gson.toJson(data.getCorner1()), gson.toJson(data.getCorner2()), gson.toJson(BukkitUtils.write(data.getIcon())), data.getUpdateTime(), data.getCreateTime())
+				.setParams(
+						data.getId(),
+						data.getMode().name(),
+						data.getName(),
+						data.getDisplayName(),
+						data.getBuild().toString(),
+						data.getLoc1()!=null ? gson.toJson(data.getLoc1().serialize()) :null,
+						data.getLoc2()!=null ? gson.toJson(data.getLoc2().serialize()):null,
+						data.getCorner1()!=null ? gson.toJson(data.getCorner1().serialize()):null,
+						data.getCorner2()!=null ? gson.toJson(data.getCorner2().serialize()):null,
+						data.getCenter()!=null ? gson.toJson(data.getCenter().serialize()):null,
+						data.getIcon()!=null ? gson.toJson(BukkitUtils.write(data.getIcon())):null,
+						data.getUpdateTime(),
+						data.getCreateTime())
 				.execute();
 	}
 
@@ -385,12 +404,13 @@ public class MySQLStorage {
 								data.setName(result.getString("name"));
 								data.setDisplayName(result.getString("displayName"));
 								data.setBuild(result.getBoolean("build"));
-								data.setLoc1(gson.fromJson(result.getString("loc1"), Location.class));
-								data.setLoc2(gson.fromJson(result.getString("loc2"), Location.class));
-								data.setCorner1(gson.fromJson(result.getString("corner1"), Location.class));
-								data.setCorner2(gson.fromJson(result.getString("corner2"), Location.class));
-								data.setCenter(gson.fromJson(result.getString("center"), Location.class));
-								data.setIcon(BukkitUtils.read(gson.fromJson(result.getString("icon"), byte[].class)));
+								Type type = new TypeToken<Map<String, Object>>() {}.getType();
+								data.setLoc1(result.getString("loc1")!=null ? Location.deserialize(gson.fromJson(result.getString("loc1"), type)):null);
+								data.setLoc2(result.getString("loc2")!=null ? Location.deserialize(gson.fromJson(result.getString("loc2"), type)):null);
+								data.setCorner1(result.getString("corner1")!=null ? Location.deserialize(gson.fromJson(result.getString("corner1"), type)):null);
+								data.setCorner2(result.getString("corner2")!=null ? Location.deserialize(gson.fromJson(result.getString("corner2"), type)):null);
+								data.setCenter(result.getString("center")!=null ? Location.deserialize(gson.fromJson(result.getString("center"), type)):null);
+								data.setIcon(result.getString("icon")!=null ? BukkitUtils.read(gson.fromJson(result.getString("icon"), byte[].class)):null);
 								data.setUpdateTime(result.getDate("update_time"));
 								data.setCreateTime(result.getDate("create_time"));
 								datas.add(data);
@@ -402,6 +422,44 @@ public class MySQLStorage {
 				);
 	}
 
+	/**
+	 * 根据NAME查询竞技场信息
+	 *
+	 * @param name
+	 * @return
+	 */
+	public Arena queryFPlayerDataByName(@NotNull String name) {
+		return getSQLManager().createQuery()
+				.inTable(getArenaDataTable().getTableName())
+				.selectColumns("id", "mode", "name", "displayName", "build", "loc1", "loc2", "corner1", "corner2", "center", "icon", "update_time", "create_time")
+				.addCondition("name", name)
+				.build()
+				.execute(
+						(query) -> {
+							ResultSet result = query.getResultSet();
+							Arena data = new Arena();
+							if (result != null && result.next()) {
+								data.setId(result.getInt("id"));
+								data.setMode(FKitType.valueOf(result.getString("mode")));
+								data.setName(result.getString("name"));
+								data.setDisplayName(result.getString("displayName"));
+								data.setBuild(result.getBoolean("build"));
+								Type type = new TypeToken<Map<String, Object>>() {}.getType();
+								data.setLoc1(result.getString("loc1")!=null ? Location.deserialize(gson.fromJson(result.getString("loc1"), type)):null);
+								data.setLoc2(result.getString("loc2")!=null ? Location.deserialize(gson.fromJson(result.getString("loc2"), type)):null);
+								data.setCorner1(result.getString("corner1")!=null ? Location.deserialize(gson.fromJson(result.getString("corner1"), type)):null);
+								data.setCorner2(result.getString("corner2")!=null ? Location.deserialize(gson.fromJson(result.getString("corner2"), type)):null);
+								data.setCenter(result.getString("center")!=null ? Location.deserialize(gson.fromJson(result.getString("center"), type)):null);
+								data.setIcon(result.getString("icon")!=null ? BukkitUtils.read(gson.fromJson(result.getString("icon"), byte[].class)):null);
+								data.setUpdateTime(result.getDate("update_time"));
+								data.setCreateTime(result.getDate("create_time"));
+								return data;
+							}
+							return null;
+						},
+						((exception, sqlAction) -> { /*SQL异常处理-SQLExceptionHandler*/ })
+				);
+	}
 
 	private SQLManager getSQLManager() {
 		return sqlManager;

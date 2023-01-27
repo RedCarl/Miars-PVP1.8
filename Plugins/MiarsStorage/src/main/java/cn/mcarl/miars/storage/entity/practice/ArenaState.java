@@ -1,4 +1,4 @@
-package cn.mcarl.miars.storage.entity;
+package cn.mcarl.miars.storage.entity.practice;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

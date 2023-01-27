@@ -1,21 +1,19 @@
 package cn.mcarl.miars.practiceffa.listener;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.practiceffa.manager.*;
 import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.practiceffa.MiarsPracticeFFA;
 import cn.mcarl.miars.practiceffa.conf.PluginConfig;
-import cn.mcarl.miars.storage.entity.FPlayer;
-import cn.mcarl.miars.practiceffa.manager.CombatManager;
-import cn.mcarl.miars.practiceffa.manager.ItemInteractManager;
-import cn.mcarl.miars.practiceffa.manager.PlayerInventoryManager;
-import cn.mcarl.miars.practiceffa.manager.ScoreBoardManager;
+import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.storage.storage.data.FPlayerDataStorage;
 import cn.mcarl.miars.practiceffa.ui.BlockGUI;
 import cn.mcarl.miars.practiceffa.utils.FFAUtil;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
+import cn.mcarl.miars.storage.storage.data.QueueDataStorage;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -48,8 +46,6 @@ public class PlayerListener implements Listener {
         // 传送至出生点
         player.teleport(new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(),PluginConfig.FFA_SITE.LOCATION.get().getX(),PluginConfig.FFA_SITE.LOCATION.get().getY()+1,PluginConfig.FFA_SITE.LOCATION.get().getZ()));
 
-
-
         // 初始化玩家数据
         FPlayerDataStorage.getInstance().getFPlayer(player);
 
@@ -75,6 +71,9 @@ public class PlayerListener implements Listener {
 
         // 初始化玩家状态
         FFAUtil.initializePlayer(player);
+
+        // 移出玩家队列
+        QueueDataStorage.getInstance().removeQueue(player);
     }
 
     @EventHandler

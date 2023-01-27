@@ -4,6 +4,8 @@ import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.storage.manager.ConfigManager;
 import cn.mcarl.miars.storage.storage.MySQLStorage;
 import cn.mcarl.miars.storage.storage.RedisStorage;
+import cn.mcarl.miars.storage.storage.data.DailyStreakDataStorage;
+import cn.mcarl.miars.storage.storage.data.QueueDataStorage;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -61,6 +63,8 @@ public class MiarsStorage extends JavaPlugin {
         log("释放存储源...");
         getMySQLStorage().shutdown();
         getRedisStorage().shutdown();
+        QueueDataStorage.getInstance().clear();
+        DailyStreakDataStorage.getInstance().clear();
 
         log("卸载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 

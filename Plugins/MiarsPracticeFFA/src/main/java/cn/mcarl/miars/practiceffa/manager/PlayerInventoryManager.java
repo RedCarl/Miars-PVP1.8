@@ -1,19 +1,17 @@
 package cn.mcarl.miars.practiceffa.manager;
 
-import cn.mcarl.miars.core.utils.ItemBuilder;
-import cn.mcarl.miars.practiceffa.MiarsPracticeFFA;
 import cn.mcarl.miars.practiceffa.conf.PluginConfig;
+import cn.mcarl.miars.practiceffa.kits.Queue;
 import cn.mcarl.miars.storage.MiarsStorage;
-import cn.mcarl.miars.storage.entity.FInventory;
-import cn.mcarl.miars.storage.entity.FInventoryByte;
-import cn.mcarl.miars.storage.entity.FKit;
+import cn.mcarl.miars.storage.entity.ffa.FInventory;
+import cn.mcarl.miars.storage.entity.ffa.FKit;
 import cn.mcarl.miars.storage.enums.FKitType;
 import cn.mcarl.miars.practiceffa.kits.FFAGame;
 import cn.mcarl.miars.practiceffa.kits.Practice;
 import cn.mcarl.miars.practiceffa.utils.FFAUtil;
+import cn.mcarl.miars.storage.storage.data.QueueDataStorage;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,11 +48,25 @@ public class PlayerInventoryManager {
                 }
             }else {
                 if (datas.get(p.getUniqueId()) == null || !datas.get(p.getUniqueId()).getType().equals(FKitType.PRACTICE)){
-                    datas.put(p.getUniqueId(), Practice.get());
+                    if (QueueDataStorage.getInstance().isQueue(p)){
+                        datas.put(p.getUniqueId(), Queue.get());
+                    }else {
+                        datas.put(p.getUniqueId(), Practice.get());
+                    }
                     autoEquip(p);
                 }
             }
         }
+    }
+
+    public void setQueue(Player p){
+        datas.put(p.getUniqueId(), Queue.get());
+        autoEquip(p);
+    }
+
+    public void setPractice(Player p){
+        datas.put(p.getUniqueId(), Practice.get());
+        autoEquip(p);
     }
 
     /**

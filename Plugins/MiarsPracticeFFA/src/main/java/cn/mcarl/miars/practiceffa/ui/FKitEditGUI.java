@@ -5,8 +5,8 @@ import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.utils.ItemBuilder;
-import cn.mcarl.miars.storage.entity.FInventory;
-import cn.mcarl.miars.storage.entity.FKit;
+import cn.mcarl.miars.storage.entity.ffa.FInventory;
+import cn.mcarl.miars.storage.entity.ffa.FKit;
 import cn.mcarl.miars.storage.storage.data.FKitDataStorage;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -125,7 +125,11 @@ public class FKitEditGUI extends GUI {
     @Override
     public void onDrag(InventoryDragEvent event) {
         if (event.getInventory().getTitle().equals(getGUIName())){
-            event.setCancelled(true);
+            for (Integer i:event.getRawSlots()){
+                if (i>35){
+                    event.setCancelled(true);
+                }
+            }
         }
     }
 

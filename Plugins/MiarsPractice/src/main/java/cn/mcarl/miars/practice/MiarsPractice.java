@@ -1,6 +1,7 @@
 package cn.mcarl.miars.practice;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.practice.command.ArenaCreateCommand;
 import cn.mcarl.miars.practice.manager.ArenaManager;
 import cn.mcarl.miars.practice.manager.ConfigManager;
 import lombok.SneakyThrows;
@@ -34,6 +35,9 @@ public class MiarsPractice extends JavaPlugin {
 
         log("正在注册监听器...");
 
+        log("正在注册指令...");
+        regCommand("Arena", new ArenaCreateCommand());
+
         log("加载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 
         showAD();
@@ -47,6 +51,7 @@ public class MiarsPractice extends JavaPlugin {
 
         log("卸载监听器...");
         Bukkit.getServicesManager().unregisterAll(this);
+        ArenaManager.getInstance().clear();
 
         log("卸载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 

@@ -178,12 +178,20 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder setItemFlags(ItemFlag... itemFlags) {
-        for (ItemFlag i:itemFlags) {
-            is.getItemMeta().getItemFlags().add(i);
-        }
+    public ItemBuilder addFlag(ItemFlag flag) {
+        ItemMeta im = is.getItemMeta();
+        im.addItemFlags(flag);
+        is.setItemMeta(im);
         return this;
     }
+
+    public ItemBuilder removeFlag(ItemFlag flag) {
+        ItemMeta im = is.getItemMeta();
+        im.removeItemFlags(flag);
+        is.setItemMeta(im);
+        return this;
+    }
+
 
     /**
      * Re-sets the lore.
@@ -192,7 +200,7 @@ public class ItemBuilder {
      */
     public ItemBuilder setLore(String... lore) {
         ItemMeta im = is.getItemMeta();
-        im.setLore(Arrays.asList(lore));
+        im.setLore(ColorParser.parse(Arrays.asList(lore)));
         is.setItemMeta(im);
         return this;
     }
@@ -204,7 +212,7 @@ public class ItemBuilder {
      */
     public ItemBuilder setLore(List<String> lore) {
         ItemMeta im = is.getItemMeta();
-        im.setLore(lore);
+        im.setLore(ColorParser.parse(lore));
         is.setItemMeta(im);
         return this;
     }

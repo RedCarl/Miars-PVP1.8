@@ -2,7 +2,7 @@ package cn.mcarl.miars.practiceffa.utils;
 
 import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.practiceffa.conf.PluginConfig;
-import cn.mcarl.miars.storage.entity.FPlayer;
+import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.practiceffa.listener.ProtocolListener;
 import cn.mcarl.miars.practiceffa.manager.CombatManager;
 import org.bukkit.Location;

@@ -9,3 +9,9 @@ api-version: 1.8
 
 depend:
   - MiarsCore
+
+commands:
+  "Arena":
+    description: "竞技场的主指令"
+    aliases:
+      - arena

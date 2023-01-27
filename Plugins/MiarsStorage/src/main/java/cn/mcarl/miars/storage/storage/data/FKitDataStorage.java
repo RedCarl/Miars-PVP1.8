@@ -1,7 +1,7 @@
 package cn.mcarl.miars.storage.storage.data;
 
 import cn.mcarl.miars.storage.MiarsStorage;
-import cn.mcarl.miars.storage.entity.FKit;
+import cn.mcarl.miars.storage.entity.ffa.FKit;
 import cn.mcarl.miars.storage.enums.FKitType;
 import org.bukkit.entity.Player;
 

@@ -1,9 +1,8 @@
 package cn.mcarl.miars.storage.storage.data;
 
 import cn.mcarl.miars.storage.MiarsStorage;
-import cn.mcarl.miars.storage.entity.Arena;
+import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.enums.FKitType;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -22,6 +21,13 @@ public class ArenaDataStorage {
      */
     public void putArenaData(Arena data){
         try {
+
+            Arena arena = MiarsStorage.getMySQLStorage().queryFPlayerDataByName(data.getName());
+
+            if (arena!=null){
+                data.setId(arena.getId());
+            }
+
             MiarsStorage.getMySQLStorage().replaceArenaData(data);
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -1,6 +1,6 @@
 package cn.mcarl.miars.storage.storage.data;
 import cn.mcarl.miars.storage.MiarsStorage;
-import cn.mcarl.miars.storage.entity.FPlayer;
+import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import org.bukkit.entity.Player;
 
 import java.sql.Date;

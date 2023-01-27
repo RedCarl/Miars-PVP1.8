@@ -1,4 +1,4 @@
-package cn.mcarl.miars.storage.entity;
+package cn.mcarl.miars.storage.entity.ffa;
 
 import cn.mcarl.miars.storage.enums.FKitType;
 import lombok.AllArgsConstructor;

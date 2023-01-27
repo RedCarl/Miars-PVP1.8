@@ -6,10 +6,8 @@ import cn.mcarl.miars.practiceffa.listener.BlockListener;
 import cn.mcarl.miars.practiceffa.listener.EntityListener;
 import cn.mcarl.miars.practiceffa.listener.PlayerListener;
 import cn.mcarl.miars.practiceffa.listener.ProtocolListener;
-import cn.mcarl.miars.practiceffa.manager.CombatManager;
-import cn.mcarl.miars.practiceffa.manager.ConfigManager;
-import cn.mcarl.miars.practiceffa.manager.FFABorderManager;
-import cn.mcarl.miars.practiceffa.manager.ScoreBoardManager;
+import cn.mcarl.miars.practiceffa.manager.*;
+import cn.mcarl.miars.storage.storage.data.QueueDataStorage;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -56,6 +54,9 @@ public class MiarsPracticeFFA extends JavaPlugin {
 
         log("初始化数据包...");
         MiarsCore.getProtocolManager().addPacketListener(new ProtocolListener());
+
+        log("初始化队列数据...");
+        QueueDataStorage.getInstance().init();
 
         log("加载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 

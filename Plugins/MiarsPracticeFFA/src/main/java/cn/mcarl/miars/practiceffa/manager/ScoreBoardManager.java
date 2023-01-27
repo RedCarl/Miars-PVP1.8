@@ -4,9 +4,11 @@ import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.core.utils.fastboard.FastBoard;
-import cn.mcarl.miars.storage.entity.FPlayer;
+import cn.mcarl.miars.storage.entity.ffa.FPlayer;
+import cn.mcarl.miars.storage.entity.practice.QueueInfo;
 import cn.mcarl.miars.storage.storage.data.FPlayerDataStorage;
 import cn.mcarl.miars.practiceffa.utils.FFAUtil;
+import cn.mcarl.miars.storage.storage.data.QueueDataStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -72,8 +74,19 @@ public class ScoreBoardManager {
             lines.add("&7Kills: &c" + fPlayer.getKillsCount());
             lines.add("&7Death: &c" + fPlayer.getDeathCount());
         }
+
+        // KD
         lines.add("");
         lines.add("&7K/D: &c" + FFAUtil.getPlayerKD(fPlayer));
+
+        // 匹配
+        QueueInfo queueInfo = QueueDataStorage.getInstance().getQueue(p);
+        if (queueInfo!=null){
+
+            lines.add("");
+            lines.add("&c"+queueInfo.getQueueType().name() + " " + queueInfo.getFKitType().name());
+            lines.add("&7正在匹配中... ("+ QueueDataStorage.getInstance().getQueueTime(p)+")");
+        }
 
         lines.add("");
         lines.add("&dplay.miars.cn");
