@@ -2,8 +2,11 @@ package cn.mcarl.miars.practice;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.practice.command.ArenaCreateCommand;
+import cn.mcarl.miars.practice.conf.PluginConfig;
+import cn.mcarl.miars.practice.listener.PlayerListener;
 import cn.mcarl.miars.practice.manager.ArenaManager;
 import cn.mcarl.miars.practice.manager.ConfigManager;
+import cn.mcarl.miars.practice.manager.QueueManager;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -30,13 +33,17 @@ public class MiarsPractice extends JavaPlugin {
         log("正在初始化配置文件...");
         this.configManager = new ConfigManager(getDataFolder());
 
-        log("正在初始化房间数据...");
-        ArenaManager.getInstance().init();
-
         log("正在注册监听器...");
+        regListener(new PlayerListener());
 
         log("正在注册指令...");
         regCommand("Arena", new ArenaCreateCommand());
+
+        log("正在初始化房间数据...");
+        ArenaManager.getInstance().init();
+
+        log("正在初始化 "+ PluginConfig.PRACTICE_SITE.MODE.get() +" 匹配系统...");
+        QueueManager.getInstance().init();
 
         log("加载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 

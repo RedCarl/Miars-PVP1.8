@@ -21,48 +21,28 @@ public class FFAGame {
         itemCote.put(0,
                 new ItemBuilder(Material.DIAMOND_SWORD)
                         .addFlag(ItemFlag.HIDE_UNBREAKABLE)
-                        .addFlag(ItemFlag.HIDE_ATTRIBUTES)
-                        .addFlag(ItemFlag.HIDE_DESTROYS)
                         .addFlag(ItemFlag.HIDE_ENCHANTS)
-                        .addFlag(ItemFlag.HIDE_POTION_EFFECTS)
-                        .addFlag(ItemFlag.HIDE_PLACED_ON)
                         .addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 2)
                         .setUnbreakable()
-                        .setInfinityDurability()
                         .toItemStack()
         );
         itemCote.put(1,
                 new ItemBuilder(Material.FISHING_ROD, 1)
                         .addFlag(ItemFlag.HIDE_UNBREAKABLE)
-                        .addFlag(ItemFlag.HIDE_ATTRIBUTES)
-                        .addFlag(ItemFlag.HIDE_DESTROYS)
                         .addFlag(ItemFlag.HIDE_ENCHANTS)
-                        .addFlag(ItemFlag.HIDE_POTION_EFFECTS)
-                        .addFlag(ItemFlag.HIDE_PLACED_ON)
                         .setUnbreakable()
-                        .setInfinityDurability()
                         .toItemStack()
         );
         itemCote.put(2,
                 new ItemBuilder(Material.GOLDEN_APPLE, 6)
                         .addFlag(ItemFlag.HIDE_UNBREAKABLE)
-                        .addFlag(ItemFlag.HIDE_ATTRIBUTES)
-                        .addFlag(ItemFlag.HIDE_DESTROYS)
                         .addFlag(ItemFlag.HIDE_ENCHANTS)
-                        .addFlag(ItemFlag.HIDE_POTION_EFFECTS)
-                        .addFlag(ItemFlag.HIDE_PLACED_ON)
-                        .setInfinityDurability()
                         .toItemStack()
         );
         itemCote.put(3,
                 new ItemBuilder(Material.COOKED_BEEF, 64)
                         .addFlag(ItemFlag.HIDE_UNBREAKABLE)
-                        .addFlag(ItemFlag.HIDE_ATTRIBUTES)
-                        .addFlag(ItemFlag.HIDE_DESTROYS)
                         .addFlag(ItemFlag.HIDE_ENCHANTS)
-                        .addFlag(ItemFlag.HIDE_POTION_EFFECTS)
-                        .addFlag(ItemFlag.HIDE_PLACED_ON)
-                        .setInfinityDurability()
                         .toItemStack()
         );
 
@@ -77,53 +57,33 @@ public class FFAGame {
         inv.setBoots(
                 new ItemBuilder(Material.DIAMOND_BOOTS)
                         .addFlag(ItemFlag.HIDE_UNBREAKABLE)
-                        .addFlag(ItemFlag.HIDE_ATTRIBUTES)
-                        .addFlag(ItemFlag.HIDE_DESTROYS)
                         .addFlag(ItemFlag.HIDE_ENCHANTS)
-                        .addFlag(ItemFlag.HIDE_POTION_EFFECTS)
-                        .addFlag(ItemFlag.HIDE_PLACED_ON)
                         .addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1)
                         .setUnbreakable()
-                        .setInfinityDurability()
                         .toItemStack()
         );
         inv.setLeggings(
                 new ItemBuilder(Material.DIAMOND_LEGGINGS)
                         .addFlag(ItemFlag.HIDE_UNBREAKABLE)
-                        .addFlag(ItemFlag.HIDE_ATTRIBUTES)
-                        .addFlag(ItemFlag.HIDE_DESTROYS)
                         .addFlag(ItemFlag.HIDE_ENCHANTS)
-                        .addFlag(ItemFlag.HIDE_POTION_EFFECTS)
-                        .addFlag(ItemFlag.HIDE_PLACED_ON)
                         .addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1)
                         .setUnbreakable()
-                        .setInfinityDurability()
                         .toItemStack()
         );
         inv.setChestPlate(
                 new ItemBuilder(Material.DIAMOND_CHESTPLATE)
                         .addFlag(ItemFlag.HIDE_UNBREAKABLE)
-                        .addFlag(ItemFlag.HIDE_ATTRIBUTES)
-                        .addFlag(ItemFlag.HIDE_DESTROYS)
                         .addFlag(ItemFlag.HIDE_ENCHANTS)
-                        .addFlag(ItemFlag.HIDE_POTION_EFFECTS)
-                        .addFlag(ItemFlag.HIDE_PLACED_ON)
                         .addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1)
                         .setUnbreakable()
-                        .setInfinityDurability()
                         .toItemStack()
         );
         inv.setHelmet(
                 new ItemBuilder(Material.DIAMOND_HELMET)
                         .addFlag(ItemFlag.HIDE_UNBREAKABLE)
-                        .addFlag(ItemFlag.HIDE_ATTRIBUTES)
-                        .addFlag(ItemFlag.HIDE_DESTROYS)
                         .addFlag(ItemFlag.HIDE_ENCHANTS)
-                        .addFlag(ItemFlag.HIDE_POTION_EFFECTS)
-                        .addFlag(ItemFlag.HIDE_PLACED_ON)
                         .addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1)
                         .setUnbreakable()
-                        .setInfinityDurability()
                         .toItemStack()
         );
 

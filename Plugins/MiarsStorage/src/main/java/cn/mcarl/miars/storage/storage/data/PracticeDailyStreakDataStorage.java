@@ -2,22 +2,33 @@ package cn.mcarl.miars.storage.storage.data;
 
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.practice.DailyStreak;
+import cn.mcarl.miars.storage.entity.practice.QueueInfo;
 import cn.mcarl.miars.storage.enums.FKitType;
 import cn.mcarl.miars.storage.enums.QueueType;
+import com.alibaba.fastjson.JSONArray;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class DailyStreakDataStorage {
+public class PracticeDailyStreakDataStorage {
 
-    private static final DailyStreakDataStorage instance = new DailyStreakDataStorage();
+    private static final PracticeDailyStreakDataStorage instance = new PracticeDailyStreakDataStorage();
 
-    public static DailyStreakDataStorage getInstance() {
+    public static PracticeDailyStreakDataStorage getInstance() {
         return instance;
     }
 
-    List<DailyStreak> dailyStreaks = new ArrayList<>();
+    private final String REDIS_KEY = "PRACTICE_DAILY_STREAKS";
+
+    public PracticeDailyStreakDataStorage(){
+        dailyStreaks=getDailyStreaksRedisList();
+        if (dailyStreaks==null){
+            dailyStreaks=new ArrayList<>();
+        }
+    }
+    List<DailyStreak> dailyStreaks;
 
 
     // 玩家连胜败
@@ -29,7 +40,7 @@ public class DailyStreakDataStorage {
                 if (d.getUuid() == player.getUniqueId() && queueType.equals(d.getQueueType()) && fKitType.equals(d.getFKitType())){
                     d.setStreak(d.getStreak()+1);
 
-                    MiarsStorage.getRedisStorage().setList("DAILY_STREAKS",dailyStreaks);
+                    setDailyStreaksRedisList(dailyStreaks);
                     return;
                 }
             }
@@ -42,14 +53,14 @@ public class DailyStreakDataStorage {
                 if (d.getUuid() == player.getUniqueId() && queueType.equals(d.getQueueType()) && fKitType.equals(d.getFKitType())){
                     dailyStreaks.remove(d);
 
-                    MiarsStorage.getRedisStorage().setList("DAILY_STREAKS",dailyStreaks);
+                    setDailyStreaksRedisList(dailyStreaks);
                     return;
                 }
             }
 
         }
 
-        MiarsStorage.getRedisStorage().setList("DAILY_STREAKS",dailyStreaks);
+        setDailyStreaksRedisList(dailyStreaks);
 
     }
 
@@ -65,6 +76,17 @@ public class DailyStreakDataStorage {
 
     // 清除Redis数据
     public void clear(){
-        MiarsStorage.getRedisStorage().setList("DAILY_STREAKS",null);
+        setDailyStreaksRedisList(new ArrayList<>());
+    }
+
+
+    public List<DailyStreak> getDailyStreaksRedisList(){
+        List<DailyStreak> list =JSONArray.parseArray(
+                MiarsStorage.getRedisStorage().getJedis(REDIS_KEY)).toJavaList(DailyStreak.class);
+        return Objects.requireNonNullElseGet(list, ArrayList::new);
+    }
+
+    public void setDailyStreaksRedisList(List<DailyStreak> list){
+        MiarsStorage.getRedisStorage().setJedis(REDIS_KEY,JSONArray.toJSON(list).toString());
     }
 }

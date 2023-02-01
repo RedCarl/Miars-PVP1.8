@@ -5,7 +5,7 @@ import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
 import cn.mcarl.miars.practiceffa.MiarsPracticeFFA;
 import cn.mcarl.miars.practiceffa.manager.PlayerInventoryManager;
-import cn.mcarl.miars.storage.storage.data.QueueDataStorage;
+import cn.mcarl.miars.storage.storage.data.PracticeQueueDataStorage;
 import cn.mcarl.miars.storage.enums.FKitType;
 import cn.mcarl.miars.storage.enums.QueueType;
 import org.bukkit.entity.Player;
@@ -56,7 +56,7 @@ public class SelectPracticeGUI extends GUI {
             @Override
             public void onClick(Player clicker, ClickType type) {
                 // 开始匹配
-                QueueDataStorage.getInstance().addQueue(FKitType.FFAGAME,queueType,player);
+                PracticeQueueDataStorage.getInstance().addQueue(FKitType.FFAGAME,queueType,player);
                 player.closeInventory();
 
                 // 初始化背包
@@ -73,7 +73,7 @@ public class SelectPracticeGUI extends GUI {
             @Override
             public void onClick(Player clicker, ClickType type) {
                 // 开始匹配
-                QueueDataStorage.getInstance().addQueue(FKitType.NO_DEBUFF,queueType,player);
+                PracticeQueueDataStorage.getInstance().addQueue(FKitType.NO_DEBUFF,queueType,player);
                 player.closeInventory();
 
                 // 初始化背包

@@ -52,13 +52,6 @@
         </repository>
 
         <repository>
-            <!--采用我的私人依赖库,简单方便,但可能因为变故而无法使用-->
-            <id>carm-repo</id>
-            <name>Carm's Repo</name>
-            <url>https://repo.carm.cc/repository/maven-public/</url>
-        </repository>
-
-        <repository>
             <id>imanity-repository-imanity-libraries</id>
             <name>Imanity Repository</name>
             <url>https://repo.imanity.dev/imanity-libraries</url>
@@ -67,6 +60,13 @@
         <repository>
             <id>dmulloy2-repo</id>
             <url>https://repo.dmulloy2.net/repository/public/</url>
+        </repository>
+
+        <repository>
+            <!--采用我的私人依赖库,简单方便,但可能因为变故而无法使用-->
+            <id>carm-repo</id>
+            <name>Carm's Repo</name>
+            <url>https://repo.carm.cc/repository/maven-public/</url>
         </repository>
     </repositories>
 

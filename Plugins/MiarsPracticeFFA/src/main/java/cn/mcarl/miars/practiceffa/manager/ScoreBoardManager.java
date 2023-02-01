@@ -8,7 +8,7 @@ import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.storage.entity.practice.QueueInfo;
 import cn.mcarl.miars.storage.storage.data.FPlayerDataStorage;
 import cn.mcarl.miars.practiceffa.utils.FFAUtil;
-import cn.mcarl.miars.storage.storage.data.QueueDataStorage;
+import cn.mcarl.miars.storage.storage.data.PracticeQueueDataStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -80,12 +80,12 @@ public class ScoreBoardManager {
         lines.add("&7K/D: &c" + FFAUtil.getPlayerKD(fPlayer));
 
         // 匹配
-        QueueInfo queueInfo = QueueDataStorage.getInstance().getQueue(p);
+        QueueInfo queueInfo = PracticeQueueDataStorage.getInstance().getQueue(p);
         if (queueInfo!=null){
 
             lines.add("");
             lines.add("&c"+queueInfo.getQueueType().name() + " " + queueInfo.getFKitType().name());
-            lines.add("&7正在匹配中... ("+ QueueDataStorage.getInstance().getQueueTime(p)+")");
+            lines.add("&7正在匹配中... ("+ PracticeQueueDataStorage.getInstance().getQueueTime(p)+")");
         }
 
         lines.add("");

@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import redis.clients.jedis.Jedis;
 
 import java.util.List;
+import java.util.Objects;
 
 public class RedisStorage {
 
@@ -33,12 +34,12 @@ public class RedisStorage {
         jedis.close();
     }
 
-    public void setList(String key, List list){
-        jedis.set(key,gson.toJson(list));
+    public void setJedis(String key, String value){
+        jedis.set(key,value);
     }
 
-    public List getList(String key){
-        return gson.fromJson(jedis.get(key),List.class);
+    public String getJedis(String key){
+        return jedis.get(key);
     }
 
 
