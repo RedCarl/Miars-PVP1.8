@@ -81,12 +81,14 @@ public class PracticeDailyStreakDataStorage {
 
 
     public List<DailyStreak> getDailyStreaksRedisList(){
-        List<DailyStreak> list =JSONArray.parseArray(
+        return JSONArray.parseArray(
                 MiarsStorage.getRedisStorage().getJedis(REDIS_KEY)).toJavaList(DailyStreak.class);
-        return Objects.requireNonNullElseGet(list, ArrayList::new);
     }
 
     public void setDailyStreaksRedisList(List<DailyStreak> list){
+        if (list.size()==0){
+            MiarsStorage.getRedisStorage().delJedis(REDIS_KEY);
+        }
         MiarsStorage.getRedisStorage().setJedis(REDIS_KEY,JSONArray.toJSON(list).toString());
     }
 }

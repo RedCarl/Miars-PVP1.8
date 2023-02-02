@@ -1,12 +1,12 @@
 package cn.mcarl.miars.storage.storage.data;
 
 import cn.mcarl.miars.storage.MiarsStorage;
+import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.storage.entity.practice.QueueInfo;
 import cn.mcarl.miars.storage.enums.FKitType;
 import cn.mcarl.miars.storage.enums.QueueType;
 import cn.mcarl.miars.storage.utils.ToolUtils;
 import com.alibaba.fastjson.JSONArray;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -14,16 +14,14 @@ public class PracticeQueueDataStorage {
 
     private final String REDIS_KEY = "PRACTICE_QUEUE";
     private List<QueueInfo> queueInfos;
-    private final Map<UUID,Long> queueTime = new HashMap<>();
+    private final Map<String,Long> queueTime = new HashMap<>();
 
     private static final PracticeQueueDataStorage instance = new PracticeQueueDataStorage();
 
     public PracticeQueueDataStorage(){
         try {
             queueInfos=new ArrayList<>(getQueueInfoRedisList());
-        }catch (Exception error){
-            MiarsStorage.getInstance().log(error.getMessage());
-        }
+        }catch (Error ignored){}
     }
 
     public static PracticeQueueDataStorage getInstance() {
@@ -34,16 +32,24 @@ public class PracticeQueueDataStorage {
      * 将玩家添加进入队列
      * @param fKitType 模式类型
      * @param queueType 队列类型
-     * @param player 玩家
+     * @param fPlayer 玩家
      * @return 是否
      */
-    public boolean addQueue(FKitType fKitType, QueueType queueType, Player player){
+    public boolean addQueue(FKitType fKitType, QueueType queueType, FPlayer fPlayer){
 
         for (QueueInfo q:queueInfos){
-            if (q.getFKitType().equals(fKitType) && q.getQueueType().equals(queueType) && !q.getPlayers().contains(player.getUniqueId())){
-                if (!q.getPlayers().contains(player.getUniqueId())){
-                    q.getPlayers().add(player.getUniqueId());
-                    queueTime.put(player.getUniqueId(),System.currentTimeMillis()); // 匹配计时
+            if (q.getFKitType().equals(fKitType) && q.getQueueType().equals(queueType) && !q.getPlayers().contains(fPlayer.getName())){
+                if (!q.getPlayers().contains(fPlayer.getName())){
+
+                    List<String> list = new ArrayList<>(q.getPlayers());
+                    list.add(fPlayer.getName());
+                    q.setPlayers(list);
+
+                    System.out.println(list);
+                    System.out.println(q);
+                    System.out.println(queueInfos);
+
+                    queueTime.put(fPlayer.getName(),System.currentTimeMillis()); // 匹配计时
                     setQueueInfoRedisList(queueInfos); // 数据同步至Redis
                     return true;
                 }else {
@@ -51,8 +57,8 @@ public class PracticeQueueDataStorage {
                 }
             }
         }
-        queueInfos.add(new QueueInfo(fKitType,queueType, Collections.singletonList(player.getUniqueId())));
-        queueTime.put(player.getUniqueId(),System.currentTimeMillis()); // 匹配计时
+        queueInfos.add(new QueueInfo(fKitType,queueType, Collections.singletonList(fPlayer.getName())));
+        queueTime.put(fPlayer.getName(),System.currentTimeMillis()); // 匹配计时
         setQueueInfoRedisList(queueInfos); // 数据同步至Redis
 
         return true;
@@ -60,17 +66,18 @@ public class PracticeQueueDataStorage {
 
     /**
      * 将玩家移出队列
-     * @param player 玩家
+     * @param name 玩家
      * @return 是否
      */
-    public boolean removeQueue(Player player){
+    public boolean removeQueue(String name){
         for (QueueInfo q:queueInfos){
-            if (q.getPlayers().contains(player.getUniqueId())){
+            if (q.getPlayers().contains(name)){
 
-                List<UUID> list = new ArrayList<>(q.getPlayers());
-                list.remove(player.getUniqueId());
+                List<String> list = new ArrayList<>(q.getPlayers());
+                list.remove(name);
                 q.setPlayers(list);
-                queueTime.remove(player.getUniqueId()); // 匹配计时移移除
+
+                queueTime.remove(name); // 匹配计时移移除
                 setQueueInfoRedisList(queueInfos); // 数据同步至Redis
             }
         }
@@ -79,30 +86,23 @@ public class PracticeQueueDataStorage {
 
     /**
      * 查询玩家是否在队列中
-     * @param player 玩家
+     * @param fPlayer 玩家
      * @return 是否
      */
-    public boolean isQueue(Player player){
-
-        for (QueueInfo q:queueInfos){
-            if (q.getPlayers().contains(player.getUniqueId())){
-                return true;
-            }
-        }
-
-        return false;
-
+    public boolean isQueue(FPlayer fPlayer){
+        System.out.println(queueInfos);
+        return queueTime.containsKey(fPlayer.getName());
     }
 
     /**
      * 获取玩家当前的队列信息
-     * @param player 玩家
+     * @param fPlayer 玩家
      * @return 是否
      */
-    public QueueInfo getQueue(Player player){
+    public QueueInfo getQueue(FPlayer fPlayer){
 
         for (QueueInfo q:queueInfos){
-            if (q.getPlayers().contains(player.getUniqueId())){
+            if (q.getPlayers().contains(fPlayer.getName())){
                 return q;
             }
         }
@@ -112,11 +112,11 @@ public class PracticeQueueDataStorage {
 
     /**
      * 获取玩家队列的时间
-     * @param player 玩家
+     * @param fPlayer 玩家
      * @return 是否
      */
-    public String getQueueTime(Player player){
-        return ToolUtils.getDate((System.currentTimeMillis()  - queueTime.get(player.getUniqueId()))/1000);
+    public String getQueueTime(FPlayer fPlayer){
+        return ToolUtils.getDate((System.currentTimeMillis()  - queueTime.get(fPlayer.getName()))/1000);
     }
 
     /**
@@ -126,14 +126,12 @@ public class PracticeQueueDataStorage {
      */
     public List<QueueInfo> getQueueInfos(FKitType fKitType){
         List<QueueInfo> list = new ArrayList<>();
-
+        queueInfos=getQueueInfoRedisList();
         for (QueueInfo q:queueInfos) {
             if (q.getFKitType().equals(fKitType)){
                 list.add(q);
             }
         }
-
-        System.out.println(queueInfos);
 
         return list;
     }
@@ -143,12 +141,14 @@ public class PracticeQueueDataStorage {
     }
     
     public List<QueueInfo> getQueueInfoRedisList(){
-        List<QueueInfo> list =JSONArray.parseArray(
+        return JSONArray.parseArray(
                 MiarsStorage.getRedisStorage().getJedis(REDIS_KEY)).toJavaList(QueueInfo.class);
-        return Objects.requireNonNullElseGet(list, ArrayList::new);
     }
     
     public void setQueueInfoRedisList(List<QueueInfo> list){
+        if (list.size()==0){
+            MiarsStorage.getRedisStorage().delJedis(REDIS_KEY);
+        }
         MiarsStorage.getRedisStorage().setJedis(REDIS_KEY,JSONArray.toJSON(list).toString());
     }
 

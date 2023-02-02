@@ -7,6 +7,7 @@ import cn.mcarl.miars.practice.listener.PlayerListener;
 import cn.mcarl.miars.practice.manager.ArenaManager;
 import cn.mcarl.miars.practice.manager.ConfigManager;
 import cn.mcarl.miars.practice.manager.QueueManager;
+import cn.mcarl.miars.practice.manager.ScoreBoardManager;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -44,6 +45,9 @@ public class MiarsPractice extends JavaPlugin {
 
         log("正在初始化 "+ PluginConfig.PRACTICE_SITE.MODE.get() +" 匹配系统...");
         QueueManager.getInstance().init();
+
+        log("正在初始化 Board 模块...");
+        ScoreBoardManager.getInstance().init();
 
         log("加载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 

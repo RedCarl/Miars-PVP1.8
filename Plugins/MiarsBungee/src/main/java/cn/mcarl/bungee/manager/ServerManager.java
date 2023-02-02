@@ -4,6 +4,7 @@ import cn.mcarl.bungee.conf.PluginConfig;
 import cn.mcarl.bungee.context.AddServerHttpHandler;
 import cn.mcarl.bungee.context.InfoHttpHandler;
 import cn.mcarl.bungee.context.RemoveServerHttpHandler;
+import cn.mcarl.bungee.context.SendPlayerToServerHttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
@@ -27,6 +28,7 @@ public class ServerManager{
             httpServer.createContext("/info", new InfoHttpHandler());
             httpServer.createContext("/add/server", new AddServerHttpHandler());
             httpServer.createContext("/remove/server", new RemoveServerHttpHandler());
+            httpServer.createContext("/send/player", new SendPlayerToServerHttpHandler());
             httpServer.start();
         } catch (IOException e) {
             throw new RuntimeException(e);

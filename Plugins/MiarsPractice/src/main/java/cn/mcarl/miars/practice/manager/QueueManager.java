@@ -2,6 +2,7 @@ package cn.mcarl.miars.practice.manager;
 
 import cn.mcarl.miars.practice.MiarsPractice;
 import cn.mcarl.miars.practice.conf.PluginConfig;
+import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.storage.entity.practice.QueueInfo;
 import cn.mcarl.miars.storage.enums.FKitType;
 import cn.mcarl.miars.storage.enums.QueueType;
@@ -33,25 +34,21 @@ public class QueueManager {
         new BukkitRunnable() {
             @Override
             public void run() {
-                System.out.println("TICK:");
                 for (QueueInfo q: PracticeQueueDataStorage.getInstance().getQueueInfos(FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()))) {
-                    System.out.println(q);
                     if (q.getQueueType().equals(QueueType.UNRANKED)){
                         Integer arenaId = ArenaManager.getInstance().isNullArena();
                         if (arenaId!=null){
-                            List<Player> players = new ArrayList<>();
-                            for (UUID u:q.getPlayers()) {
-                                if (players.size()<2){
-                                    players.add(Bukkit.getPlayer(u));
-                                }else {
-                                    // 匹配成功
+                            List<String> players = new ArrayList<>();
+                            for (String s:q.getPlayers()) {
+                                players.add(s);
+                                if (players.size()==2){
+                                    System.out.println("匹配成功");
                                     ArenaManager.getInstance().allotArena(players.get(0),players.get(1),arenaId);
+                                    players.clear();
                                     break;
                                 }
                             }
-                            System.out.println(players);
                         }
-                        System.out.println(arenaId);
 
                     }
                 }

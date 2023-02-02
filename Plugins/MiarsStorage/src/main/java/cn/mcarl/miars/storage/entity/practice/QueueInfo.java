@@ -1,5 +1,6 @@
 package cn.mcarl.miars.storage.entity.practice;
 
+import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.storage.enums.FKitType;
 import cn.mcarl.miars.storage.enums.QueueType;
 import lombok.AllArgsConstructor;
@@ -21,5 +22,5 @@ public class QueueInfo {
     QueueType queueType;
 
     // 队列人员
-    List<UUID> players;
+    List<String> players;
 }

@@ -1,19 +1,25 @@
 package cn.mcarl.miars.core.utils;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.storage.entity.ffa.FInventory;
+import cn.mcarl.miars.storage.enums.FKitType;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -183,13 +189,16 @@ public class ToolUtils {
      * 玩家状态初始化
      * 初始化 血量 饱食度 氧气度 药水效果
      */
-    public static void playerInitialize(Player e) {
-        e.getPlayer().setHealth(20);
-        e.getPlayer().setFoodLevel(20);
-        e.getPlayer().setSaturation(20);
-        e.setFireTicks(0);
+    public static void playerInitialize(Player player) {
+        player.setHealth(20);
+        player.setFoodLevel(20);
+        player.setSaturation(20);
+        player.setFireTicks(0);
+        player.setGameMode(GameMode.SURVIVAL);
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            player.removePotionEffect(effect.getType());
+        }
     }
-
     /**
      * 设置玩家库存
      */
@@ -220,5 +229,32 @@ public class ToolUtils {
         }
 
         return stringBuilder.toString();
+    }
+
+    /**
+     * 将玩家的背包转为FInv
+     * @param player
+     * @return
+     */
+    public static FInventory playerToFInv(Player player, FKitType fKitType){
+
+        Map<Integer,ItemStack> backpack = new HashMap<>();
+        for (int i = 9; i <= 35; i++) {
+            backpack.put(i,player.getInventory().getItem(i));
+        }
+        Map<Integer,ItemStack> itemCote = new HashMap<>();
+        for (int i = 0; i <= 8; i++) {
+            itemCote.put(i,player.getInventory().getItem(i));
+        }
+        return new FInventory(
+                fKitType,
+                player.getPlayer().getInventory().getItem(39),
+                player.getPlayer().getInventory().getItem(38),
+                player.getPlayer().getInventory().getItem(37),
+                player.getPlayer().getInventory().getItem(36),
+                backpack,
+                itemCote
+
+        );
     }
 }

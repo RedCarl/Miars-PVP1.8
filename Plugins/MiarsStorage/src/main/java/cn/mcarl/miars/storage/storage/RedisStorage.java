@@ -42,6 +42,10 @@ public class RedisStorage {
         return jedis.get(key);
     }
 
+    public Long delJedis(String key){
+        return jedis.del(key);
+    }
+
 
 
 }

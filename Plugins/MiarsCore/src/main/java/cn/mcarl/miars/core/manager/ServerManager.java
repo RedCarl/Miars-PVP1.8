@@ -74,6 +74,23 @@ public class ServerManager {
     }
 
     /**
+     * 将玩家传送至某个服务器
+     * @param name 玩家
+     * @param server 服务器
+     * @return
+     */
+    public boolean sendPlayerToServer(String name,String server) {
+        String state = "error";
+        String url = PluginConfig.SERVER_INFO.URL.get();
+        try {
+            state = HttpClientHelper.sendGet(url+"/send/player?user="+name+"&server="+server);
+        } catch (IOException e){
+            MiarsCore.getInstance().log("代理服务器链接已关闭,无法获取有效信息...");
+        }
+        return !state.contains("error");
+    }
+
+    /**
      * 循环判断Bungee中是否正常的存在该服务器的数据
      */
     public void tick(){

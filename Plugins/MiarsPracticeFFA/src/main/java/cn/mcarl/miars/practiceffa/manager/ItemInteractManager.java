@@ -4,6 +4,7 @@ import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.practiceffa.ui.SelectFKitTypeGUI;
 import cn.mcarl.miars.practiceffa.ui.SelectPracticeGUI;
 import cn.mcarl.miars.storage.enums.QueueType;
+import cn.mcarl.miars.storage.storage.data.FPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.PracticeQueueDataStorage;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.entity.Player;
@@ -43,7 +44,7 @@ public class ItemInteractManager {
         //Queue
         switch (nbtItem.getString("queue")){
             case "cancel" -> {
-                PracticeQueueDataStorage.getInstance().removeQueue(p.getPlayer());
+                PracticeQueueDataStorage.getInstance().removeQueue(p.getName());
                 PlayerInventoryManager.getInstance().setPractice(p);
             }
         }

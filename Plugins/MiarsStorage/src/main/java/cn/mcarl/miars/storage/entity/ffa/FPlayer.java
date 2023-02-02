@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -12,12 +13,15 @@ import java.sql.Date;
 public class FPlayer {
 
     // 玩家UUID
-    private String uuid;
+    private UUID uuid;
+
+    // 玩家名称
+    private String name;
 
     // 击杀人数
     private Long killsCount;
 
-    // 死亡数
+    // String
     private Long deathCount;
 
     // 排位分

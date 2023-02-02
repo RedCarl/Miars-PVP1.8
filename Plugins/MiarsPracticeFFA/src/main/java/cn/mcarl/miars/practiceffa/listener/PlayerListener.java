@@ -73,7 +73,7 @@ public class PlayerListener implements Listener {
         FFAUtil.initializePlayer(player);
 
         // 移出玩家队列
-        PracticeQueueDataStorage.getInstance().removeQueue(player);
+        PracticeQueueDataStorage.getInstance().removeQueue(player.getName());
     }
 
     @EventHandler

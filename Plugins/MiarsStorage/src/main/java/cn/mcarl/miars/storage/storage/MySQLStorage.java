@@ -292,7 +292,7 @@ public class MySQLStorage {
 							ResultSet result = query.getResultSet();
 							FPlayer data = new FPlayer();
 							if (result != null && result.next()) {
-								data.setUuid(result.getString("uuid"));
+								data.setUuid(UUID.fromString(result.getString("uuid")));
 								data.setKillsCount(result.getLong("kills_count"));
 								data.setDeathCount(result.getLong("death_count"));
 								data.setRankScore(result.getLong("rank_score"));

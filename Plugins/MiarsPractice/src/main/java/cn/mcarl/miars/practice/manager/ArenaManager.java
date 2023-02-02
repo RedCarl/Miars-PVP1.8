@@ -1,14 +1,13 @@
 package cn.mcarl.miars.practice.manager;
 
-import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.core.manager.ServerManager;
 import cn.mcarl.miars.practice.conf.PluginConfig;
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
-import cn.mcarl.miars.storage.entity.practice.DailyStreak;
 import cn.mcarl.miars.storage.enums.FKitType;
 import cn.mcarl.miars.storage.storage.data.ArenaDataStorage;
+import cn.mcarl.miars.storage.storage.data.PracticeQueueDataStorage;
 import com.alibaba.fastjson.JSONArray;
 import org.bukkit.entity.Player;
 
@@ -32,12 +31,15 @@ public class ArenaManager {
         for (Arena o:list){
             arenaData.add(o);
             arenaState.add(new ArenaState(
-               o.getId(),
-               0,
-               null,
-               null,
-               0L,
-               0L
+                    o.getId(),
+                    0,
+                    null,
+                    null,
+                    null,
+                    null,
+                    0L,
+                    0L,
+                    null
             ));
         }
 
@@ -49,17 +51,21 @@ public class ArenaManager {
     /**
      * 房间分配,如果返回 NULL 就是没有房间
      */
-    public Arena allotArena(Player a,Player b,Integer id){
+    public Arena allotArena(String a, String b, Integer id){
         ArenaState state = getArenaStateById(id);
         state.setState(1);
         state.setA(a);
         state.setB(b);
+        state.setStartTime(System.currentTimeMillis());
 
         // 更新Redis房间信息
         setArenaStateRedisList(arenaState);
 
-        MiarsCore.getBungeeApi().connect(a, cn.mcarl.miars.core.conf.PluginConfig.SERVER_INFO.NAME.get());
-        MiarsCore.getBungeeApi().connect(b, cn.mcarl.miars.core.conf.PluginConfig.SERVER_INFO.NAME.get());
+        PracticeQueueDataStorage.getInstance().removeQueue(a);
+        PracticeQueueDataStorage.getInstance().removeQueue(b);
+
+        ServerManager.getInstance().sendPlayerToServer(a,cn.mcarl.miars.core.conf.PluginConfig.SERVER_INFO.NAME.get());
+        ServerManager.getInstance().sendPlayerToServer(b,cn.mcarl.miars.core.conf.PluginConfig.SERVER_INFO.NAME.get());
 
         return getArenaById(id);
     }
@@ -95,16 +101,12 @@ public class ArenaManager {
         return data.get();
     }
     public ArenaState getArenaStateByPlayer(Player player){
-        AtomicReference<ArenaState> data = new AtomicReference<>(new ArenaState());
-
-        arenaState.forEach(arenaState -> {
-            if (arenaState.getA()==(player) || arenaState.getB()==player){
-                data.set(arenaState);
-            }else {
-                data.set(null);
+        for (ArenaState a:arenaState) {
+            if (a.getA().equals(player.getName()) || a.getB().equals(player.getName())){
+                return a;
             }
-        });
-        return data.get();
+        }
+        return null;
     }
 
     /**
@@ -112,13 +114,17 @@ public class ArenaManager {
      */
     public void releaseArena(Integer id){
         getArenaStateById(id).setState(0);
+        getArenaStateById(id).setA(null);
+        getArenaStateById(id).setB(null);
+        getArenaStateById(id).setEndTime(null);
+        getArenaStateById(id).setStartTime(null);
 
         // 更新Redis房间信息
         setArenaStateRedisList(arenaState);
     }
 
     public void clear(){
-        setArenaStateRedisList(null);
+        setArenaStateRedisList(new ArrayList<>());
     }
 
 
@@ -131,6 +137,9 @@ public class ArenaManager {
     }
 
     public void setArenaStateRedisList(List<ArenaState> list){
+        if (list.size()==0){
+            MiarsStorage.getRedisStorage().delJedis(PluginConfig.PRACTICE_SITE.MODE.get());
+        }
         MiarsStorage.getRedisStorage().setJedis(PluginConfig.PRACTICE_SITE.MODE.get(),JSONArray.toJSON(list).toString());
     }
 }
