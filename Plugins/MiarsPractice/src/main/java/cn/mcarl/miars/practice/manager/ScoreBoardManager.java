@@ -2,13 +2,8 @@ package cn.mcarl.miars.practice.manager;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
-import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.core.utils.fastboard.FastBoard;
-import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
-import cn.mcarl.miars.storage.entity.practice.QueueInfo;
-import cn.mcarl.miars.storage.storage.data.FPlayerDataStorage;
-import cn.mcarl.miars.storage.storage.data.PracticeQueueDataStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -49,7 +44,7 @@ public class ScoreBoardManager {
         Player p = board.getPlayer();
 
         ArenaState state = ArenaManager.getInstance().getArenaStateByPlayer(p);
-        Player their = state.getA().equals(p.getName()) ? Bukkit.getPlayer(state.getB()) : Bukkit.getPlayer(state.getA());
+        Player their = state.getPlayerA().equals(p.getName()) ? Bukkit.getPlayer(state.getPlayerB()) : Bukkit.getPlayer(state.getPlayerA());
 
         List<String> lines = new ArrayList<>();
         board.updateTitle("&cPractice &8| &cMiars");

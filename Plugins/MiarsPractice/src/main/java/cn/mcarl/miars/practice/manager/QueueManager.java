@@ -2,18 +2,14 @@ package cn.mcarl.miars.practice.manager;
 
 import cn.mcarl.miars.practice.MiarsPractice;
 import cn.mcarl.miars.practice.conf.PluginConfig;
-import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.storage.entity.practice.QueueInfo;
 import cn.mcarl.miars.storage.enums.FKitType;
 import cn.mcarl.miars.storage.enums.QueueType;
-import cn.mcarl.miars.storage.storage.data.PracticeQueueDataStorage;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @Author: carl0
@@ -42,7 +38,6 @@ public class QueueManager {
                             for (String s:q.getPlayers()) {
                                 players.add(s);
                                 if (players.size()==2){
-                                    System.out.println("匹配成功");
                                     ArenaManager.getInstance().allotArena(players.get(0),players.get(1),arenaId);
                                     players.clear();
                                     break;

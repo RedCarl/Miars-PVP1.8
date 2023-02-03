@@ -12,6 +12,9 @@ import java.sql.Date;
 @NoArgsConstructor
 public class FKit {
 
+    // 编号
+    private Integer id;
+
     // 所属玩家
     private String uuid;
 

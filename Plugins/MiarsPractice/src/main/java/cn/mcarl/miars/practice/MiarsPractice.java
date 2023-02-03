@@ -3,6 +3,7 @@ package cn.mcarl.miars.practice;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.practice.command.ArenaCreateCommand;
 import cn.mcarl.miars.practice.conf.PluginConfig;
+import cn.mcarl.miars.practice.listener.EntityListener;
 import cn.mcarl.miars.practice.listener.PlayerListener;
 import cn.mcarl.miars.practice.manager.ArenaManager;
 import cn.mcarl.miars.practice.manager.ConfigManager;
@@ -36,6 +37,7 @@ public class MiarsPractice extends JavaPlugin {
 
         log("正在注册监听器...");
         regListener(new PlayerListener());
+        regListener(new EntityListener());
 
         log("正在注册指令...");
         regCommand("Arena", new ArenaCreateCommand());

@@ -1,15 +1,17 @@
 package cn.mcarl.miars.practice.manager;
 
 import cn.mcarl.miars.core.manager.ServerManager;
+import cn.mcarl.miars.practice.MiarsPractice;
 import cn.mcarl.miars.practice.conf.PluginConfig;
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.enums.FKitType;
-import cn.mcarl.miars.storage.storage.data.ArenaDataStorage;
-import cn.mcarl.miars.storage.storage.data.PracticeQueueDataStorage;
+import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaDataStorage;
+import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
 import com.alibaba.fastjson.JSONArray;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +29,11 @@ public class ArenaManager {
     List<ArenaState> arenaState = new ArrayList<>();
 
     public void init(){
-        List<Arena> list = ArenaDataStorage.getInstance().getArenaData(FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()));
+        List<Arena> list = PracticeArenaDataStorage.getInstance().getArenaData(FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()));
         for (Arena o:list){
             arenaData.add(o);
             arenaState.add(new ArenaState(
+                    0,
                     o.getId(),
                     0,
                     null,
@@ -39,6 +42,7 @@ public class ArenaManager {
                     null,
                     0L,
                     0L,
+                    null,
                     null
             ));
         }
@@ -54,8 +58,8 @@ public class ArenaManager {
     public Arena allotArena(String a, String b, Integer id){
         ArenaState state = getArenaStateById(id);
         state.setState(1);
-        state.setA(a);
-        state.setB(b);
+        state.setPlayerA(a);
+        state.setPlayerB(b);
         state.setStartTime(System.currentTimeMillis());
 
         // 更新Redis房间信息
@@ -74,7 +78,7 @@ public class ArenaManager {
         for (ArenaState state:arenaState){
             if (state.getState()==0){
 
-                return state.getId();
+                return state.getArenaId();
             }
         }
         return null;
@@ -94,7 +98,7 @@ public class ArenaManager {
         AtomicReference<ArenaState> data = new AtomicReference<>(new ArenaState());
 
         arenaState.forEach(arenaState -> {
-            if (arenaState.getId().equals(id)){
+            if (arenaState.getArenaId().equals(id)){
                 data.set(arenaState);
             }
         });
@@ -102,7 +106,7 @@ public class ArenaManager {
     }
     public ArenaState getArenaStateByPlayer(Player player){
         for (ArenaState a:arenaState) {
-            if (a.getA().equals(player.getName()) || a.getB().equals(player.getName())){
+            if ((a.getPlayerA()!=null && a.getPlayerA().equals(player.getName())) || (a.getPlayerB()!=null && a.getPlayerB().equals(player.getName()))){
                 return a;
             }
         }
@@ -114,13 +118,30 @@ public class ArenaManager {
      */
     public void releaseArena(Integer id){
         getArenaStateById(id).setState(0);
-        getArenaStateById(id).setA(null);
-        getArenaStateById(id).setB(null);
-        getArenaStateById(id).setEndTime(null);
+        getArenaStateById(id).setPlayerA(null);
+        getArenaStateById(id).setAFInventory(null);
+        getArenaStateById(id).setPlayerB(null);
+        getArenaStateById(id).setBFInventory(null);
         getArenaStateById(id).setStartTime(null);
+        getArenaStateById(id).setEndTime(null);
+        getArenaStateById(id).setWin(null);
+        getArenaStateById(id).setFKitType(null);
 
         // 更新Redis房间信息
         setArenaStateRedisList(arenaState);
+    }
+
+    /**
+     * 游戏结束
+     */
+    public void endGame(Integer id){
+        getArenaStateById(id).setState(3);
+    }
+    /**
+     * 游戏开始
+     */
+    public void startGame(Integer id){
+        getArenaStateById(id).setState(2);
     }
 
     public void clear(){

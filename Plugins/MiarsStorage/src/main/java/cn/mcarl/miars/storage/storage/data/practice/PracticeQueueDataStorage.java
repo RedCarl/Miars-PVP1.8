@@ -1,4 +1,4 @@
-package cn.mcarl.miars.storage.storage.data;
+package cn.mcarl.miars.storage.storage.data.practice;
 
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
@@ -45,10 +45,6 @@ public class PracticeQueueDataStorage {
                     list.add(fPlayer.getName());
                     q.setPlayers(list);
 
-                    System.out.println(list);
-                    System.out.println(q);
-                    System.out.println(queueInfos);
-
                     queueTime.put(fPlayer.getName(),System.currentTimeMillis()); // 匹配计时
                     setQueueInfoRedisList(queueInfos); // 数据同步至Redis
                     return true;
@@ -90,7 +86,6 @@ public class PracticeQueueDataStorage {
      * @return 是否
      */
     public boolean isQueue(FPlayer fPlayer){
-        System.out.println(queueInfos);
         return queueTime.containsKey(fPlayer.getName());
     }
 

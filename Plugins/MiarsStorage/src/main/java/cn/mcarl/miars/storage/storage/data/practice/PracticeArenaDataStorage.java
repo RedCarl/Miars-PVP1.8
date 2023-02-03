@@ -1,4 +1,4 @@
-package cn.mcarl.miars.storage.storage.data;
+package cn.mcarl.miars.storage.storage.data.practice;
 
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.practice.Arena;
@@ -10,9 +10,9 @@ import java.util.List;
  * @Author: carl0
  * @DATE: 2023/1/5 23:32
  */
-public class ArenaDataStorage {
-    private static final ArenaDataStorage instance = new ArenaDataStorage();
-    public static ArenaDataStorage getInstance() {
+public class PracticeArenaDataStorage {
+    private static final PracticeArenaDataStorage instance = new PracticeArenaDataStorage();
+    public static PracticeArenaDataStorage getInstance() {
         return instance;
     }
 

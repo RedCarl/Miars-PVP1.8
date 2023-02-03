@@ -1,4 +1,4 @@
-package cn.mcarl.miars.storage.storage.data;
+package cn.mcarl.miars.storage.storage.data.practice;
 
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.ffa.FKit;
@@ -34,6 +34,17 @@ public class FKitDataStorage {
     public List<FKit> getFKitData(Player p, FKitType fKitType){
         try {
             return MiarsStorage.getMySQLStorage().queryFKitDataList(p.getUniqueId(),fKitType);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 获取套件数据
+     */
+    public FKit getFKitDataById(Integer id){
+        try {
+            return MiarsStorage.getMySQLStorage().queryFKitDataById(id);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

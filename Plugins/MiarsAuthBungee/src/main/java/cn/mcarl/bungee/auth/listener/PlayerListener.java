@@ -27,8 +27,6 @@ public class PlayerListener implements Listener {
 
   @EventHandler(priority = HIGHEST)
   public void onPreLogin(PreLoginEvent event) {
-
-    System.out.println(event.getConnection().isOnlineMode());
   }
 
   @EventHandler(priority = EventPriority.LOWEST)

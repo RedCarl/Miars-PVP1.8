@@ -3,7 +3,7 @@ package cn.mcarl.miars.practice.command;
 import cn.mcarl.miars.practice.conf.PluginConfig;
 import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.enums.FKitType;
-import cn.mcarl.miars.storage.storage.data.ArenaDataStorage;
+import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaDataStorage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -62,10 +62,9 @@ public class ArenaCreateCommand implements CommandExecutor, TabCompleter {
                         data.put(arena.getName(),arena);
                     }
                     case "save" -> {
-                        ArenaDataStorage.getInstance().putArenaData(data.get(arena.getName()));
+                        PracticeArenaDataStorage.getInstance().putArenaData(data.get(arena.getName()));
                     }
                 }
-                System.out.println(data);
 
             }
         }

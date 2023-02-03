@@ -96,7 +96,7 @@ public class SelectFKitEditGUI extends GUI {
                         FKitEditGUI.open(player,invs.get(i-1));
                     }else {
                         // 没数据
-                        FKitEditGUI.open(player,new FKit(player.getUniqueId().toString(),fKitType,null, PlayerInventoryManager.getInstance().getByFKitType(fKitType),null,null,null));
+                        FKitEditGUI.open(player,new FKit(null,player.getUniqueId().toString(),fKitType,null, PlayerInventoryManager.getInstance().getByFKitType(fKitType),null,null,null));
                     }
                 }
             }

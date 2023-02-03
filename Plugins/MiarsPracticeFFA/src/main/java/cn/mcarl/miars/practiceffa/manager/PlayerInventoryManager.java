@@ -9,8 +9,8 @@ import cn.mcarl.miars.storage.enums.FKitType;
 import cn.mcarl.miars.practiceffa.kits.FFAGame;
 import cn.mcarl.miars.practiceffa.kits.Practice;
 import cn.mcarl.miars.practiceffa.utils.FFAUtil;
-import cn.mcarl.miars.storage.storage.data.FPlayerDataStorage;
-import cn.mcarl.miars.storage.storage.data.PracticeQueueDataStorage;
+import cn.mcarl.miars.storage.storage.data.practice.FPlayerDataStorage;
+import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -68,6 +68,10 @@ public class PlayerInventoryManager {
     public void setPractice(Player p){
         datas.put(p.getUniqueId(), Practice.get());
         autoEquip(p);
+    }
+
+    public void remove(Player p){
+        datas.remove(p.getUniqueId());
     }
 
     /**

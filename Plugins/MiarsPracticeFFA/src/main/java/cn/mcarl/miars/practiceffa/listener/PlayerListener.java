@@ -9,11 +9,11 @@ import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.practiceffa.MiarsPracticeFFA;
 import cn.mcarl.miars.practiceffa.conf.PluginConfig;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
-import cn.mcarl.miars.storage.storage.data.FPlayerDataStorage;
+import cn.mcarl.miars.storage.storage.data.practice.FPlayerDataStorage;
 import cn.mcarl.miars.practiceffa.ui.BlockGUI;
 import cn.mcarl.miars.practiceffa.utils.FFAUtil;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
-import cn.mcarl.miars.storage.storage.data.PracticeQueueDataStorage;
+import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -74,6 +74,7 @@ public class PlayerListener implements Listener {
 
         // 移出玩家队列
         PracticeQueueDataStorage.getInstance().removeQueue(player.getName());
+        PlayerInventoryManager.getInstance().remove(player);
     }
 
     @EventHandler

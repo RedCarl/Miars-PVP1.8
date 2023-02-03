@@ -1,7 +1,7 @@
 package cn.mcarl.miars.storage.entity.practice;
 
-import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.entity.ffa.FInventoryByte;
+import cn.mcarl.miars.storage.enums.FKitType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,15 +14,18 @@ public class ArenaState {
     // 房间ID
     private Integer id;
 
-    // 0 空闲 | 1 正在使用 | 2 故障
+    // 房间ID
+    private Integer arenaId;
+
+    // 0 空闲 | 1 正在分配 | 2 正在战斗 | 3 战斗结束 | 4 房间故障
     private Integer state;
 
     // 玩家
-    private String a;
+    private String playerA;
     // 玩家的库存
     private FInventoryByte aFInventory;
     // 玩家
-    private String b;
+    private String playerB;
     // 玩家的库存
     private FInventoryByte bFInventory;
 
@@ -34,5 +37,8 @@ public class ArenaState {
 
     // 获胜方
     private String win;
+
+    // 游戏类型
+    private FKitType fKitType;
 
 }

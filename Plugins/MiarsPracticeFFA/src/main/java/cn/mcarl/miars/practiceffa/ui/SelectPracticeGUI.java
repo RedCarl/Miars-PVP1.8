@@ -4,14 +4,20 @@ import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
 import cn.mcarl.miars.practiceffa.MiarsPracticeFFA;
+import cn.mcarl.miars.practiceffa.kits.FFAGame;
+import cn.mcarl.miars.practiceffa.kits.NoDeBuff;
 import cn.mcarl.miars.practiceffa.manager.PlayerInventoryManager;
-import cn.mcarl.miars.storage.storage.data.FPlayerDataStorage;
-import cn.mcarl.miars.storage.storage.data.PracticeQueueDataStorage;
+import cn.mcarl.miars.storage.entity.ffa.FKit;
+import cn.mcarl.miars.storage.storage.data.practice.FKitDataStorage;
+import cn.mcarl.miars.storage.storage.data.practice.FPlayerDataStorage;
+import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
 import cn.mcarl.miars.storage.enums.FKitType;
 import cn.mcarl.miars.storage.enums.QueueType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.sql.Date;
 
 /**
  * @Author: carl0
@@ -62,6 +68,21 @@ public class SelectPracticeGUI extends GUI {
 
                 // 初始化背包
                 PlayerInventoryManager.getInstance().setQueue(player);
+
+                // 初始化Kit
+                if (FKitDataStorage.getInstance().getFKitData(player,FKitType.FFAGAME).size()==0){
+                    FKitDataStorage.getInstance().putFKitData(new FKit(
+                            null,
+                            player.getUniqueId().toString(),
+                            FKitType.FFAGAME,
+                            "Default",
+                            FFAGame.get(),
+                            0,
+                            null,
+                            new Date(System.currentTimeMillis())
+
+                    ));
+                }
             }
         };
 
@@ -79,6 +100,21 @@ public class SelectPracticeGUI extends GUI {
 
                 // 初始化背包
                 PlayerInventoryManager.getInstance().setQueue(player);
+
+                // 初始化Kit
+                if (FKitDataStorage.getInstance().getFKitData(player,FKitType.NO_DEBUFF).size()==0) {
+                    FKitDataStorage.getInstance().putFKitData(new FKit(
+                            null,
+                            player.getUniqueId().toString(),
+                            FKitType.NO_DEBUFF,
+                            "Default",
+                            NoDeBuff.get(),
+                            0,
+                            null,
+                            new Date(System.currentTimeMillis())
+
+                    ));
+                }
             }
         };
 

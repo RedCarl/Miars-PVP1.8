@@ -1,4 +1,4 @@
-package cn.mcarl.miars.storage.storage.data;
+package cn.mcarl.miars.storage.storage.data.practice;
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import org.bukkit.Bukkit;
