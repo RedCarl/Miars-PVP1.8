@@ -64,7 +64,7 @@ public class CombatManager {
      * @return 是否
      */
     public boolean isCombat(Player p){
-        if (data.get(p.getUniqueId().toString()) != null){
+        if (p!=null && p.isOnline() && data.get(p.getUniqueId().toString()) != null){
             if (data.get(p.getUniqueId().toString()).getDate() >= System.currentTimeMillis()){
                 return true;
             }else {

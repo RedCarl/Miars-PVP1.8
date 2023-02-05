@@ -26,6 +26,14 @@ public class SelectFKitTypeGUI extends GUI {
             }
         });
 
+
+        setItem(1,new GUIItem(CommunityGUIItem.getPracticeTypeItem(player,FKitType.NO_DEBUFF,null)){
+            @Override
+            public void onClick(Player clicker, ClickType type) {
+                SelectFKitEditGUI.open(player,FKitType.NO_DEBUFF);
+            }
+        });
+
         setItem(8,new GUIItem(CommunityGUIItem.getCancelItem()){
             @Override
             public void onClick(Player clicker, ClickType type) {

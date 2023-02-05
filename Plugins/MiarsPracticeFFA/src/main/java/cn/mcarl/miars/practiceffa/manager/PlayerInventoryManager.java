@@ -1,6 +1,7 @@
 package cn.mcarl.miars.practiceffa.manager;
 
 import cn.mcarl.miars.practiceffa.conf.PluginConfig;
+import cn.mcarl.miars.practiceffa.kits.NoDeBuff;
 import cn.mcarl.miars.practiceffa.kits.Queue;
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
@@ -107,6 +108,9 @@ public class PlayerInventoryManager {
         switch (fKitType){
             case FFAGAME -> {
                 return FFAGame.get();
+            }
+            case NO_DEBUFF -> {
+                return NoDeBuff.get();
             }
         }
 

@@ -4,6 +4,7 @@ import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.practice.DailyStreak;
 import cn.mcarl.miars.storage.enums.FKitType;
 import cn.mcarl.miars.storage.enums.QueueType;
+import cn.mcarl.miars.storage.utils.CustomSort;
 import com.alibaba.fastjson.JSONArray;
 import org.bukkit.entity.Player;
 
@@ -19,43 +20,27 @@ public class PracticeDailyStreakDataStorage {
     }
 
     private final String REDIS_KEY = "PRACTICE_DAILY_STREAKS";
-
-    public PracticeDailyStreakDataStorage(){
-        dailyStreaks=getDailyStreaksRedisList();
-        if (dailyStreaks==null){
-            dailyStreaks=new ArrayList<>();
-        }
-    }
-    List<DailyStreak> dailyStreaks;
-
+    List<DailyStreak> dailyStreaks = new ArrayList<>();
 
     // 玩家连胜败
     public void putDailyStreakData(Player player, QueueType queueType, FKitType fKitType,Boolean isWin){
 
-        if (isWin){
+        dailyStreaks = getDailyStreaksRedisList();
 
-            for (DailyStreak d:dailyStreaks){
-                if (d.getUuid() == player.getUniqueId() && queueType.equals(d.getQueueType()) && fKitType.equals(d.getFKitType())){
+        for (DailyStreak d:dailyStreaks){
+            if (d.getName().equals(player.getName()) && queueType.equals(d.getQueueType()) && fKitType.equals(d.getFKitType())){
+                if (isWin){
                     d.setStreak(d.getStreak()+1);
-
-                    setDailyStreaksRedisList(dailyStreaks);
-                    return;
+                }else {
+                    d.setStreak(0);
                 }
+                setDailyStreaksRedisList(dailyStreaks);
+                return;
             }
+        }
 
-            dailyStreaks.add(new DailyStreak(player.getUniqueId(),1,queueType,fKitType));
-
-        }else {
-
-            for (DailyStreak d:dailyStreaks){
-                if (d.getUuid() == player.getUniqueId() && queueType.equals(d.getQueueType()) && fKitType.equals(d.getFKitType())){
-                    dailyStreaks.remove(d);
-
-                    setDailyStreaksRedisList(dailyStreaks);
-                    return;
-                }
-            }
-
+        if (isWin){
+            dailyStreaks.add(new DailyStreak(player.getName(),player.getUniqueId(),1,queueType,fKitType));
         }
 
         setDailyStreaksRedisList(dailyStreaks);
@@ -64,11 +49,23 @@ public class PracticeDailyStreakDataStorage {
 
     // 获取连胜Top3
     public List<DailyStreak> getDailyStreaksTop(QueueType queueType, FKitType fKitType){
-        return null;
+        List<DailyStreak> list = new ArrayList<>();
+        for (DailyStreak d:getDailyStreaksRedisList()) {
+            if (d.getFKitType().equals(fKitType) && d.getQueueType().equals(queueType)){
+                list.add(d);
+            }
+        }
+        CustomSort.sort(list,"streak",false);
+        return list;
     }
 
     // 获得玩家的连胜次数
     public DailyStreak getDailyStreaksByPlayer(Player player, QueueType queueType, FKitType fKitType){
+        for (DailyStreak d:getDailyStreaksRedisList()) {
+            if (d.getName().equals(player.getName()) && d.getFKitType().equals(fKitType) && d.getQueueType().equals(queueType)){
+                return d;
+            }
+        }
         return null;
     }
 
@@ -79,8 +76,13 @@ public class PracticeDailyStreakDataStorage {
 
 
     public List<DailyStreak> getDailyStreaksRedisList(){
-        return JSONArray.parseArray(
-                MiarsStorage.getRedisStorage().getJedis(REDIS_KEY)).toJavaList(DailyStreak.class);
+
+        String json = MiarsStorage.getRedisStorage().getJedis(REDIS_KEY);
+        if (json==null || json.equals("[]")){
+            return new ArrayList<>();
+        }
+
+        return JSONArray.parseArray(json).toJavaList(DailyStreak.class);
     }
 
     public void setDailyStreaksRedisList(List<DailyStreak> list){

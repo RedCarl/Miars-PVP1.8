@@ -85,7 +85,7 @@ public class ScoreBoardManager {
 
             lines.add("");
             lines.add("&c"+queueInfo.getQueueType().name() + " " + queueInfo.getFKitType().name());
-            lines.add("&7正在匹配中... ("+ PracticeQueueDataStorage.getInstance().getQueueTime(fPlayer)+")");
+            lines.add("&7正在匹配... ("+ PracticeQueueDataStorage.getInstance().getQueueTime(fPlayer)+"s)");
         }
 
         lines.add("");

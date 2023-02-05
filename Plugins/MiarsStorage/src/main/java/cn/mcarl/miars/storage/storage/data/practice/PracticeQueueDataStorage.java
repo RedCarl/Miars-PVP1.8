@@ -2,31 +2,31 @@ package cn.mcarl.miars.storage.storage.data.practice;
 
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
+import cn.mcarl.miars.storage.entity.practice.DailyStreak;
 import cn.mcarl.miars.storage.entity.practice.QueueInfo;
 import cn.mcarl.miars.storage.enums.FKitType;
 import cn.mcarl.miars.storage.enums.QueueType;
-import cn.mcarl.miars.storage.utils.ToolUtils;
 import com.alibaba.fastjson.JSONArray;
 
 import java.util.*;
 
 public class PracticeQueueDataStorage {
-
-    private final String REDIS_KEY = "PRACTICE_QUEUE";
-    private List<QueueInfo> queueInfos;
-    private final Map<String,Long> queueTime = new HashMap<>();
-
     private static final PracticeQueueDataStorage instance = new PracticeQueueDataStorage();
-
-    public PracticeQueueDataStorage(){
-        try {
-            queueInfos=new ArrayList<>(getQueueInfoRedisList());
-        }catch (Error ignored){}
-    }
 
     public static PracticeQueueDataStorage getInstance() {
         return instance;
     }
+    private final String REDIS_KEY = "PRACTICE_QUEUE";
+
+    public PracticeQueueDataStorage(){
+        queueInfos=getQueueInfoRedisList();
+        if (queueInfos==null){
+            queueInfos=new ArrayList<>();
+        }
+    }
+
+    private List<QueueInfo> queueInfos;
+    private final Map<String,Long> queueTime = new HashMap<>();
 
     /**
      * 将玩家添加进入队列
@@ -107,11 +107,12 @@ public class PracticeQueueDataStorage {
 
     /**
      * 获取玩家队列的时间
+     *
      * @param fPlayer 玩家
      * @return 是否
      */
-    public String getQueueTime(FPlayer fPlayer){
-        return ToolUtils.getDate((System.currentTimeMillis()  - queueTime.get(fPlayer.getName()))/1000);
+    public long getQueueTime(FPlayer fPlayer){
+        return (System.currentTimeMillis()  - queueTime.get(fPlayer.getName()))/1000;
     }
 
     /**
@@ -119,11 +120,10 @@ public class PracticeQueueDataStorage {
      * @param fKitType
      * @return
      */
-    public List<QueueInfo> getQueueInfos(FKitType fKitType){
+    public List<QueueInfo> getQueueInfos(FKitType fKitType,QueueType queueType){
         List<QueueInfo> list = new ArrayList<>();
-        queueInfos=getQueueInfoRedisList();
-        for (QueueInfo q:queueInfos) {
-            if (q.getFKitType().equals(fKitType)){
+        for (QueueInfo q:getQueueInfoRedisList()) {
+            if (q.getFKitType().equals(fKitType) && q.getQueueType().equals(queueType)){
                 list.add(q);
             }
         }
@@ -136,8 +136,14 @@ public class PracticeQueueDataStorage {
     }
     
     public List<QueueInfo> getQueueInfoRedisList(){
-        return JSONArray.parseArray(
-                MiarsStorage.getRedisStorage().getJedis(REDIS_KEY)).toJavaList(QueueInfo.class);
+
+        String json = MiarsStorage.getRedisStorage().getJedis(REDIS_KEY);
+
+        if (json==null || json.equals("[]")){
+            return new ArrayList<>();
+        }
+
+        return JSONArray.parseArray(json).toJavaList(QueueInfo.class);
     }
     
     public void setQueueInfoRedisList(List<QueueInfo> list){

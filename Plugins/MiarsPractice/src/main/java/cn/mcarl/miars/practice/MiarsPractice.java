@@ -9,6 +9,7 @@ import cn.mcarl.miars.practice.manager.ArenaManager;
 import cn.mcarl.miars.practice.manager.ConfigManager;
 import cn.mcarl.miars.practice.manager.QueueManager;
 import cn.mcarl.miars.practice.manager.ScoreBoardManager;
+import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaStateDataStorage;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -44,6 +45,7 @@ public class MiarsPractice extends JavaPlugin {
 
         log("正在初始化房间数据...");
         ArenaManager.getInstance().init();
+
 
         log("正在初始化 "+ PluginConfig.PRACTICE_SITE.MODE.get() +" 匹配系统...");
         QueueManager.getInstance().init();

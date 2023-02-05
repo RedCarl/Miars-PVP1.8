@@ -11,6 +11,7 @@ import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.enums.FKitType;
+import cn.mcarl.miars.storage.enums.QueueType;
 import cn.mcarl.miars.storage.utils.BukkitUtils;
 import cn.mcarl.miars.storage.utils.DatabaseTable;
 import com.alibaba.fastjson.JSONArray;
@@ -141,7 +142,7 @@ public class MySQLStorage {
 			getPracticeArenaDataTable().createTable(sqlManager);
 
 
-			// 竞技场房间信息
+			// 竞技场比赛信息
 			this.practiceGameDataTable = new DatabaseTable(
 					PluginConfig.DATABASE.TABLE_NAME.get() + "_practice_gameData",
 					new String[]{
@@ -156,6 +157,7 @@ public class MySQLStorage {
 							"`endTime` bigint DEFAULT NULL",
 							"`win` varchar(255) DEFAULT NULL",
 							"`fKitType` longtext",
+							"`queueType` longtext",
 							"PRIMARY KEY (`id`)"
 					});
 			getPracticeGameDataTable().createTable(sqlManager);
@@ -407,18 +409,18 @@ public class MySQLStorage {
 
 	public void replacePracticeGameData(@NotNull ArenaState data) throws Exception {
 		getSQLManager().createReplace(getPracticeGameDataTable().getTableName())
-				.setColumnNames("id", "arenaId", "state", "playerA", "aFInventory", "playerB", "bFInventory", "startTime", "endTime", "win", "fKitType")
-				.setParams(data.getId(), data.getArenaId(), data.getState(), data.getPlayerA(), gson.toJson(data.getAFInventory()), data.getPlayerB(), gson.toJson(data.getBFInventory()), data.getStartTime(), data.getEndTime(), data.getWin(), data.getFKitType().name())
+				.setColumnNames("id", "arenaId", "state", "playerA", "aFInventory", "playerB", "bFInventory", "startTime", "endTime", "win", "fKitType", "queueType")
+				.setParams(data.getId(), data.getArenaId(), data.getState(), data.getPlayerA(), gson.toJson(data.getAFInventory()), data.getPlayerB(), gson.toJson(data.getBFInventory()), data.getStartTime(), data.getEndTime(), data.getWin(), data.getFKitType().name(), data.getQueueType().name())
 				.execute();
 	}
 
-	public List<ArenaState> queryPracticeGameDataList(@NotNull String name, FKitType type) {
+	public List<ArenaState> queryPracticeGameDataList(@NotNull String name, FKitType fKitType) {
 		return getSQLManager().createQuery()
 				.inTable(getPracticeGameDataTable().getTableName())
-				.selectColumns("id", "arenaId", "state", "playerA", "aFInventory", "playerB", "bFInventory", "startTime", "endTime", "win", "fKitType")
+				.selectColumns("id", "arenaId", "state", "playerA", "aFInventory", "playerB", "bFInventory", "startTime", "endTime", "win", "fKitType", "queueType")
 				.addCondition("playerA", name)
 				.addCondition("playerB", name)
-				.addCondition("type", type.name())
+				.addCondition("fKitType", fKitType.name())
 				.build()
 				.execute(
 						(query) -> {
@@ -432,12 +434,13 @@ public class MySQLStorage {
 								data.setState(result.getInt("state"));
 								data.setPlayerA(result.getString("playerA"));
 								data.setAFInventory(gson.fromJson(result.getString("aFInventory"), FInventoryByte.class));
-								data.setPlayerA(result.getString("playerB"));
+								data.setPlayerB(result.getString("playerB"));
 								data.setBFInventory(gson.fromJson(result.getString("bFInventory"), FInventoryByte.class));
 								data.setStartTime(result.getLong("startTime"));
 								data.setEndTime(result.getLong("endTime"));
 								data.setWin(result.getString("win"));
 								data.setFKitType(FKitType.valueOf(result.getString("fKitType")));
+								data.setQueueType(QueueType.valueOf(result.getString("queueType")));
 								datas.add(data);
 							}
 
@@ -449,7 +452,7 @@ public class MySQLStorage {
 	public ArenaState queryPracticeGameDataByEndTime(@NotNull Long endTime) {
 		return getSQLManager().createQuery()
 				.inTable(getPracticeGameDataTable().getTableName())
-				.selectColumns("id", "arenaId", "state", "playerA", "aFInventory", "playerB", "bFInventory", "startTime", "endTime", "win", "fKitType")
+				.selectColumns("id", "arenaId", "state", "playerA", "aFInventory", "playerB", "bFInventory", "startTime", "endTime", "win", "fKitType", "queueType")
 				.addCondition("endTime", endTime)
 				.build()
 				.execute(
@@ -462,15 +465,115 @@ public class MySQLStorage {
 								data.setState(result.getInt("state"));
 								data.setPlayerA(result.getString("playerA"));
 								data.setAFInventory(gson.fromJson(result.getString("aFInventory"), FInventoryByte.class));
-								data.setPlayerA(result.getString("playerB"));
+								data.setPlayerB(result.getString("playerB"));
 								data.setBFInventory(gson.fromJson(result.getString("bFInventory"), FInventoryByte.class));
 								data.setStartTime(result.getLong("startTime"));
 								data.setEndTime(result.getLong("endTime"));
 								data.setWin(result.getString("win"));
 								data.setFKitType(FKitType.valueOf(result.getString("fKitType")));
+								data.setQueueType(QueueType.valueOf(result.getString("queueType")));
 								return data;
 							}
 							return null;
+						},
+						((exception, sqlAction) -> { /*SQL异常处理-SQLExceptionHandler*/ })
+				);
+	}
+	public ArenaState queryPracticeGameDataById(@NotNull Integer id) {
+		return getSQLManager().createQuery()
+				.inTable(getPracticeGameDataTable().getTableName())
+				.selectColumns("id", "arenaId", "state", "playerA", "aFInventory", "playerB", "bFInventory", "startTime", "endTime", "win", "fKitType", "queueType")
+				.addCondition("id", id)
+				.build()
+				.execute(
+						(query) -> {
+							ResultSet result = query.getResultSet();
+							ArenaState data = new ArenaState();
+							if (result != null && result.next()) {
+								data.setId(result.getInt("id"));
+								data.setArenaId(result.getInt("arenaId"));
+								data.setState(result.getInt("state"));
+								data.setPlayerA(result.getString("playerA"));
+								data.setAFInventory(gson.fromJson(result.getString("aFInventory"), FInventoryByte.class));
+								data.setPlayerB(result.getString("playerB"));
+								data.setBFInventory(gson.fromJson(result.getString("bFInventory"), FInventoryByte.class));
+								data.setStartTime(result.getLong("startTime"));
+								data.setEndTime(result.getLong("endTime"));
+								data.setWin(result.getString("win"));
+								data.setFKitType(FKitType.valueOf(result.getString("fKitType")));
+								data.setQueueType(QueueType.valueOf(result.getString("queueType")));
+								return data;
+							}
+							return null;
+						},
+						((exception, sqlAction) -> { /*SQL异常处理-SQLExceptionHandler*/ })
+				);
+	}
+	public List<ArenaState> queryPracticeGameDataByWin(@NotNull String name) {
+		return getSQLManager().createQuery()
+				.inTable(getPracticeGameDataTable().getTableName())
+				.selectColumns("id", "arenaId", "state", "playerA", "aFInventory", "playerB", "bFInventory", "startTime", "endTime", "win", "fKitType", "queueType")
+				.addCondition("win", name)
+				.build()
+				.execute(
+						(query) -> {
+							ResultSet result = query.getResultSet();
+							List<ArenaState> datas = new ArrayList<>();
+
+							while (result.next()) {
+								ArenaState data = new ArenaState();
+								data.setId(result.getInt("id"));
+								data.setArenaId(result.getInt("arenaId"));
+								data.setState(result.getInt("state"));
+								data.setPlayerA(result.getString("playerA"));
+								data.setAFInventory(gson.fromJson(result.getString("aFInventory"), FInventoryByte.class));
+								data.setPlayerB(result.getString("playerB"));
+								data.setBFInventory(gson.fromJson(result.getString("bFInventory"), FInventoryByte.class));
+								data.setStartTime(result.getLong("startTime"));
+								data.setEndTime(result.getLong("endTime"));
+								data.setWin(result.getString("win"));
+								data.setFKitType(FKitType.valueOf(result.getString("fKitType")));
+								data.setQueueType(QueueType.valueOf(result.getString("queueType")));
+								datas.add(data);
+							}
+
+							return datas;
+						},
+						((exception, sqlAction) -> { /*SQL异常处理-SQLExceptionHandler*/ })
+				);
+	}
+	public List<ArenaState> queryPracticeGameDataByDayWin(@NotNull String name, FKitType fKitType, QueueType queueType, Long time) {
+		return getSQLManager().createQuery()
+				.inTable(getPracticeGameDataTable().getTableName())
+				.selectColumns("id", "arenaId", "state", "playerA", "aFInventory", "playerB", "bFInventory", "startTime", "endTime", "win", "fKitType", "queueType")
+				.addCondition("win", name)
+				.addCondition("fKitType", fKitType.name())
+				.addCondition("queueType", queueType)
+				.addCondition("endTime",">",time)
+				.build()
+				.execute(
+						(query) -> {
+							ResultSet result = query.getResultSet();
+							List<ArenaState> datas = new ArrayList<>();
+
+							while (result.next()) {
+								ArenaState data = new ArenaState();
+								data.setId(result.getInt("id"));
+								data.setArenaId(result.getInt("arenaId"));
+								data.setState(result.getInt("state"));
+								data.setPlayerA(result.getString("playerA"));
+								data.setAFInventory(gson.fromJson(result.getString("aFInventory"), FInventoryByte.class));
+								data.setPlayerB(result.getString("playerB"));
+								data.setBFInventory(gson.fromJson(result.getString("bFInventory"), FInventoryByte.class));
+								data.setStartTime(result.getLong("startTime"));
+								data.setEndTime(result.getLong("endTime"));
+								data.setWin(result.getString("win"));
+								data.setFKitType(FKitType.valueOf(result.getString("fKitType")));
+								data.setQueueType(QueueType.valueOf(result.getString("queueType")));
+								datas.add(data);
+							}
+
+							return datas;
 						},
 						((exception, sqlAction) -> { /*SQL异常处理-SQLExceptionHandler*/ })
 				);

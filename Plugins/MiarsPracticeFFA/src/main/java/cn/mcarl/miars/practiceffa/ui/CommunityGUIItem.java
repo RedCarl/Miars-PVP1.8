@@ -1,8 +1,13 @@
 package cn.mcarl.miars.practiceffa.ui;
 
 import cn.mcarl.miars.core.utils.ItemBuilder;
+import cn.mcarl.miars.core.utils.ToolUtils;
+import cn.mcarl.miars.storage.entity.practice.ArenaState;
+import cn.mcarl.miars.storage.entity.practice.DailyStreak;
+import cn.mcarl.miars.storage.entity.practice.QueueInfo;
 import cn.mcarl.miars.storage.enums.FKitType;
 import cn.mcarl.miars.storage.enums.QueueType;
+import cn.mcarl.miars.storage.storage.data.practice.*;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -57,43 +62,45 @@ public class CommunityGUIItem {
     public static ItemStack getPracticeTypeItem(Player player,FKitType fKitType, QueueType queueType) {
 
         String[] lore = new String[0];
-        if (queueType == null){
 
-        }else if (queueType.equals(QueueType.UNRANKED)){
+        List<QueueInfo> queueInfos = new ArrayList<>();
+        List<ArenaState> arenaStates = new ArrayList<>();
+        List<DailyStreak> dailyStreaks = new ArrayList<>();
+        DailyStreak dailyStreak = null;
+
+        if (queueType != null){
             lore = new String[]{
                     "",
-                    "&7在战斗中: &c{unranked_in_fights}",
-                    "&7在匹配中: &c{unranked_in_queue}",
+                    "&7在战斗中: &c{in_fights}",
+                    "&7在匹配中: &c{in_queue}",
                     "",
-                    "&7每日连胜: &c{unranked_daily_streak}",
-                    "&c1. &7{unranked_daily_streak_1_name} &7(&c{unranked_daily_streak_1_value}&7)",
-                    "&c2. &7{unranked_daily_streak_2_name} &7(&c{unranked_daily_streak_2_value}&7)",
-                    "&c3. &7{unranked_daily_streak_3_name} &7(&c{unranked_daily_streak_3_value}&7)",
+                    "&7每日连胜: &c{daily_streak}",
+                    "&c1. &7{daily_streak_1_name} &7(&c{daily_streak_1_value}&7)",
+                    "&c2. &7{daily_streak_2_name} &7(&c{daily_streak_2_value}&7)",
+                    "&c3. &7{daily_streak_3_name} &7(&c{daily_streak_3_value}&7)",
                     "",
                     "&c点击加入匹配队列"
             };
-        }else if (queueType.equals(QueueType.RANKED)){
+            queueInfos = PracticeQueueDataStorage.getInstance().getQueueInfos(fKitType,queueType);
+            arenaStates = PracticeArenaStateDataStorage.getInstance().getArenaStateByQueueAndFig(fKitType,queueType);
+            dailyStreaks = PracticeDailyStreakDataStorage.getInstance().getDailyStreaksTop(queueType,fKitType);
+            dailyStreak = PracticeDailyStreakDataStorage.getInstance().getDailyStreaksByPlayer(player,queueType,fKitType);
 
-            lore = new String[]{
-                    "",
-                    "&7在战斗中: &c{ranked_in_fights}",
-                    "&7在匹配中: &c{ranked_in_queue}",
-                    "",
-                    "&7每日连胜: &c{ranked_daily_streak}",
-                    "&c1. &7{ranked_daily_streak_1_name} &7(&c{ranked_daily_streak_1_value}&7)",
-                    "&c2. &7{ranked_daily_streak_2_name} &7(&c{ranked_daily_streak_2_value}&7)",
-                    "&c3. &7{ranked_daily_streak_3_name} &7(&c{ranked_daily_streak_3_value}&7)",
-                    "",
-                    "&c点击加入匹配队列"
-            };
         }
+
 
         switch (fKitType){
             case NO_DEBUFF -> {
                 return new ItemBuilder(Material.POTION)
                         .setData((short) 16421)
                         .setName("&a&lNo DeBuff")
-                        .setLore(getLoreInfo(player,fKitType,queueType,lore))
+                        .setLore(getLoreInfo(
+                                String.valueOf(dailyStreak!=null ? dailyStreak.getStreak() : 0),
+                                String.valueOf(queueInfos.size()!=0 ? queueInfos.get(0).getPlayers().size() : 0),
+                                String.valueOf(arenaStates.size()),
+                                dailyStreaks,
+                                lore
+                        ))
                         .addFlag(ItemFlag.HIDE_POTION_EFFECTS)
                         .addFlag(ItemFlag.HIDE_ATTRIBUTES)
                         .addFlag(ItemFlag.HIDE_DESTROYS)
@@ -102,7 +109,13 @@ public class CommunityGUIItem {
             case FFAGAME -> {
                 return new ItemBuilder(Material.FISHING_ROD)
                         .setName("&a&lFFAGAME")
-                        .setLore(getLoreInfo(player,fKitType,queueType,lore))
+                        .setLore(getLoreInfo(
+                                String.valueOf(dailyStreak!=null ? dailyStreak.getStreak() : 0),
+                                String.valueOf(queueInfos.size()!=0 ? queueInfos.get(0).getPlayers().size() : 0),
+                                String.valueOf(arenaStates.size()),
+                                dailyStreaks,
+                                lore
+                        ))
                         .toItemStack();
             }
         }
@@ -112,37 +125,29 @@ public class CommunityGUIItem {
                 .toItemStack();
     }
 
-    private static String[] getLoreInfo(Player player,FKitType fKitType, QueueType queueType, String...strings){
+    private static String[] getLoreInfo(
+            String streak,
+            String queue,
+            String fights,
+            List<DailyStreak> top,
+            String...strings
+    ){
 
         List<String> lore = new ArrayList<>();
         for (String s:strings){
 
-            if (queueType!=null && queueType.equals(QueueType.RANKED)){
-                s=s
-                        .replace("{ranked_in_fights}","0")
-                        .replace("{ranked_in_queue}","0")
-                        .replace("{ranked_daily_streak}","0")
-                        .replace("{ranked_daily_streak_1_name}","null")
-                        .replace("{ranked_daily_streak_1_value}","0")
-                        .replace("{ranked_daily_streak_2_name}","null")
-                        .replace("{ranked_daily_streak_2_value}","0")
-                        .replace("{ranked_daily_streak_3_name}","null")
-                        .replace("{ranked_daily_streak_3_value}","0")
-                ;
-            }else {
-                s=s
-                        .replace("{unranked_in_fights}","0")
-                        .replace("{unranked_in_queue}","0")
-                        .replace("{unranked_daily_streak}","0")
-                        .replace("{unranked_daily_streak_1_name}","null")
-                        .replace("{unranked_daily_streak_1_value}","0")
-                        .replace("{unranked_daily_streak_2_name}","null")
-                        .replace("{unranked_daily_streak_2_value}","0")
-                        .replace("{unranked_daily_streak_3_name}","null")
-                        .replace("{unranked_daily_streak_3_value}","0")
-                ;
-            }
-
+            s=s
+                    .replace("{in_fights}",fights) // 正在战斗
+                    .replace("{in_queue}",queue) // 正在匹配
+                    .replace("{daily_streak}", streak) // 连胜
+                    .replace("{daily_streak_1_name}",top.size()>=1?top.get(0).getName():"暂无")
+                    .replace("{daily_streak_1_value}",String.valueOf(top.size()>=1?top.get(0).getStreak():"暂无"))
+                    .replace("{daily_streak_2_name}",top.size()>=2?top.get(1).getName():"暂无")
+                    .replace("{daily_streak_2_value}",String.valueOf(top.size()>=2?top.get(1).getStreak():"暂无"))
+                    .replace("{daily_streak_3_name}",top.size()>=3?top.get(2).getName():"暂无")
+                    .replace("{daily_streak_3_value}",String.valueOf(top.size()>=3?top.get(2).getStreak():"暂无"))
+            ;
+            
             lore.add(s);
         }
 

@@ -3,6 +3,7 @@ package cn.mcarl.miars.core;
 import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cc.carm.lib.easyplugin.utils.MessageUtils;
+import cn.mcarl.miars.core.command.MiarsCommand;
 import cn.mcarl.miars.core.hooker.PAPIExpansion;
 import cn.mcarl.miars.core.listener.PlayerListener;
 import cn.mcarl.miars.core.manager.ConfigManager;
@@ -103,6 +104,9 @@ public class MiarsCore extends JavaPlugin {
 
         log("正在初始化 GUI 模块...");
         GUI.initialize(this);
+
+        log("正在注册指令...");
+        regCommand("Miars",new MiarsCommand());
 
         log("当前服务端版本 "+Bukkit.getServer().getVersion());
 

@@ -1,4 +1,4 @@
-package cn.mcarl.miars.core.utils;
+package cn.mcarl.miars.storage.utils;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.collections.ComparatorUtils;

@@ -4,6 +4,7 @@ import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.core.utils.fastboard.FastBoard;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
+import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaStateDataStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -43,17 +44,28 @@ public class ScoreBoardManager {
     private void updateBoard(FastBoard board) {
         Player p = board.getPlayer();
 
-        ArenaState state = ArenaManager.getInstance().getArenaStateByPlayer(p);
-        Player their = state.getPlayerA().equals(p.getName()) ? Bukkit.getPlayer(state.getPlayerB()) : Bukkit.getPlayer(state.getPlayerA());
+        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(p);
 
         List<String> lines = new ArrayList<>();
         board.updateTitle("&cPractice &8| &cMiars");
         lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis()));
         lines.add("");
-        lines.add("&7Fighting: &f"+their.getName());
-        lines.add("");
-        lines.add("&aYour Ping: &f"+((CraftPlayer) p).getHandle().ping+"ms");
-        lines.add("&cTheir Ping: &f"+((CraftPlayer) their).getHandle().ping+"ms");
+
+        if (state!=null){
+            if (state.getState()==2){
+                Player their = state.getPlayerA().equals(p.getName()) ? Bukkit.getPlayer(state.getPlayerB()) : Bukkit.getPlayer(state.getPlayerA());
+
+                lines.add("&7Fighting: &f"+their.getName());
+                lines.add("");
+                lines.add("&aYour Ping: &f"+((CraftPlayer) p).getHandle().ping+"ms");
+                lines.add("&cTheir Ping: &f"+((CraftPlayer) their).getHandle().ping+"ms");
+            }else if (state.getState()<2){
+                lines.add("&7Ready to start!");
+            }else if (state.getState()>2){
+                lines.add("&7Game over!");
+            }
+        }
+
         lines.add("");
         lines.add("&cplay.miars.cn");
 

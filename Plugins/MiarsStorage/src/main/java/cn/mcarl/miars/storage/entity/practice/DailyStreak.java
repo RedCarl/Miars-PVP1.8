@@ -14,6 +14,9 @@ import java.util.UUID;
 public class DailyStreak {
 
     // 玩家
+    String name;
+
+    // 玩家
     UUID uuid;
 
     // 连胜

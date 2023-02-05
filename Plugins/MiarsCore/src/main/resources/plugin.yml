@@ -13,3 +13,9 @@ depend:
   - HolographicDisplays
   - PlaceholderAPI
   - MiarsStorage
+
+commands:
+  "Miars":
+    description: "主指令"
+    aliases:
+      - miars

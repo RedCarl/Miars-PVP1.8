@@ -1,6 +1,7 @@
 package cn.mcarl.miars.core.utils;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.enums.FKitType;
 import org.bukkit.Bukkit;
@@ -11,16 +12,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @Author: carl0
@@ -256,5 +255,37 @@ public class ToolUtils {
                 itemCote
 
         );
+    }
+
+    public static void reduceXpBar (final Player p, int ticks)
+    {
+        p.setExp(1F);
+
+
+        final float division = p.getExp() / ticks;
+
+        new BukkitRunnable()
+        {
+            public void run()
+            {
+                float currentLevel = p.getExp();
+                p.setExp(currentLevel - division);
+                currentLevel = p.getExp();
+
+                // Reached 0
+                if (currentLevel <= 0)
+                    cancel();
+            }
+        }.runTaskTimer(MiarsCore.getInstance(), 0L, 1L);
+
+    }
+
+
+
+    public static Long getTheDay(){
+
+        long current = System.currentTimeMillis();
+
+        return current/(1000*3600*24)*(1000*3600*24) - TimeZone.getDefault().getRawOffset();
     }
 }

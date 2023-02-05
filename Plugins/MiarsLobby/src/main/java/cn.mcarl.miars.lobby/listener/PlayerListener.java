@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -37,5 +38,14 @@ public class PlayerListener implements Listener {
         MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(e.getPlayer());
         MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
         e.setFormat(ColorParser.parse(mRank.getPrefix()+mRank.getNameColor()+"%1$s&f: %2$s"));
+    }
+
+    @EventHandler
+    public void FoodLevelChangeEvent(FoodLevelChangeEvent e){
+        if (e.getEntity() instanceof Player p){
+            // 判断玩家是否在安全区外面
+            p.setFoodLevel(20);
+            e.setCancelled(true);
+        }
     }
 }

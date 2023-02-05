@@ -1,6 +1,6 @@
 package cn.mcarl.miars.practice.manager;
 
-import cn.mcarl.miars.core.utils.CustomSort;
+import cn.mcarl.miars.storage.utils.CustomSort;
 import cn.mcarl.miars.core.utils.ItemBuilder;
 import cn.mcarl.miars.practice.conf.PluginConfig;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
@@ -26,10 +26,10 @@ public class PlayerInventoryManager {
         List<FKit> list = new ArrayList<>(FKitDataStorage.getInstance().getFKitData(p, FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get())));
         CustomSort.sort(list,"power",false);
 
+        p.getInventory().clear();
         for (int i = 0; i <= 8; i++) {
             if (list.size()>=i+1){
                 FKit fKit = list.get(i);
-                p.getInventory().clear();
                 p.getInventory().setItem(i,new ItemBuilder(Material.BOOK)
                         .setName("&7"+fKit.getName()+" &c[Kit]")
                         .addFlag(ItemFlag.HIDE_UNBREAKABLE)

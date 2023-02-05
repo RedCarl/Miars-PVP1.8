@@ -2,6 +2,7 @@ package cn.mcarl.miars.storage.entity.practice;
 
 import cn.mcarl.miars.storage.entity.ffa.FInventoryByte;
 import cn.mcarl.miars.storage.enums.FKitType;
+import cn.mcarl.miars.storage.enums.QueueType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,5 +41,8 @@ public class ArenaState {
 
     // 游戏类型
     private FKitType fKitType;
+
+    // 匹配类型
+    private QueueType queueType;
 
 }

@@ -3,6 +3,7 @@ package cn.mcarl.miars.storage.storage.data.practice;
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.enums.FKitType;
+import cn.mcarl.miars.storage.enums.QueueType;
 
 import java.util.List;
 
@@ -40,6 +41,30 @@ public class PracticeGameDataStorage {
     public ArenaState getArenaDataByEndTime(Long endTime){
         try {
             return MiarsStorage.getMySQLStorage().queryPracticeGameDataByEndTime(endTime);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ArenaState getArenaDataById(Integer Id){
+        try {
+            return MiarsStorage.getMySQLStorage().queryPracticeGameDataById(Id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<ArenaState> getArenaDataByWin(String name){
+        try {
+            return MiarsStorage.getMySQLStorage().queryPracticeGameDataByWin(name);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<ArenaState> getArenaDataByDayWin(String name, FKitType fKitType, QueueType queueType, Long time){
+        try {
+            return MiarsStorage.getMySQLStorage().queryPracticeGameDataByDayWin(name,fKitType,queueType, time);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
