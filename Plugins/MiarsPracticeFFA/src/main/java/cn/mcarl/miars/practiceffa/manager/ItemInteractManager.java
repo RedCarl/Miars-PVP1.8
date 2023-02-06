@@ -1,6 +1,7 @@
 package cn.mcarl.miars.practiceffa.manager;
 
 import cn.mcarl.miars.core.MiarsCore;
+import cn.mcarl.miars.core.ui.RanksGUI;
 import cn.mcarl.miars.practiceffa.ui.SelectFKitTypeGUI;
 import cn.mcarl.miars.practiceffa.ui.SelectPracticeGUI;
 import cn.mcarl.miars.storage.enums.QueueType;
@@ -32,6 +33,9 @@ public class ItemInteractManager {
             }
             case "SelectPracticeGUI" -> {
                 SelectPracticeGUI.open(p, QueueType.valueOf(nbtItem.getString("queue_type")));
+            }
+            case "RanksGUI" -> {
+                RanksGUI.open(p);
             }
         }
 

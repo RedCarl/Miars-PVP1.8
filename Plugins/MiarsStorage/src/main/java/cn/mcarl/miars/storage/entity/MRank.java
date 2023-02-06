@@ -51,6 +51,11 @@ public class MRank {
     private String group;
 
     /**
+     * 描述
+     */
+    private String describe;
+
+    /**
      * 更新时间
      */
     private Date updateTime;

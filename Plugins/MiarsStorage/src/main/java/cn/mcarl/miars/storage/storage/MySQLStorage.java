@@ -82,6 +82,7 @@ public class MySQLStorage {
 							"`nameColor` varchar(255) DEFAULT NULL",// 名字颜色
 							"`permissions` varchar(255) DEFAULT NULL",// 权限
 							"`group` varchar(255) DEFAULT NULL",// 权限组
+							"`describe` longtext", // 描述
 							"`update_time` DATE", // 更新时间
 							"`create_time` DATE", // 创建时间
 							"PRIMARY KEY (`id`)", // 主键
@@ -214,8 +215,8 @@ public class MySQLStorage {
 	 */
 	public void replaceMRankData(@NotNull MRank data) throws Exception {
 		getSQLManager().createReplace(getRankDataTable().getTableName())
-				.setColumnNames("name", "prefix", "suffix", "nameColor", "permissions", "group", "update_time", "create_time")
-				.setParams(data.getName(), data.getPrefix(), data.getSuffix(), data.getNameColor(), data.getPermissions(), data.getGroup(), data.getUpdateTime(),data.getCreateTime())
+				.setColumnNames("name", "prefix", "suffix", "nameColor", "permissions", "group", "describe", "update_time", "create_time")
+				.setParams(data.getName(), data.getPrefix(), data.getSuffix(), data.getNameColor(), data.getPermissions(), data.getGroup(), data.getDescribe(), data.getUpdateTime(),data.getCreateTime())
 				.execute();
 	}
 
@@ -227,7 +228,7 @@ public class MySQLStorage {
 	public MRank queryMRankDataByName(@NotNull String name) {
 		return getSQLManager().createQuery()
 				.inTable(getRankDataTable().getTableName())
-				.selectColumns("id", "name", "prefix", "suffix", "nameColor", "permissions", "group", "update_time", "create_time")
+				.selectColumns("id", "name", "prefix", "suffix", "nameColor", "permissions", "group", "describe", "update_time", "create_time")
 				.addCondition("name", name)
 				.build()
 				.execute(
@@ -242,6 +243,7 @@ public class MySQLStorage {
 								data.setNameColor(result.getString("nameColor"));
 								data.setPermissions(result.getString("permissions"));
 								data.setGroup(result.getString("group"));
+								data.setDescribe(result.getString("describe"));
 								data.setUpdateTime(result.getDate("update_time"));
 								data.setCreateTime(result.getDate("create_time"));
 								return data;
@@ -260,7 +262,7 @@ public class MySQLStorage {
 	public List<MRank> queryRankDataList() {
 		return getSQLManager().createQuery()
 				.inTable(getRankDataTable().getTableName())
-				.selectColumns("id", "name", "prefix", "suffix", "nameColor", "permissions", "group", "update_time", "create_time")
+				.selectColumns("id", "name", "prefix", "suffix", "nameColor", "permissions", "group", "describe", "update_time", "create_time")
 				.build()
 				.execute(
 						(query) -> {
@@ -276,6 +278,7 @@ public class MySQLStorage {
 								data.setNameColor(result.getString("nameColor"));
 								data.setPermissions(result.getString("permissions"));
 								data.setGroup(result.getString("group"));
+								data.setDescribe(result.getString("describe"));
 								data.setUpdateTime(result.getDate("update_time"));
 								data.setCreateTime(result.getDate("create_time"));
 								datas.add(data);

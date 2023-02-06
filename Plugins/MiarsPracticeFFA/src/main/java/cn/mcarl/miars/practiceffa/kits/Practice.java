@@ -20,7 +20,7 @@ public class Practice {
 
         itemCote.put(0,
                 new ItemBuilder(Material.DIAMOND_SWORD)
-                        .setName("§c排位模式 §7(右键选择)")
+                        .setName("&c排位模式 &7(右键选择)")
                         .addFlag(ItemFlag.HIDE_UNBREAKABLE)
                         .addFlag(ItemFlag.HIDE_ENCHANTS)
                         .setNbtBoolean("stopClick",true)
@@ -31,7 +31,7 @@ public class Practice {
         );
         itemCote.put(1,
                 new ItemBuilder(Material.IRON_SWORD)
-                        .setName("§c匹配模式 §7(右键选择)")
+                        .setName("&c匹配模式 &7(右键选择)")
                         .addFlag(ItemFlag.HIDE_UNBREAKABLE)
                         .addFlag(ItemFlag.HIDE_ENCHANTS)
                         .setNbtBoolean("stopClick",true)
@@ -42,7 +42,7 @@ public class Practice {
         );
         itemCote.put(2,
                 new ItemBuilder(Material.GOLD_SWORD)
-                        .setName("§c团队模式 §7(右键选择)")
+                        .setName("&c团队模式 &7(右键选择)")
                         .addFlag(ItemFlag.HIDE_UNBREAKABLE)
                         .addFlag(ItemFlag.HIDE_ENCHANTS)
                         .setNbtBoolean("stopClick",true)
@@ -51,7 +51,7 @@ public class Practice {
         );
         itemCote.put(3,
                 new ItemBuilder(Material.WOOD_SWORD)
-                        .setName("§c人机模式 §7(右键选择)")
+                        .setName("&c人机模式 &7(右键选择)")
                         .addFlag(ItemFlag.HIDE_UNBREAKABLE)
                         .addFlag(ItemFlag.HIDE_ENCHANTS)
                         .setNbtBoolean("stopClick",true)
@@ -60,16 +60,25 @@ public class Practice {
         );
         itemCote.put(5,
                 new ItemBuilder(Material.BOOK)
-                        .setName("§c编辑模式 §7(右键选择)")
+                        .setName("&c编辑模式 &7(右键打开)")
                         .addFlag(ItemFlag.HIDE_UNBREAKABLE)
                         .addFlag(ItemFlag.HIDE_ENCHANTS)
                         .setNbtBoolean("stopClick",true)
                         .setNbtString("gui","SelectFKitTypeGUI")
                         .toItemStack()
         );
+        itemCote.put(7,
+                new ItemBuilder(Material.NAME_TAG)
+                        .setName("&c头衔管理 &7(右键打开)")
+                        .addFlag(ItemFlag.HIDE_UNBREAKABLE)
+                        .addFlag(ItemFlag.HIDE_ENCHANTS)
+                        .setNbtBoolean("stopClick",true)
+                        .setNbtString("gui","RanksGUI")
+                        .toItemStack()
+        );
         itemCote.put(8,
                 new ItemBuilder(Material.BED)
-                        .setName("§c返回大厅 §7(右键选择)")
+                        .setName("&c返回大厅 &7(右键返回)")
                         .addFlag(ItemFlag.HIDE_UNBREAKABLE)
                         .addFlag(ItemFlag.HIDE_ENCHANTS)
                         .setNbtBoolean("stopClick",true)

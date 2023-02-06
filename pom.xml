@@ -19,6 +19,7 @@
         <module>Plugins/MiarsPractice</module>
         <module>Plugins/MiarsPrison</module>
         <module>Plugins/MiarsFaction</module>
+        <module>Plugins/MiarsPay</module>
     </modules>
 
     <properties>

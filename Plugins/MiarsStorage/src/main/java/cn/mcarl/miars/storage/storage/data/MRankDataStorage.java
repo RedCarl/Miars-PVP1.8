@@ -15,11 +15,16 @@ public class MRankDataStorage {
     public static MRankDataStorage getInstance() {
         return instance;
     }
+    public MRankDataStorage(){
+        for (MRank m:MiarsStorage.getMySQLStorage().queryRankDataList()){
+            dataMap.put(m.getName(),m);
+        }
+    }
 
     private final Map<String, MRank> dataMap = new HashMap<>();
 
     /**
-     * 存入Rank数据
+     * 存入rank数据
      */
     public void putMRank(MRank mRank){
         try {
@@ -57,6 +62,14 @@ public class MRankDataStorage {
 
         return dataMap.get(rank);
 
+    }
+
+    /**
+     * 获取所有rank数据
+     * @return
+     */
+    public Map<String,MRank> getMRankList(){
+        return dataMap;
     }
 
     /**
