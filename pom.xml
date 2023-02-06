@@ -17,6 +17,7 @@
         <module>Plugins/MiarsLobby</module>
         <module>Plugins/MiarsStorage</module>
         <module>Plugins/MiarsPractice</module>
+        <module>Plugins/MiarsPrison</module>
     </modules>
 
     <properties>
@@ -195,6 +196,11 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.8.11</version>
+        </dependency>
     </dependencies>
 
     <build>

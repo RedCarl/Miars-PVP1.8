@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>MiarsPractice</artifactId>
+    <artifactId>MiarsPrison</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -18,21 +18,4 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>cn.mcarl</groupId>
-            <artifactId>MiarsCore</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-    </build>
 </project>
