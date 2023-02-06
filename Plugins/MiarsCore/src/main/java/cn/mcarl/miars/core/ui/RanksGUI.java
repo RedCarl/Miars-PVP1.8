@@ -36,18 +36,20 @@ public class RanksGUI extends GUI {
 
         int i=0;
         for (String s:mRankMap.keySet()){
-            if (mPlayer.getRanks().contains(s)){
+            if (!s.equals("default")){
+                if (mPlayer.getRanks().contains(s)){
 
-                if (mPlayer.getRank().equals(s)){
-                    setSelectRankItem(mRankMap.get(s));
+                    if (mPlayer.getRank().equals(s)){
+                        setItem(i, setSelectRankItem(mRankMap.get(s)));
+                    }else {
+                        setItem(i, setRankItem(mRankMap.get(s)));
+                    }
+
                 }else {
-                    setRankItem(mRankMap.get(s));
+                    setItem(i, setUnlockRankItem(mRankMap.get(s)));
                 }
-
-            }else {
-                setUnlockRankItem(mRankMap.get(s));
+                i++;
             }
-            i++;
         }
 
     }

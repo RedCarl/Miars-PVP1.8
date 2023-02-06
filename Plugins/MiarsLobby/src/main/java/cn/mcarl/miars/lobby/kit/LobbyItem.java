@@ -1,3 +1,5 @@
+package cn.mcarl.miars.lobby.kit;
+
 import cn.mcarl.miars.core.utils.ItemBuilder;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.enums.FKitType;

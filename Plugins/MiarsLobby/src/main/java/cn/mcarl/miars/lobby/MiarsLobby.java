@@ -7,6 +7,7 @@ import cn.mcarl.miars.lobby.listener.CitizensListener;
 import cn.mcarl.miars.lobby.listener.PlayerListener;
 import cn.mcarl.miars.lobby.manager.CitizensManager;
 import cn.mcarl.miars.lobby.manager.ConfigManager;
+import cn.mcarl.miars.lobby.manager.ScoreBoardManager;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -40,6 +41,9 @@ public class MiarsLobby extends JavaPlugin {
 
         log("正在初始化世界NPC...");
         CitizensManager.getInstance().init(PluginConfig.LOBBY_SITE.LOCATION.get().getWorld());
+
+        log("正在计分板...");
+        ScoreBoardManager.getInstance().init();
 
         log("加载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 

@@ -4,6 +4,7 @@ import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.MRank;
 import cn.mcarl.miars.storage.entity.MRank;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.Date;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ public class MRankDataStorage {
         for (MRank m:MiarsStorage.getMySQLStorage().queryRankDataList()){
             dataMap.put(m.getName(),m);
         }
+        tick();
     }
 
     private final Map<String, MRank> dataMap = new HashMap<>();
@@ -77,5 +79,16 @@ public class MRankDataStorage {
      */
     public void clearUserCacheData(Player player){
         dataMap.remove(player.getUniqueId().toString());
+    }
+
+    public void tick(){
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (MRank m:MiarsStorage.getMySQLStorage().queryRankDataList()){
+                    dataMap.put(m.getName(),m);
+                }
+            }
+        }.runTaskTimerAsynchronously(MiarsStorage.getInstance(),20,20);
     }
 }

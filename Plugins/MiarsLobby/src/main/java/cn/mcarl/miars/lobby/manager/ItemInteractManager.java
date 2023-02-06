@@ -1,4 +1,4 @@
-package cn.mcarl.miars.core.manager;
+package cn.mcarl.miars.lobby.manager;
 
 import cn.mcarl.miars.core.ui.RanksGUI;
 import de.tr7zw.changeme.nbtapi.NBTItem;

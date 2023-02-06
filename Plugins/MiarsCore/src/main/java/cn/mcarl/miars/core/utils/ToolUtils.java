@@ -288,4 +288,28 @@ public class ToolUtils {
 
         return current/(1000*3600*24)*(1000*3600*24) - TimeZone.getDefault().getRawOffset();
     }
+
+
+    /**
+     * 自动初始化该玩家装备
+     * @param p
+     */
+    public static void autoEquip(Player p,FInventory fInv){
+        p.getInventory().clear();
+
+        Inventory inv = p.getInventory();
+
+        inv.setItem(39,fInv.getHelmet());
+        inv.setItem(38,fInv.getChestPlate());
+        inv.setItem(37,fInv.getLeggings());
+        inv.setItem(36,fInv.getBoots());
+
+        for (Integer i:fInv.getItemCote().keySet()){
+            inv.setItem(i,fInv.getItemCote().get(i));
+        }
+
+        for (Integer i:fInv.getBackpack().keySet()){
+            inv.setItem(i,fInv.getBackpack().get(i));
+        }
+    }
 }
