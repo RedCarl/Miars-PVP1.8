@@ -18,6 +18,7 @@
         <module>Plugins/MiarsStorage</module>
         <module>Plugins/MiarsPractice</module>
         <module>Plugins/MiarsPrison</module>
+        <module>Plugins/MiarsFaction</module>
     </modules>
 
     <properties>

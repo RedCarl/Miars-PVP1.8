@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>MiarsPrison</artifactId>
+    <artifactId>MiarsFaction</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -35,4 +35,5 @@
             </resource>
         </resources>
     </build>
+
 </project>
