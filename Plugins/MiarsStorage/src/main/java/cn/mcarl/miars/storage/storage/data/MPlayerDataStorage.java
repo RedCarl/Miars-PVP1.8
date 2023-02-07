@@ -2,6 +2,7 @@ package cn.mcarl.miars.storage.storage.data;
 
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.MPlayer;
+import cn.mcarl.miars.storage.entity.MRank;
 import org.bukkit.entity.Player;
 
 import java.sql.Date;
@@ -65,8 +66,28 @@ public class MPlayerDataStorage {
     /**
      * 移除玩家数据
      */
+    public void checkMPlayer(Player player){
+        MPlayer mPlayer = getMPlayer(player);
+        // 检查头衔是否拥有
+        for (MRank mRank:MRankDataStorage.getInstance().getMRankList().values()){
+            if (player.hasPermission(mRank.getPermissions())){
+                if (!mPlayer.getRanks().contains(mRank.getName())){
+                    mPlayer.getRanks().add(mRank.getName());
+                }
+            }
+        }
+        putMPlayer(mPlayer);
+    }
+    /**
+     *
+     * 移除玩家数据
+     */
     public void clearUserCacheData(Player player){
         dataMap.remove(player.getUniqueId().toString());
+    }
+
+    public void reload(){
+        dataMap.clear();
     }
 
 }

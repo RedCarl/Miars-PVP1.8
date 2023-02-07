@@ -1,5 +1,6 @@
 package cn.mcarl.miars.practice.command;
 
+import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.practice.conf.PluginConfig;
 import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.enums.FKitType;
@@ -44,25 +45,31 @@ public class ArenaCreateCommand implements CommandExecutor, TabCompleter {
                     case "setName" -> {
                         arena.setName(args[2]);
                         data.put(arena.getName(),arena);
+                        player.sendMessage(ColorParser.parse("&7["+arena.getName()+"] 成功设置编号为 "+arena.getName()));
                     }
                     case "setDisplayName" -> {
                         arena.setDisplayName(args[2]);
                         data.put(arena.getName(),arena);
+                        player.sendMessage(ColorParser.parse("&7["+arena.getName()+"] 成功设置名称为 "+arena.getDisplayName()));
                     }
                     case "build" -> {
                         arena.setBuild(Boolean.valueOf(args[2]));
                         data.put(arena.getName(),arena);
+                        player.sendMessage(ColorParser.parse("&7["+arena.getName()+"] 成功设置建筑模式为 "+arena.getBuild()));
                     }
                     case "setLoc1" -> {
                         arena.setLoc1(player.getLocation());
                         data.put(arena.getName(),arena);
+                        player.sendMessage(ColorParser.parse("&7["+arena.getName()+"] 成功1号玩家位置 "+arena.getLoc1().toString()));
                     }
                     case "setLoc2" -> {
                         arena.setLoc2(player.getLocation());
                         data.put(arena.getName(),arena);
+                        player.sendMessage(ColorParser.parse("&7["+arena.getName()+"] 成功2号玩家位置 "+arena.getLoc2().toString()));
                     }
                     case "save" -> {
                         PracticeArenaDataStorage.getInstance().putArenaData(data.get(arena.getName()));
+                        player.sendMessage(ColorParser.parse("&7["+arena.getName()+"] 保存成功！"));
                     }
                 }
 
@@ -91,6 +98,7 @@ public class ArenaCreateCommand implements CommandExecutor, TabCompleter {
                         allCompletes.add("build");
                         allCompletes.add("setLoc1");
                         allCompletes.add("setLoc2");
+                        allCompletes.add("save");
                         break;
                     }
                 }

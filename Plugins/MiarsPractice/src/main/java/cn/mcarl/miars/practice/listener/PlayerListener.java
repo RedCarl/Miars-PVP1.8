@@ -21,7 +21,6 @@ import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaStateDataStorag
 import cn.mcarl.miars.storage.storage.data.practice.PracticeDailyStreakDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeGameDataStorage;
 import cn.mcarl.miars.storage.utils.BukkitUtils;
-import com.google.gson.Gson;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -48,7 +47,9 @@ public class PlayerListener implements Listener {
 
         ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player);
         if (state==null){
-            player.kickPlayer("&c意外的错误");
+            if (!player.hasPermission("miars.admin")){
+                player.kickPlayer("&c意外的错误");
+            }
         }else {
 
             new BukkitRunnable() {
@@ -307,7 +308,7 @@ public class PlayerListener implements Listener {
                     if (player.getGameMode().equals(GameMode.SURVIVAL)){
                         if (hashMap.containsKey(player.getUniqueId())){
                             if (!((System.currentTimeMillis()-hashMap.get(player.getUniqueId()))>=12000)){
-                                //player.sendMessage(ColorParser.parse("&e&l提示 | &7您暂时无法使用 &c末影珍珠 &7还需要等待 " + ToolUtils.getDate((15000-(System.currentTimeMillis()-hashMap.get(player.getUniqueId())))/1000) + " &7才能使用。"));
+                                //player.sendMessage(ColorParser.parse("&7您暂时无法使用 &c末影珍珠 &7还需要等待 " + ToolUtils.getDate((15000-(System.currentTimeMillis()-hashMap.get(player.getUniqueId())))/1000) + " &7才能使用。"));
                                 player.playSound(player.getLocation(), Sound.VILLAGER_NO,1,1);
                                 e.setCancelled(true);
                             }

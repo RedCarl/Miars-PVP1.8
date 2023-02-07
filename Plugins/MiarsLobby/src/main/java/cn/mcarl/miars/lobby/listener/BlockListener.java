@@ -18,7 +18,7 @@ public class BlockListener implements Listener {
     public void BlockPlaceEvent(BlockPlaceEvent e) {
         if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
             e.setCancelled(true);
-            e.getPlayer().sendMessage(ColorParser.parse("&e&l提示 | &7很抱歉，这里不适合您这样做，换个地方试试吧。"));
+            e.getPlayer().sendMessage(ColorParser.parse("&7很抱歉，这里不适合您这样做，换个地方试试吧。"));
 
             Location location = e.getBlockPlaced().getLocation().add(0.5, 1.5, 0.5);
 
@@ -32,7 +32,7 @@ public class BlockListener implements Listener {
     public void BlockBreakEvent(BlockBreakEvent e) {
         if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
             e.setCancelled(true);
-            e.getPlayer().sendMessage(ColorParser.parse("&e&l提示 | &7很抱歉,这里不适合您这样做,换个地方试试吧。"));
+            e.getPlayer().sendMessage(ColorParser.parse("&7很抱歉,这里不适合您这样做,换个地方试试吧。"));
 
             Location location = e.getBlock().getLocation().add(0.5, 1.5, 0.5);
 

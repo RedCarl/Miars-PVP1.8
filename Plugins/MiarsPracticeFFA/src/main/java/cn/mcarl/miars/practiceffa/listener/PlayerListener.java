@@ -162,7 +162,7 @@ public class PlayerListener implements Listener {
                             if (System.currentTimeMillis()-hashMap.get(player.getUniqueId())>=15000){
                                 hashMap.put(player.getUniqueId(),System.currentTimeMillis());
                             }else {
-                                player.sendMessage(ColorParser.parse("&e&l提示 | &7您暂时无法使用 &c末影珍珠 &7还需要等待 " + ToolUtils.getDate((15000-(System.currentTimeMillis()-hashMap.get(player.getUniqueId())))/1000) + " &7才能使用。"));
+                                player.sendMessage(ColorParser.parse("&7您暂时无法使用 &c末影珍珠 &7还需要等待 " + ToolUtils.getDate((15000-(System.currentTimeMillis()-hashMap.get(player.getUniqueId())))/1000) + " &7才能使用。"));
                                 player.playSound(player.getLocation(), Sound.VILLAGER_NO,1,1);
                                 e.setCancelled(true);
                             }

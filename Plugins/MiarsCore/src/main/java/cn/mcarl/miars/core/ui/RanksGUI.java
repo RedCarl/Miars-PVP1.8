@@ -82,7 +82,7 @@ public class RanksGUI extends GUI {
             public void onClick(Player clicker, ClickType type) {
                 mPlayer.setRank(mRank.getName());
                 MPlayerDataStorage.getInstance().putMPlayer(mPlayer);
-                clicker.sendMessage(ColorParser.parse("&7您的头衔已经更换为 "+mRank.getPrefix()+" 请注意查看。"));
+                clicker.sendMessage(ColorParser.parse("&7您的头衔已经更换为 "+mRank.getPrefix()+" &7请注意查看。"));
 
                 load();
                 updateView();

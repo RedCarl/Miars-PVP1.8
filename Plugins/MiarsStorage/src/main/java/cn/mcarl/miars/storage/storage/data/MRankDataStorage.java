@@ -20,7 +20,6 @@ public class MRankDataStorage {
         for (MRank m:MiarsStorage.getMySQLStorage().queryRankDataList()){
             dataMap.put(m.getName(),m);
         }
-        tick();
     }
 
     private final Map<String, MRank> dataMap = new HashMap<>();
@@ -81,14 +80,9 @@ public class MRankDataStorage {
         dataMap.remove(player.getUniqueId().toString());
     }
 
-    public void tick(){
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (MRank m:MiarsStorage.getMySQLStorage().queryRankDataList()){
-                    dataMap.put(m.getName(),m);
-                }
-            }
-        }.runTaskTimerAsynchronously(MiarsStorage.getInstance(),20,20);
+    public void reload(){
+        for (MRank m:MiarsStorage.getMySQLStorage().queryRankDataList()){
+            dataMap.put(m.getName(),m);
+        }
     }
 }

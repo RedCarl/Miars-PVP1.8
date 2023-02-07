@@ -6,3 +6,10 @@ authors:
   - Red_Carl
 
 api-version: 1.8
+
+
+commands:
+  "Storage":
+    description: "主指令"
+    aliases:
+      - storage

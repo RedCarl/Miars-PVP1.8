@@ -29,7 +29,7 @@ public class PlayerListener implements Listener {
     ev.setCancelled(true);
     ev.setCancelServer(kickTo);
 
-    player.sendMessage(ColorParser.parse("&e&l提示 | &7因为您所在服务器重启维护，已经将您移动至大厅。"));
+    player.sendMessage(ColorParser.parse("&7因为您所在服务器重启维护，已经将您移动至大厅。"));
   }
 
   private ServerInfo originOfKick(ProxiedPlayer player) {

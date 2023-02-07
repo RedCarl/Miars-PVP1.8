@@ -137,7 +137,7 @@ public class ToolUtils {
             }
         }
         if (varOn){
-            player.sendMessage(ColorParser.parse("&e&l提示 | &7您的背包没有多余的位置来存放物品,请整理背包后再试!"));
+            player.sendMessage(ColorParser.parse("&7您的背包没有多余的位置来存放物品,请整理背包后再试!"));
             player.playSound(player.getLocation(), Sound.VILLAGER_NO,1,1);
             return true;
         }

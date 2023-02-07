@@ -19,7 +19,7 @@ public class PlayerListener implements Listener {
         Player player = e.getPlayer();
 
         // 初始化玩家数据
-        MPlayerDataStorage.getInstance().getMPlayer(player);
+        MPlayerDataStorage.getInstance().checkMPlayer(player);
 
         player.setGameMode(GameMode.SURVIVAL);
 

@@ -49,6 +49,7 @@ public class ScoreBoardManager {
         lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis()));
         lines.add("");
         lines.add("");
+        lines.add("");
         lines.add("&cplay.miars.cn");
 
         board.updateLines(ColorParser.parse(lines));

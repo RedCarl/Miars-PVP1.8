@@ -21,7 +21,7 @@ public class BlockListener implements Listener {
         if (FFAUtil.isItemRange(e.getBlock().getLocation(),PluginConfig.FFA_SITE.LOCATION.get(),(PluginConfig.FFA_SITE.RADIUS.get()*6))){
             if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
                 e.setCancelled(true);
-                e.getPlayer().sendMessage(ColorParser.parse("&e&l提示 | &7很抱歉，这里不适合您这样做，换个地方试试吧。"));
+                e.getPlayer().sendMessage(ColorParser.parse("&7很抱歉，这里不适合您这样做，换个地方试试吧。"));
 
                 Location location = e.getBlockPlaced().getLocation().add(0.5, 1.5, 0.5);
 
@@ -37,7 +37,7 @@ public class BlockListener implements Listener {
         if (FFAUtil.isItemRange(e.getBlock().getLocation(), PluginConfig.FFA_SITE.LOCATION.get(), (PluginConfig.FFA_SITE.RADIUS.get()*6))){
             if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
                 e.setCancelled(true);
-                e.getPlayer().sendMessage(ColorParser.parse("&e&l提示 | &7很抱歉,这里不适合您这样做,换个地方试试吧。"));
+                e.getPlayer().sendMessage(ColorParser.parse("&7很抱歉,这里不适合您这样做,换个地方试试吧。"));
 
                 Location location = e.getBlock().getLocation().add(0.5, 1.5, 0.5);
 

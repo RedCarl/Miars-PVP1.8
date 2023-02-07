@@ -1,6 +1,7 @@
 package cn.mcarl.miars.storage;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.storage.command.StorageCommand;
 import cn.mcarl.miars.storage.manager.ConfigManager;
 import cn.mcarl.miars.storage.storage.MySQLStorage;
 import cn.mcarl.miars.storage.storage.RedisStorage;
@@ -43,6 +44,9 @@ public class MiarsStorage extends JavaPlugin {
         log("初始化存储方式...");
         getMySQLStorage().initialize();
         getRedisStorage().initialize();
+
+        log("注册指令...");
+        regCommand("Storage", new StorageCommand());
 
         log("加载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 
