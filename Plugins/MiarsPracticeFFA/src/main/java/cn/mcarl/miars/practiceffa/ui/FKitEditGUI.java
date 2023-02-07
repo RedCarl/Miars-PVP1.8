@@ -4,6 +4,7 @@ import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
 import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.core.utils.GUIUtils;
 import cn.mcarl.miars.core.utils.ItemBuilder;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.entity.ffa.FKit;
@@ -73,7 +74,7 @@ public class FKitEditGUI extends GUI {
             });
         }
 
-        setItem(new GUIItem(CommunityGUIItem.getLineItem()),36,37,38,39,40,41,42,43,44);
+        setItem(new GUIItem(GUIUtils.getLineItem()),36,37,38,39,40,41,42,43,44);
 
         // 保存
         setItem(53,new GUIItem(

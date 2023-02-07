@@ -4,6 +4,7 @@ import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
 import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.core.utils.GUIUtils;
 import cn.mcarl.miars.practiceffa.MiarsPracticeFFA;
 import cn.mcarl.miars.practiceffa.kits.FFAGame;
 import cn.mcarl.miars.practiceffa.kits.NoDeBuff;
@@ -52,7 +53,7 @@ public class SelectPracticeGUI extends GUI {
         }.runTaskTimerAsynchronously(MiarsPracticeFFA.getInstance(),0,20L);
 
 
-        setItem(8,new GUIItem(CommunityGUIItem.getCancelItem()){
+        setItem(8,new GUIItem(GUIUtils.getCancelItem()){
             @Override
             public void onClick(Player clicker, ClickType type) {
                 player.closeInventory();

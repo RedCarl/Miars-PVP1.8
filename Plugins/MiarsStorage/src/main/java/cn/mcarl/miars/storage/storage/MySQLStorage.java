@@ -83,6 +83,7 @@ public class MySQLStorage {
 							"`permissions` varchar(255) DEFAULT NULL",// 权限
 							"`group` varchar(255) DEFAULT NULL",// 权限组
 							"`describe` longtext", // 描述
+							"`power` int(255) DEFAULT NULL", // 权重
 							"`update_time` DATE", // 更新时间
 							"`create_time` DATE", // 创建时间
 							"PRIMARY KEY (`id`)", // 主键
@@ -208,27 +209,17 @@ public class MySQLStorage {
 				);
 	}
 
-	/**
-	 * 保存头衔数据
-	 * @param data
-	 * @throws Exception
-	 */
 	public void replaceMRankData(@NotNull MRank data) throws Exception {
 		getSQLManager().createReplace(getRankDataTable().getTableName())
-				.setColumnNames("name", "prefix", "suffix", "nameColor", "permissions", "group", "describe", "update_time", "create_time")
-				.setParams(data.getName(), data.getPrefix(), data.getSuffix(), data.getNameColor(), data.getPermissions(), data.getGroup(), data.getDescribe(), data.getUpdateTime(),data.getCreateTime())
+				.setColumnNames("name", "prefix", "suffix", "nameColor", "permissions", "group", "describe", "power", "update_time", "create_time")
+				.setParams(data.getName(), data.getPrefix(), data.getSuffix(), data.getNameColor(), data.getPermissions(), data.getGroup(), data.getDescribe(), data.getPower(), data.getUpdateTime(),data.getCreateTime())
 				.execute();
 	}
 
-	/**
-	 * 按名称查询头衔数据
-	 * @param name
-	 * @return
-	 */
 	public MRank queryMRankDataByName(@NotNull String name) {
 		return getSQLManager().createQuery()
 				.inTable(getRankDataTable().getTableName())
-				.selectColumns("id", "name", "prefix", "suffix", "nameColor", "permissions", "group", "describe", "update_time", "create_time")
+				.selectColumns("id", "name", "prefix", "suffix", "nameColor", "permissions", "group", "describe", "power", "update_time", "create_time")
 				.addCondition("name", name)
 				.build()
 				.execute(
@@ -244,6 +235,7 @@ public class MySQLStorage {
 								data.setPermissions(result.getString("permissions"));
 								data.setGroup(result.getString("group"));
 								data.setDescribe(result.getString("describe"));
+								data.setPower(result.getInt("power"));
 								data.setUpdateTime(result.getDate("update_time"));
 								data.setCreateTime(result.getDate("create_time"));
 								return data;
@@ -254,15 +246,10 @@ public class MySQLStorage {
 				);
 	}
 
-
-	/**
-	 * 查询数据库中所有的头衔数据
-	 * @return
-	 */
 	public List<MRank> queryRankDataList() {
 		return getSQLManager().createQuery()
 				.inTable(getRankDataTable().getTableName())
-				.selectColumns("id", "name", "prefix", "suffix", "nameColor", "permissions", "group", "describe", "update_time", "create_time")
+				.selectColumns("id", "name", "prefix", "suffix", "nameColor", "permissions", "group", "describe", "power", "update_time", "create_time")
 				.build()
 				.execute(
 						(query) -> {
@@ -279,6 +266,7 @@ public class MySQLStorage {
 								data.setPermissions(result.getString("permissions"));
 								data.setGroup(result.getString("group"));
 								data.setDescribe(result.getString("describe"));
+								data.setPower(result.getInt("power"));
 								data.setUpdateTime(result.getDate("update_time"));
 								data.setCreateTime(result.getDate("create_time"));
 								datas.add(data);
@@ -290,12 +278,6 @@ public class MySQLStorage {
 				);
 	}
 
-	/**
-	 * 保存用户信息
-	 *
-	 * @param data
-	 * @throws Exception
-	 */
 	public void replaceFPlayerData(@NotNull FPlayer data) throws Exception {
 		getSQLManager().createReplace(getFPlayerDataTable().getTableName())
 				.setColumnNames("uuid", "kills_count", "death_count", "rank_score", "update_time", "create_time")
@@ -303,12 +285,6 @@ public class MySQLStorage {
 				.execute();
 	}
 
-	/**
-	 * 根据UUID查询用户信息
-	 *
-	 * @param uuid
-	 * @return
-	 */
 	public FPlayer queryFPlayerDataByUUID(@NotNull String uuid) {
 		return getSQLManager().createQuery()
 				.inTable(getFPlayerDataTable().getTableName())
@@ -334,12 +310,6 @@ public class MySQLStorage {
 				);
 	}
 
-	/**
-	 * 更新或者插入套件数据
-	 *
-	 * @param data
-	 * @throws Exception
-	 */
 	public void replaceFKitData(@NotNull FKit data) throws Exception {
 		getSQLManager().createReplace(getFKitDataTable().getTableName())
 				.setColumnNames("id","uuid", "type", "name", "inventory", "power", "update_time", "create_time")
@@ -347,11 +317,6 @@ public class MySQLStorage {
 				.execute();
 	}
 
-	/**
-	 * 根据条件查询该玩家的套件
-	 *
-	 * @return
-	 */
 	public List<FKit> queryFKitDataList(@NotNull UUID uuid, FKitType type) {
 		return getSQLManager().createQuery()
 				.inTable(getFKitDataTable().getTableName())
@@ -452,6 +417,7 @@ public class MySQLStorage {
 						((exception, sqlAction) -> { /*SQL异常处理-SQLExceptionHandler*/ })
 				);
 	}
+
 	public ArenaState queryPracticeGameDataByEndTime(@NotNull Long endTime) {
 		return getSQLManager().createQuery()
 				.inTable(getPracticeGameDataTable().getTableName())
@@ -482,6 +448,7 @@ public class MySQLStorage {
 						((exception, sqlAction) -> { /*SQL异常处理-SQLExceptionHandler*/ })
 				);
 	}
+
 	public ArenaState queryPracticeGameDataById(@NotNull Integer id) {
 		return getSQLManager().createQuery()
 				.inTable(getPracticeGameDataTable().getTableName())
@@ -512,6 +479,7 @@ public class MySQLStorage {
 						((exception, sqlAction) -> { /*SQL异常处理-SQLExceptionHandler*/ })
 				);
 	}
+
 	public List<ArenaState> queryPracticeGameDataByWin(@NotNull String name) {
 		return getSQLManager().createQuery()
 				.inTable(getPracticeGameDataTable().getTableName())
@@ -545,6 +513,7 @@ public class MySQLStorage {
 						((exception, sqlAction) -> { /*SQL异常处理-SQLExceptionHandler*/ })
 				);
 	}
+
 	public List<ArenaState> queryPracticeGameDataByDayWin(@NotNull String name, FKitType fKitType, QueueType queueType, Long time) {
 		return getSQLManager().createQuery()
 				.inTable(getPracticeGameDataTable().getTableName())
@@ -582,12 +551,6 @@ public class MySQLStorage {
 				);
 	}
 
-	/**
-	 * 保存新增更新新的房间
-	 *
-	 * @param data
-	 * @throws Exception
-	 */
 	public void replaceArenaData(@NotNull Arena data) throws Exception {
 		getSQLManager().createReplace(getPracticeArenaDataTable().getTableName())
 				.setColumnNames("id", "mode", "name", "displayName", "build", "loc1", "loc2", "corner1", "corner2", "center", "icon", "update_time", "create_time")
@@ -608,11 +571,6 @@ public class MySQLStorage {
 				.execute();
 	}
 
-	/**
-	 * 根据模式类型查询房间
-	 *
-	 * @return
-	 */
 	public List<Arena> queryArenaDataList(FKitType mode) {
 		return getSQLManager().createQuery()
 				.inTable(getPracticeArenaDataTable().getTableName())
@@ -649,12 +607,6 @@ public class MySQLStorage {
 				);
 	}
 
-	/**
-	 * 根据NAME查询竞技场信息
-	 *
-	 * @param name
-	 * @return
-	 */
 	public Arena queryFPlayerDataByName(@NotNull String name) {
 		return getSQLManager().createQuery()
 				.inTable(getPracticeArenaDataTable().getTableName())

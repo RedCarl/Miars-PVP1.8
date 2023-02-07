@@ -56,6 +56,11 @@ public class MRank {
     private String describe;
 
     /**
+     * 权重
+     */
+    private Integer power;
+
+    /**
      * 更新时间
      */
     private Date updateTime;

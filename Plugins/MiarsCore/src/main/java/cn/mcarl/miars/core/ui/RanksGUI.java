@@ -4,18 +4,22 @@ import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
 import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.core.utils.GUIUtils;
 import cn.mcarl.miars.core.utils.ItemBuilder;
 import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
+import cn.mcarl.miars.storage.utils.CustomSort;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemFlag;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RanksGUI extends GUI {
@@ -27,31 +31,36 @@ public class RanksGUI extends GUI {
         load();
     }
 
-    Map<String, MRank> mRankMap = new HashMap<>();
+    List<MRank> mRanks = new ArrayList<>();
     MPlayer mPlayer = new MPlayer();
 
     public void load(){
-        mRankMap = MRankDataStorage.getInstance().getMRankList();
+        mRanks = new ArrayList<>(MRankDataStorage.getInstance().getMRankList().values().stream().toList());
         mPlayer = MPlayerDataStorage.getInstance().getMPlayer(player);
 
-        int i=0;
-        for (String s:mRankMap.keySet()){
-            if (!s.equals("default")){
-                if (mPlayer.getRanks().contains(s)){
+        CustomSort.sort(mRanks,"power",true);
 
-                    if (mPlayer.getRank().equals(s)){
-                        setItem(i, setSelectRankItem(mRankMap.get(s)));
+        int i=0;
+        for (MRank m:mRanks){
+            if (!m.getName().equals("default")){
+                if (mPlayer.getRanks().contains(m.getName())){
+
+                    if (mPlayer.getRank().equals(m.getName())){
+                        setItem(i, setSelectRankItem(m));
                     }else {
-                        setItem(i, setRankItem(mRankMap.get(s)));
+                        setItem(i, setRankItem(m));
                     }
 
                 }else {
-                    setItem(i, setUnlockRankItem(mRankMap.get(s)));
+                    setItem(i, setUnlockRankItem(m));
                 }
                 i++;
             }
         }
 
+        setItem(new GUIItem(GUIUtils.getLineItem()),36,37,38,39,40,41,42,43,44);
+
+        setItem(53,setDefaultRankItem());
     }
 
     public GUIItem setSelectRankItem(MRank mRank){
@@ -87,6 +96,23 @@ public class RanksGUI extends GUI {
                 .setLore(mRank.getDescribe().split("/n"))
                 .addFlag(ItemFlag.HIDE_ENCHANTS)
                 .toItemStack());
+    }
+
+    public GUIItem setDefaultRankItem(){
+        return new GUIItem(new ItemBuilder(Material.MILK_BUCKET)
+                .setName("&c恢复默认头衔")
+                .addFlag(ItemFlag.HIDE_ENCHANTS)
+                .toItemStack()){
+            @Override
+            public void onClick(Player clicker, ClickType type) {
+                mPlayer.setRank("default");
+                MPlayerDataStorage.getInstance().putMPlayer(mPlayer);
+                clicker.sendMessage(ColorParser.parse("&7您的头衔已经更换为默认头衔请注意查看。"));
+
+                load();
+                updateView();
+            }
+        };
     }
 
 

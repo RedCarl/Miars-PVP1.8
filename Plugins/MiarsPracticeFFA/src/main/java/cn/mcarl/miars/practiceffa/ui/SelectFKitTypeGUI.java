@@ -3,6 +3,7 @@ package cn.mcarl.miars.practiceffa.ui;
 import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
+import cn.mcarl.miars.core.utils.GUIUtils;
 import cn.mcarl.miars.storage.enums.FKitType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -34,7 +35,7 @@ public class SelectFKitTypeGUI extends GUI {
             }
         });
 
-        setItem(8,new GUIItem(CommunityGUIItem.getCancelItem()){
+        setItem(8,new GUIItem(GUIUtils.getCancelItem()){
             @Override
             public void onClick(Player clicker, ClickType type) {
                 player.closeInventory();
