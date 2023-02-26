@@ -1,6 +1,7 @@
 package cn.mcarl.miars.lobby.manager;
 
 import cn.mcarl.miars.core.ui.RanksGUI;
+import cn.mcarl.miars.core.ui.ServerMenuGUI;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -23,6 +24,9 @@ public class ItemInteractManager {
         switch (nbtItem.getString("gui")){
             case "RanksGUI" -> {
                 RanksGUI.open(p);
+            }
+            case "ServerMenu" -> {
+                ServerMenuGUI.open(p,"游戏选择");
             }
         }
     }

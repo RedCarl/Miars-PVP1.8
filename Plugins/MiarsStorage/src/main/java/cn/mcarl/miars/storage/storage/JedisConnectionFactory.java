@@ -16,7 +16,7 @@ public class JedisConnectionFactory {
         poolConfig.setMaxWaitMillis(1000);
  
 //        创建连接池对象
-         jedisPool = new JedisPool(poolConfig, PluginConfig.REDIS.URL.get(),PluginConfig.REDIS.PORT.get(),1000,PluginConfig.REDIS.PASSWORD.get());
+         jedisPool = new JedisPool(poolConfig, PluginConfig.REDIS.URL.get(),PluginConfig.REDIS.PORT.get(),1000);
     }
 //    调用getJedis可以拿到jedis对象
     public static Jedis getJedis(){

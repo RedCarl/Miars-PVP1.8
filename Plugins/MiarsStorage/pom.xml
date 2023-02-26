@@ -30,6 +30,12 @@
             <id>codemc-repo</id>
             <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
+
+        <repository>
+            <id>cloudtile-repo</id>
+            <name>CloudTile's Repo</name>
+            <url>https://repo.cloudtile.net/repository/maven-public/</url>
+        </repository>
     </repositories>
 
 

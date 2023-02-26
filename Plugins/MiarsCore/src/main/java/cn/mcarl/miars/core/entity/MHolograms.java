@@ -32,6 +32,17 @@ public interface MHolograms {
 
         return api;
     }
+    static Hologram createHologramString(String name, Location location, List<String> texts){
+        Hologram api = HologramsAPI.createHologram(MiarsCore.getInstance(),location);
+
+        for (String o:texts){
+            api.appendTextLine(o);
+        }
+
+        map.put(name,api);
+
+        return api;
+    }
 
     static Hologram getHologramByName(String name){
         return map.get(name);

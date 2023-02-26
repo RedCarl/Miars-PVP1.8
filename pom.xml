@@ -20,6 +20,7 @@
         <module>Plugins/MiarsPrison</module>
         <module>Plugins/MiarsFaction</module>
         <module>Plugins/MiarsPay</module>
+        <module>Plugins/MegaWalls/MiarsMegaWalls</module>
     </modules>
 
     <properties>
@@ -70,6 +71,12 @@
             <id>carm-repo</id>
             <name>Carm's Repo</name>
             <url>https://repo.carm.cc/repository/maven-public/</url>
+        </repository>
+
+        <repository>
+            <id>cloudtile-repo</id>
+            <name>CloudTile's Repo</name>
+            <url>https://repo.cloudtile.net/repository/maven-public/</url>
         </repository>
     </repositories>
 
@@ -152,6 +159,20 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.black_ixx</groupId>
+            <artifactId>playerpoints</artifactId>
+            <version>3.2.5</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!--大全集版本,包含项目内所有模块-->
         <dependency>
             <groupId>cc.carm.lib</groupId>
@@ -206,6 +227,87 @@
     </dependencies>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <phase>test</phase>
+                        <configuration>
+                            <target>
+                                <echo message="==============[ 正在将文件移到指定位置 ]==============" />
+                                <copy todir="libs/" overwrite="true">
+                                    <fileset dir="Plugins/MiarsStorage/target"
+                                             erroronmissingdir="false">
+                                        <include name="MiarsStorage-*.jar" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="libs/" overwrite="true">
+                                    <fileset dir="Plugins/MiarsCore/target"
+                                             erroronmissingdir="false">
+                                        <include name="MiarsCore-*.jar" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="libs/" overwrite="true">
+                                    <fileset dir="Plugins/MiarsBungee/target"
+                                             erroronmissingdir="false">
+                                        <include name="MiarsBungee-*.jar" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="libs/" overwrite="true">
+                                    <fileset dir="Plugins/MiarsFaction/target"
+                                             erroronmissingdir="false">
+                                        <include name="MiarsFaction-*.jar" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="libs/" overwrite="true">
+                                    <fileset dir="Plugins/MiarsLobby/target"
+                                             erroronmissingdir="false">
+                                        <include name="MiarsLobby-*.jar" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="libs/" overwrite="true">
+                                    <fileset dir="Plugins/MiarsPay/target"
+                                             erroronmissingdir="false">
+                                        <include name="MiarsPay-*.jar" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="libs/" overwrite="true">
+                                    <fileset dir="Plugins/MiarsPracticeFFA/target"
+                                             erroronmissingdir="false">
+                                        <include name="MiarsPracticeFFA-*.jar" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="libs/" overwrite="true">
+                                    <fileset dir="Plugins/MiarsPractice/target"
+                                             erroronmissingdir="false">
+                                        <include name="MiarsPractice-*.jar" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="libs/" overwrite="true">
+                                    <fileset dir="Plugins/MiarsPrison/target"
+                                             erroronmissingdir="false">
+                                        <include name="MiarsPrison-*.jar" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="libs/" overwrite="true">
+                                    <fileset dir="Plugins/MegaWalls/MiarsMegaWalls/target"
+                                             erroronmissingdir="false">
+                                        <include name="MiarsMegaWalls-*.jar" />
+                                    </fileset>
+                                </copy>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>

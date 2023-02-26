@@ -9,3 +9,9 @@ api-version: 1.8
 
 depend:
   - MiarsCore
+
+commands:
+  "Lobby":
+    description: "主指令"
+    aliases:
+      - lobby

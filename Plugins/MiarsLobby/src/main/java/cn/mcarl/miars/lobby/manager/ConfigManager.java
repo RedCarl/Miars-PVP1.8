@@ -19,8 +19,12 @@ public class ConfigManager {
         return configProvider;
     }
 
-    public void reload() throws Exception {
-        getConfigProvider().reload();
+    public void reload() {
+        try {
+            getConfigProvider().reload();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

@@ -15,4 +15,6 @@ public class PluginConfig extends ConfigurationRoot {
         @HeaderComment({"代理URL"})
         public static final ConfigValue<String> URL = ConfiguredValue.of(String.class, "proxy url");
     }
+
+
 }

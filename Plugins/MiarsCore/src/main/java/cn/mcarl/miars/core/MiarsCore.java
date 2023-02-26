@@ -4,20 +4,27 @@ import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cc.carm.lib.easyplugin.utils.MessageUtils;
 import cn.mcarl.miars.core.command.MiarsCommand;
+import cn.mcarl.miars.core.hooker.MiarsEconomy;
 import cn.mcarl.miars.core.hooker.PAPIExpansion;
 import cn.mcarl.miars.core.listener.PlayerListener;
+import cn.mcarl.miars.core.manager.CitizensManager;
 import cn.mcarl.miars.core.manager.ConfigManager;
 import cn.mcarl.miars.core.manager.ServerManager;
 import cn.mcarl.miars.core.utils.BungeeApi;
+import cn.mcarl.miars.core.utils.easyitem.ItemManager;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import lombok.SneakyThrows;
 import net.luckperms.api.LuckPerms;
+import net.milkbowl.vault.economy.Economy;
+import org.black_ixx.playerpoints.PlayerPoints;
+import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -46,6 +53,17 @@ public class MiarsCore extends JavaPlugin {
     }
     private static ProtocolManager protocolManager;
     protected ConfigManager configManager;
+
+    private static PlayerPointsAPI ppAPI;
+    public static PlayerPointsAPI getPpAPi(){
+        return ppAPI;
+    }
+
+    private static Economy econ;
+    public static Economy getEcon(){
+        return econ;
+    }
+
     @SneakyThrows
     @Override
     public void onEnable() {
@@ -87,6 +105,16 @@ public class MiarsCore extends JavaPlugin {
             log("检测到未安装PlaceholderAPI，跳过变量注册。");
         }
 
+        //PlayerPointsAPI
+        if (Bukkit.getPluginManager().isPluginEnabled("PlayerPoints")) {
+            log("正在加载 PlayerPoints 依赖...");
+            ppAPI = PlayerPoints.getInstance().getAPI();
+        } else {
+
+            log("未安装 PlayerPoints 不进行货币注册...");
+            log("若您想使用全部功能,请安装LuckPerms！");
+        }
+
         //ProtocolLib
         if(Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) {
             log("正在注册数据包...");
@@ -96,8 +124,24 @@ public class MiarsCore extends JavaPlugin {
             log("若您想使用全部功能，请安装ProtocolLib！");
         }
 
+        // register vault
+        Bukkit.getServicesManager().register(
+                Economy.class,
+                new MiarsEconomy(),
+                getInstance(),
+                ServicePriority.Normal
+        );
+        //Vault
+        if (!setupEconomy() ) {
+            log("未安装 Vault 不进行经济管理...");
+            log("若您想使用全部功能，请安装Vault！");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
         log("正在注册监听器...");
         regListener(new PlayerListener());
+        regListener(new ItemManager());
 
         log("正在初始化 Bungee 代理...");
         ServerManager.getInstance().onStartServer();
@@ -107,6 +151,9 @@ public class MiarsCore extends JavaPlugin {
 
         log("正在注册指令...");
         regCommand("Miars",new MiarsCommand());
+
+        log("正在初始化 NPC 模块...");
+        CitizensManager.getInstance().init();
 
         log("当前服务端版本 "+Bukkit.getServer().getVersion());
 
@@ -167,4 +214,15 @@ public class MiarsCore extends JavaPlugin {
         log("&7本插件由 &c&lMiars Studios &7提供长期支持与维护。");
     }
 
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        econ = rsp.getProvider();
+        return econ != null;
+    }
 }

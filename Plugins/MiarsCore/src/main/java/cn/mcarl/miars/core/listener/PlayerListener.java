@@ -2,6 +2,7 @@ package cn.mcarl.miars.core.listener;
 
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,6 +26,8 @@ public class PlayerListener implements Listener {
 
         // 禁止玩家进入消息
         e.setJoinMessage(null);
+
+
 
     }
 

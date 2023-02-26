@@ -13,6 +13,7 @@ depend:
   - HolographicDisplays
   - PlaceholderAPI
   - MiarsStorage
+  - PlayerPoints
 
 commands:
   "Miars":

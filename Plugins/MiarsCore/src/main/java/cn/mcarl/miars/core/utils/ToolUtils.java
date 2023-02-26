@@ -2,6 +2,8 @@ package cn.mcarl.miars.core.utils;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
+import cn.mcarl.miars.core.manager.ServerManager;
+import cn.mcarl.miars.storage.entity.MServerInfo;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.enums.FKitType;
 import org.bukkit.Bukkit;
@@ -311,5 +313,48 @@ public class ToolUtils {
         for (Integer i:fInv.getBackpack().keySet()){
             inv.setItem(i,fInv.getBackpack().get(i));
         }
+    }
+
+
+    public static List<String> initLorePapi(List<String> list,boolean is,String type){
+
+        List<String> stringList = new ArrayList<>();
+
+        for (String s:list) {
+            String ss = s;
+
+
+
+            if (ss.contains("{play_")){
+                String name = cn.mcarl.miars.storage.utils.ToolUtils.subString(ss,"{play_","}");
+                MServerInfo server = ServerManager.getInstance().getServerInfo(name);
+                if (server!=null){
+
+                    if (Objects.equals(type, "gui")){
+                        if (!is){
+                            stringList.add("&a  点击连接");
+                        }else {
+                            stringList.add("&a► 点击连接");
+                        }
+                    }
+
+                    ss = s.replace(
+                            "{play_"+name+"}",
+                            String.valueOf(server.getPlayers().size())
+                    );
+                    stringList.add(ss);
+                }else {
+                    ss = "&c暂未上线，敬请期待...";
+                    stringList.add(ss);
+                }
+
+            }else {
+                if (!("&a► 点击连接".equals(ss))){
+                    stringList.add(ss);
+                }
+            }
+        }
+
+        return stringList;
     }
 }

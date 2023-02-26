@@ -18,7 +18,17 @@ public class LobbyItem {
         // 物品栏
         Map<Integer,ItemStack> itemCote = new HashMap<>();
 
-        itemCote.put(7,
+        itemCote.put(0,
+                new ItemBuilder(Material.BOOK)
+                        .setName("&c游戏选择 &7(右键打开)")
+                        .addFlag(ItemFlag.HIDE_UNBREAKABLE)
+                        .addFlag(ItemFlag.HIDE_ENCHANTS)
+                        .setNbtBoolean("stopClick",true)
+                        .setNbtString("gui","ServerMenu")
+                        .toItemStack()
+        );
+
+        itemCote.put(1,
                 new ItemBuilder(Material.NAME_TAG)
                         .setName("&c头衔管理 &7(右键打开)")
                         .addFlag(ItemFlag.HIDE_UNBREAKABLE)

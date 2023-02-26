@@ -9,6 +9,7 @@ import cn.mcarl.miars.storage.entity.practice.QueueInfo;
 import cn.mcarl.miars.storage.storage.data.practice.FPlayerDataStorage;
 import cn.mcarl.miars.practiceffa.utils.FFAUtil;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
+import cn.mcarl.miars.storage.storage.data.serverInfo.ServerInfoDataStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -49,7 +50,7 @@ public class ScoreBoardManager {
         FPlayer fPlayer = FPlayerDataStorage.getInstance().getFPlayer(p);
 
         List<String> lines = new ArrayList<>();
-        board.updateTitle("&cFFAGAME &8| &cMiars");
+        board.updateTitle("&cFFAGAME &8| &c"+ ServerInfoDataStorage.getInstance().getServerInfo().getNameCn());
         lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis()));
         lines.add("");
         lines.add("&7Level: &f"+0);
@@ -89,7 +90,7 @@ public class ScoreBoardManager {
         }
 
         lines.add("");
-        lines.add("&cplay.miars.cn");
+        lines.add("&7&o"+ ServerInfoDataStorage.getInstance().getServerInfo().getIp());
 
         board.updateLines(ColorParser.parse(lines));
     }

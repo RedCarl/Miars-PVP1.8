@@ -9,6 +9,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author: carl0
@@ -20,6 +22,10 @@ public class ServerManager {
         return instance;
     }
     BukkitTask bukkitRunnable;
+
+    Map<String,MServerInfo> serverInfoMap = new HashMap<>();
+    Map<String,Long> serverLongMap = new HashMap<>();
+
 
     /**
      * 开启服务器,并创建Bungee服务器
@@ -60,6 +66,13 @@ public class ServerManager {
      * @throws IOException
      */
     public MServerInfo getServerInfo(String name) {
+
+        if (serverLongMap.containsKey(name)){
+            if (!(System.currentTimeMillis() - serverLongMap.get(name) >= 3000)){
+                return serverInfoMap.get(name);
+            }
+        }
+
         String state = "error";
         String url = PluginConfig.SERVER_INFO.URL.get();
         try {
@@ -70,7 +83,13 @@ public class ServerManager {
         if (state.contains("error")){
             return null;
         }
-        return JSON.toJavaObject(JSON.parseObject(state),MServerInfo.class);
+
+        MServerInfo mServerInfo = JSON.toJavaObject(JSON.parseObject(state),MServerInfo.class);
+
+        serverInfoMap.put(mServerInfo.getName(), mServerInfo);
+        serverLongMap.put(mServerInfo.getName(), System.currentTimeMillis());
+
+        return mServerInfo;
     }
 
     /**

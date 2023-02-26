@@ -1,9 +1,16 @@
 package cn.mcarl.miars.core.command;
 
+import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.core.manager.CitizensManager;
+import cn.mcarl.miars.core.manager.ServerManager;
 import cn.mcarl.miars.core.ui.OpenInvGUI;
+import cn.mcarl.miars.core.ui.ServerMenuGUI;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeGameDataStorage;
+import cn.mcarl.miars.storage.storage.data.serverInfo.ServerInfoDataStorage;
+import cn.mcarl.miars.storage.storage.data.serverMenu.ServerMenuDataStorage;
+import cn.mcarl.miars.storage.storage.data.serverNpc.ServerNpcDataStorage;
 import cn.mcarl.miars.storage.utils.BukkitUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -33,13 +40,19 @@ public class MiarsCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(
             @NotNull CommandSender sender, @NotNull Command command,
             @NotNull String alias, @NotNull String[] args) {
-        if (args.length < 1) return helpConsole(sender);
+        if (args.length < 1) {
+            return helpConsole(sender);
+        }
         switch (args[0].toLowerCase()) {
-            case "practice": {
-                if (args.length < 2) return helpConsole(sender);
+            case "practice" -> {
+                if (args.length < 2) {
+                    return helpConsole(sender);
+                }
                 switch (args[1].toLowerCase()) {
-                    case "openinv": {
-                        if (args.length < 4) return helpConsole(sender);
+                    case "openinv" -> {
+                        if (args.length < 4) {
+                            return helpConsole(sender);
+                        }
                         String name = args[2];
                         Integer id = Integer.valueOf(args[3]);
 
@@ -50,14 +63,63 @@ public class MiarsCommand implements CommandExecutor, TabCompleter {
 
                         return true;
                     }
-                    default:
+                    default -> {
                         return helpConsole(sender);
+                    }
                 }
             }
-            default:
+            case "menu" -> {
+                if (sender instanceof Player player){
+                    if (!player.hasPermission("group.admin")){
+                        return false;
+                    }
+                    switch (args[1].toLowerCase()){
+                        case "reload" -> {
+                            ServerMenuDataStorage.getInstance().clear();
+                        }
+                        case "open" -> {
+                            if (args.length>=3){
+                                ServerMenuGUI.open(player, ColorParser.parse(args[2]));
+                            }
+                        }
+                    }
+                }
+            }
+            case "serverinfo" -> {
+                if (sender instanceof Player player){
+
+                    if (!player.hasPermission("group.admin")){
+                        return false;
+                    }
+                    switch (args[1].toLowerCase()){
+                        case "reload" -> {
+                            ServerInfoDataStorage.getInstance().clear();
+                        }
+                    }
+                }
+            }
+            case "npc" -> {
+                if (sender instanceof Player player){
+
+                    if (!player.hasPermission("group.admin")){
+                        return false;
+                    }
+                    switch (args[1].toLowerCase()){
+                        case "reload" -> {
+                            ServerNpcDataStorage.getInstance().clear();
+                            CitizensManager.getInstance().clear();
+                            CitizensManager.getInstance().init();
+                        }
+                    }
+                }
+            }
+
+            default -> {
                 return helpConsole(sender);
+            }
         }
 
+        return false;
     }
 
 

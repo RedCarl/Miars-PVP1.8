@@ -8,8 +8,11 @@ import cn.mcarl.miars.storage.entity.*;
 import cn.mcarl.miars.storage.entity.ffa.FInventoryByte;
 import cn.mcarl.miars.storage.entity.ffa.FKit;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
+import cn.mcarl.miars.storage.entity.serverInfo.ServerInfo;
+import cn.mcarl.miars.storage.entity.serverMenu.ServerMenuItem;
 import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
+import cn.mcarl.miars.storage.entity.serverNpc.ServerNPC;
 import cn.mcarl.miars.storage.enums.FKitType;
 import cn.mcarl.miars.storage.enums.QueueType;
 import cn.mcarl.miars.storage.utils.BukkitUtils;
@@ -18,6 +21,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Type;
@@ -40,6 +45,10 @@ public class MySQLStorage {
 
 	DatabaseTable practiceArenaDataTable;
 	DatabaseTable practiceGameDataTable;
+
+	DatabaseTable serverMenuDataTable;
+	DatabaseTable serverInfoDataTable;
+	DatabaseTable serverNpcDataTable;
 
 	private Gson gson = new Gson();
 
@@ -164,6 +173,66 @@ public class MySQLStorage {
 					});
 			getPracticeGameDataTable().createTable(sqlManager);
 
+			// 服务器菜单
+			this.serverMenuDataTable = new DatabaseTable(
+					PluginConfig.DATABASE.TABLE_NAME.get() + "_server_menu",
+					new String[]{
+							"`id` int(11) NOT NULL AUTO_INCREMENT",
+							"`gui_name` varchar(255) DEFAULT NULL",
+							"`icon` varchar(255) DEFAULT NULL",
+							"`name` varchar(255) DEFAULT NULL",
+							"`lore` longtext",
+							"`slot` int(11) DEFAULT NULL",
+							"`click_type` varchar(255) DEFAULT NULL",
+							"`type` varchar(255) DEFAULT NULL",
+							"`value` varchar(255) DEFAULT NULL",
+							"PRIMARY KEY (`id`)"
+					});
+			getServerMenuDataTable().createTable(sqlManager);
+
+			// 服务器信息
+			this.serverInfoDataTable = new DatabaseTable(
+					PluginConfig.DATABASE.TABLE_NAME.get() + "_server_info",
+					new String[]{
+							"`id` int(11) NOT NULL AUTO_INCREMENT",
+							"`name_en` varchar(255) DEFAULT NULL",
+							"`name_cn` varchar(255) DEFAULT NULL",
+							"`ip` varchar(255) DEFAULT NULL",
+							"`web_site` varchar(255) DEFAULT NULL",
+							"`store_site` varchar(255) DEFAULT NULL",
+							"`ban_site` varchar(255) DEFAULT NULL",
+							"`kook` varchar(255) DEFAULT NULL",
+							"`discord` varchar(255) DEFAULT NULL",
+							"PRIMARY KEY (`id`)"
+					});
+			getServerInfoDataTable().createTable(sqlManager);
+
+
+			// 服务器NPC
+			this.serverNpcDataTable = new DatabaseTable(
+					PluginConfig.DATABASE.TABLE_NAME.get() + "_server_npc",
+					new String[]{
+							"`id` int(11) NOT NULL AUTO_INCREMENT",
+							"`server` varchar(255) DEFAULT NULL",
+							"`world` varchar(255) DEFAULT NULL",
+							"`name` varchar(255) DEFAULT NULL",
+							"`x` double DEFAULT NULL",
+							"`y` double DEFAULT NULL",
+							"`z` double DEFAULT NULL",
+							"`yaw` double DEFAULT NULL",
+							"`pitch` double DEFAULT NULL",
+							"`click` varchar(255) DEFAULT NULL",
+							"`type` varchar(255) DEFAULT NULL",
+							"`value` varchar(255) DEFAULT NULL",
+							"`skin_name` longtext",
+							"`signature` longtext",
+							"`data` longtext",
+							"`title` longtext",
+							"`item` varchar(255) DEFAULT NULL",
+							"PRIMARY KEY (`id`)"
+					});
+			getServerNpcDataTable().createTable(sqlManager);
+
 		} catch (SQLException exception) {
 			MiarsStorage.getInstance().log("无法创建插件所需的表，请检查数据库权限。");
 			exception.printStackTrace();
@@ -178,6 +247,14 @@ public class MySQLStorage {
 		EasySQL.shutdownManager(getSQLManager());
 	}
 
+
+
+
+
+
+
+
+
 	public void replaceMPlayer(@NotNull MPlayer data) throws Exception {
 		getSQLManager().createReplace(getMPlayerTable().getTableName())
 				.setColumnNames("uuid", "rank", "ranks", "update_time", "create_time")
@@ -188,7 +265,6 @@ public class MySQLStorage {
 	public MPlayer queryMPlayerByUUID(@NotNull String uuid) {
 		return getSQLManager().createQuery()
 				.inTable(getMPlayerTable().getTableName())
-				.selectColumns("uuid", "rank", "ranks", "update_time", "create_time")
 				.addCondition("uuid", uuid)
 				.build()
 				.execute(
@@ -219,7 +295,6 @@ public class MySQLStorage {
 	public MRank queryMRankDataByName(@NotNull String name) {
 		return getSQLManager().createQuery()
 				.inTable(getRankDataTable().getTableName())
-				.selectColumns("id", "name", "prefix", "suffix", "nameColor", "permissions", "group", "describe", "power", "update_time", "create_time")
 				.addCondition("name", name)
 				.build()
 				.execute(
@@ -249,7 +324,6 @@ public class MySQLStorage {
 	public List<MRank> queryRankDataList() {
 		return getSQLManager().createQuery()
 				.inTable(getRankDataTable().getTableName())
-				.selectColumns("id", "name", "prefix", "suffix", "nameColor", "permissions", "group", "describe", "power", "update_time", "create_time")
 				.build()
 				.execute(
 						(query) -> {
@@ -288,7 +362,6 @@ public class MySQLStorage {
 	public FPlayer queryFPlayerDataByUUID(@NotNull String uuid) {
 		return getSQLManager().createQuery()
 				.inTable(getFPlayerDataTable().getTableName())
-				.selectColumns("uuid", "kills_count", "death_count", "rank_score", "update_time", "create_time")
 				.addCondition("uuid", uuid)
 				.build()
 				.execute(
@@ -320,7 +393,6 @@ public class MySQLStorage {
 	public List<FKit> queryFKitDataList(@NotNull UUID uuid, FKitType type) {
 		return getSQLManager().createQuery()
 				.inTable(getFKitDataTable().getTableName())
-				.selectColumns("id","uuid", "type", "name", "inventory", "power", "update_time", "create_time")
 				.addCondition("uuid", uuid)
 				.addCondition("type", type.name())
 				.build()
@@ -351,7 +423,6 @@ public class MySQLStorage {
 	public FKit queryFKitDataById(@NotNull Integer id) {
 		return getSQLManager().createQuery()
 				.inTable(getFKitDataTable().getTableName())
-				.selectColumns("id","uuid", "type", "name", "inventory", "power", "update_time", "create_time")
 				.addCondition("id", id)
 				.build()
 				.execute(
@@ -385,7 +456,6 @@ public class MySQLStorage {
 	public List<ArenaState> queryPracticeGameDataList(@NotNull String name, FKitType fKitType) {
 		return getSQLManager().createQuery()
 				.inTable(getPracticeGameDataTable().getTableName())
-				.selectColumns("id", "arenaId", "state", "playerA", "aFInventory", "playerB", "bFInventory", "startTime", "endTime", "win", "fKitType", "queueType")
 				.addCondition("playerA", name)
 				.addCondition("playerB", name)
 				.addCondition("fKitType", fKitType.name())
@@ -421,7 +491,6 @@ public class MySQLStorage {
 	public ArenaState queryPracticeGameDataByEndTime(@NotNull Long endTime) {
 		return getSQLManager().createQuery()
 				.inTable(getPracticeGameDataTable().getTableName())
-				.selectColumns("id", "arenaId", "state", "playerA", "aFInventory", "playerB", "bFInventory", "startTime", "endTime", "win", "fKitType", "queueType")
 				.addCondition("endTime", endTime)
 				.build()
 				.execute(
@@ -452,7 +521,6 @@ public class MySQLStorage {
 	public ArenaState queryPracticeGameDataById(@NotNull Integer id) {
 		return getSQLManager().createQuery()
 				.inTable(getPracticeGameDataTable().getTableName())
-				.selectColumns("id", "arenaId", "state", "playerA", "aFInventory", "playerB", "bFInventory", "startTime", "endTime", "win", "fKitType", "queueType")
 				.addCondition("id", id)
 				.build()
 				.execute(
@@ -483,7 +551,6 @@ public class MySQLStorage {
 	public List<ArenaState> queryPracticeGameDataByWin(@NotNull String name) {
 		return getSQLManager().createQuery()
 				.inTable(getPracticeGameDataTable().getTableName())
-				.selectColumns("id", "arenaId", "state", "playerA", "aFInventory", "playerB", "bFInventory", "startTime", "endTime", "win", "fKitType", "queueType")
 				.addCondition("win", name)
 				.build()
 				.execute(
@@ -517,7 +584,6 @@ public class MySQLStorage {
 	public List<ArenaState> queryPracticeGameDataByDayWin(@NotNull String name, FKitType fKitType, QueueType queueType, Long time) {
 		return getSQLManager().createQuery()
 				.inTable(getPracticeGameDataTable().getTableName())
-				.selectColumns("id", "arenaId", "state", "playerA", "aFInventory", "playerB", "bFInventory", "startTime", "endTime", "win", "fKitType", "queueType")
 				.addCondition("win", name)
 				.addCondition("fKitType", fKitType.name())
 				.addCondition("queueType", queueType)
@@ -574,7 +640,6 @@ public class MySQLStorage {
 	public List<Arena> queryArenaDataList(FKitType mode) {
 		return getSQLManager().createQuery()
 				.inTable(getPracticeArenaDataTable().getTableName())
-				.selectColumns("id", "mode", "name", "displayName", "build", "loc1", "loc2", "corner1", "corner2", "center", "icon", "update_time", "create_time")
 				.addCondition("mode", mode.name())
 				.build()
 				.execute(
@@ -610,7 +675,6 @@ public class MySQLStorage {
 	public Arena queryFPlayerDataByName(@NotNull String name) {
 		return getSQLManager().createQuery()
 				.inTable(getPracticeArenaDataTable().getTableName())
-				.selectColumns("id", "mode", "name", "displayName", "build", "loc1", "loc2", "corner1", "corner2", "center", "icon", "update_time", "create_time")
 				.addCondition("name", name)
 				.build()
 				.execute(
@@ -640,10 +704,121 @@ public class MySQLStorage {
 				);
 	}
 
+	public List<ServerMenuItem> queryServerMenu(String guiName) {
+		return getSQLManager().createQuery()
+				.inTable(getServerMenuDataTable().getTableName())
+				.addCondition("gui_name", guiName)
+				.build()
+				.execute(
+						(query) -> {
+							ResultSet result = query.getResultSet();
+							List<ServerMenuItem> datas = new ArrayList<>();
+
+							while (result.next()) {
+								ServerMenuItem data = new ServerMenuItem();
+								data.setId(result.getInt("id"));
+								data.setGuiName(result.getString("gui_name"));
+								String icon = result.getString("icon");
+								try {
+									data.setIcon(new ItemStack(Material.getMaterial(icon)));
+								}catch (NullPointerException e){
+									MiarsStorage.getInstance().log("您填写的 Icon 有误，错误值: "+icon);
+									return new ArrayList<>();
+								}
+
+								data.setName(result.getString("name"));
+								data.setLore(List.of(result.getString("lore").split("/n")));
+								data.setSlot(result.getInt("slot"));
+								data.setClickType(result.getString("click_type"));
+								data.setType(result.getString("type"));
+								data.setValue(result.getString("value"));
+								datas.add(data);
+							}
+
+							return datas;
+						},
+						((exception, sqlAction) -> { /*SQL异常处理-SQLExceptionHandler*/ })
+				);
+	}
+	public ServerInfo queryServerInfo() {
+		return getSQLManager().createQuery()
+				.inTable(getServerInfoDataTable().getTableName())
+				.build()
+				.execute(
+						(query) -> {
+							ResultSet result = query.getResultSet();
+							ServerInfo data = new ServerInfo();
+
+							if (result != null && result.next()) {
+								data.setNameEn(result.getString("name_en"));
+								data.setNameCn(result.getString("name_cn"));
+								data.setIp(result.getString("ip"));
+								data.setWebSite(result.getString("web_site"));
+								data.setStoreSite(result.getString("store_site"));
+								data.setBanSite(result.getString("ban_site"));
+								data.setKook(result.getString("kook"));
+								data.setDiscord(result.getString("discord"));
+								data.setTabHead(result.getString("tab_head"));
+								data.setTabFoot(result.getString("tab_foot"));
+							}
+
+							return data;
+						},
+						((exception, sqlAction) -> { /*SQL异常处理-SQLExceptionHandler*/ })
+				);
+	}
+	public List<ServerNPC> queryServerNpc(String serverName) {
+		return getSQLManager().createQuery()
+				.inTable(getServerNpcDataTable().getTableName())
+				.addCondition("server", serverName)
+				.build()
+				.execute(
+						(query) -> {
+							ResultSet result = query.getResultSet();
+
+							List<ServerNPC> npcs = new ArrayList<>();
+
+							while (result.next()) {
+								ServerNPC data = new ServerNPC();
+								data.setServer(result.getString("server"));
+								data.setWorld(result.getString("world"));
+								data.setName(result.getString("name"));
+								data.setX(result.getDouble("x"));
+								data.setY(result.getDouble("y"));
+								data.setZ(result.getDouble("z"));
+								data.setYaw(result.getFloat("yaw"));
+								data.setPitch(result.getFloat("pitch"));
+								data.setClick(result.getString("click"));
+								data.setType(result.getString("type"));
+								data.setValue(result.getString("value"));
+								data.setSkinName(result.getString("skin_name"));
+								data.setSignature(result.getString("signature"));
+								data.setData(result.getString("data"));
+								data.setTitle(List.of(result.getString("title").split("/n")));
+								data.setItem(result.getString("item"));
+								npcs.add(data);
+							}
+
+							return npcs;
+						},
+						((exception, sqlAction) -> { /*SQL异常处理-SQLExceptionHandler*/ })
+				);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
 	private SQLManager getSQLManager() {
 		return sqlManager;
 	}
-
 	public DatabaseTable getRankDataTable() {
 		return mRankDataTable;
 	}
@@ -661,6 +836,15 @@ public class MySQLStorage {
 	}
 	public DatabaseTable getPracticeGameDataTable() {
 		return practiceGameDataTable;
+	}
+	public DatabaseTable getServerMenuDataTable() {
+		return serverMenuDataTable;
+	}
+	public DatabaseTable getServerInfoDataTable() {
+		return serverInfoDataTable;
+	}
+	public DatabaseTable getServerNpcDataTable() {
+		return serverNpcDataTable;
 	}
 
 }

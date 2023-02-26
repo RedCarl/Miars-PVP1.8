@@ -22,6 +22,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 public class PlayerListener implements Listener {
 
@@ -79,7 +80,19 @@ public class PlayerListener implements Listener {
             ItemInteractManager.getInstance().init(itemStack,player);
         }
 
+        if(e.getAction().equals(Action.PHYSICAL)) {
+            if (e.getClickedBlock().getType() == Material.STONE_PLATE) {
+                Vector v = player.getVelocity();
+                v.setX(8);
+                v.setY(2);
+                player.setVelocity(v);
+
+            }
+        }
+
     }
+
+
 
     @EventHandler
     public void PlayerDropItemEvent(PlayerDropItemEvent event) {

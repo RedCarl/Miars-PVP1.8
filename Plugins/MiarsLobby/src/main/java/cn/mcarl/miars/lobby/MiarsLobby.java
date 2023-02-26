@@ -1,11 +1,9 @@
 package cn.mcarl.miars.lobby;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
-import cn.mcarl.miars.lobby.conf.PluginConfig;
+import cn.mcarl.miars.lobby.command.LobbyCommand;
 import cn.mcarl.miars.lobby.listener.BlockListener;
-import cn.mcarl.miars.lobby.listener.CitizensListener;
 import cn.mcarl.miars.lobby.listener.PlayerListener;
-import cn.mcarl.miars.lobby.manager.CitizensManager;
 import cn.mcarl.miars.lobby.manager.ConfigManager;
 import cn.mcarl.miars.lobby.manager.ScoreBoardManager;
 import lombok.SneakyThrows;
@@ -21,6 +19,9 @@ public class MiarsLobby extends JavaPlugin {
         return instance;
     }
     protected ConfigManager configManager;
+    public ConfigManager getConfigManager(){
+        return configManager;
+    };
 
     @SneakyThrows
     @Override
@@ -37,10 +38,9 @@ public class MiarsLobby extends JavaPlugin {
         log("正在注册监听器...");
         regListener(new PlayerListener());
         regListener(new BlockListener());
-        regListener(new CitizensListener());
 
-        log("正在初始化世界NPC...");
-        CitizensManager.getInstance().init(PluginConfig.LOBBY_SITE.LOCATION.get().getWorld());
+        log("正在注册指令...");
+        regCommand("Lobby",new LobbyCommand());
 
         log("正在计分板...");
         ScoreBoardManager.getInstance().init();
