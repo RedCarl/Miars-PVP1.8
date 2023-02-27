@@ -16,13 +16,10 @@ public class ClassesSelect extends AbstractItem {
     }
 
     @Override
-    public String getId() {
-        return "classes_select";
-    }
+    public void init() {
 
-    @Override
-    public ItemStack getItem() {
-        return new ItemBuilder(Material.IRON_SWORD)
+        id = "classes_select";
+        item = new ItemBuilder(Material.IRON_SWORD)
                 .setName("&c职业选择")
                 .setLore("&7选择你的职业。")
                 .toItemStack();

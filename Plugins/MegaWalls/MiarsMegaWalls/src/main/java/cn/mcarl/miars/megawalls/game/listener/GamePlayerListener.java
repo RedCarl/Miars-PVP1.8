@@ -9,11 +9,14 @@ import cn.mcarl.miars.megawalls.manager.ScoreBoardManager;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class GamePlayerListener implements Listener {
 
@@ -54,5 +57,24 @@ public class GamePlayerListener implements Listener {
         // 清除玩家身份
         GamePlayerManager.getInstance().removeGamePlayer(player);
         ScoreBoardManager.getInstance().removePlayer(player);
+    }
+
+
+    @EventHandler
+    public void EntityDamageByEntityEvent(EntityDamageByEntityEvent e){
+        // 判断房间的状态
+        switch (GameManager.getInstance().getGameInfo().getGameState()){
+            case WAIT, READY, END -> {
+                e.setCancelled(true);
+            }
+        }
+
+    }
+
+    @EventHandler
+    public void PlayerRespawnEvent(PlayerRespawnEvent e){
+        Player player = e.getPlayer();
+        player.teleport(GameManager.getInstance().getGameInfo().getLobbySpawn());
+
     }
 }

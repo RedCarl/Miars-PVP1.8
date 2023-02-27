@@ -19,19 +19,15 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class ItemManager implements Listener {
-    private final Map<String, AbstractItem> registeredItems = MapUtil.newConcurrentHashMap();
+    private static final Map<String, AbstractItem> registeredItems = new HashMap<>();
 
-    private static final ItemManager instance = new ItemManager();
-    public static ItemManager getInstance() {
-        return instance;
-    }
-
-    public void register(AbstractItem item) {
-        registeredItems.put(item.getId(), item);
+    public static void register(AbstractItem item) {
+        registeredItems.put(item.id, item);
     }
     public AbstractItem getAbstractItem(ItemStack itemStack) {
         if (itemStack == null) {
@@ -40,12 +36,12 @@ public class ItemManager implements Listener {
         if (itemStack.getType() == Material.AIR) {
             return null;
         }
-        NBTCompound nbtItem = NBTItem.convertItemtoNBT(itemStack);
-        if (nbtItem.getString("id")==null || Objects.equals(nbtItem.getString("id"), "")){
+        NBTItem nbti = new NBTItem(itemStack);
+        if (nbti.getString("id") == null || Objects.equals(nbti.getString("id"), "")){
             return null;
         }
 
-        final String id = nbtItem.getString("id");
+        final String id = nbti.getString("id");
         return registeredItems.get(id);
     }
 
@@ -73,33 +69,35 @@ public class ItemManager implements Listener {
 
     @EventHandler
     public void InventoryClickEvent(InventoryClickEvent e) {
-        Player player = e.getWhoClicked().getKiller();
-        if (e.isCancelled()) {
-            return;
+        if (e.getWhoClicked() instanceof Player player){
+
+            if (e.isCancelled()) {
+                return;
+            }
+            if (e.getClickedInventory() == null) {
+                return;
+            }
+            if (e.getClickedInventory().getType() == InventoryType.CREATIVE) {
+                return;
+            }
+            if (e.getInventory().getType() == InventoryType.CREATIVE) {
+                return;
+            }
+            if (player.getGameMode() == GameMode.CREATIVE) {
+                return;
+            }
+            if (e.getCurrentItem() == null) {
+                return;
+            }
+            if (e.getCurrentItem().getType() == Material.AIR) {
+                return;
+            }
+            final AbstractItem item = getAbstractItem(e.getCurrentItem());
+            if (item == null) {
+                return;
+            }
+            item.onInventoryClick(e);
         }
-        if (e.getClickedInventory() == null) {
-            return;
-        }
-        if (e.getClickedInventory().getType() == InventoryType.CREATIVE) {
-            return;
-        }
-        if (e.getInventory().getType() == InventoryType.CREATIVE) {
-            return;
-        }
-        if (player.getGameMode() == GameMode.CREATIVE) {
-            return;
-        }
-        if (e.getCurrentItem() == null) {
-            return;
-        }
-        if (e.getCurrentItem().getType() == Material.AIR) {
-            return;
-        }
-        final AbstractItem item = getAbstractItem(e.getCurrentItem());
-        if (item == null) {
-            return;
-        }
-        item.onInventoryClick(e);
     }
 
 }

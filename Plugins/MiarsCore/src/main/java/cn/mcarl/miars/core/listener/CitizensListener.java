@@ -2,7 +2,10 @@ package cn.mcarl.miars.core.listener;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
+import cn.mcarl.miars.core.conf.PluginConfig;
+import cn.mcarl.miars.core.manager.CitizensManager;
 import cn.mcarl.miars.core.manager.ServerManager;
+import cn.mcarl.miars.storage.entity.serverNpc.ServerNPC;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
@@ -23,15 +26,15 @@ public class CitizensListener implements Listener {
     }
 
     public void ClickNPCEvent(NPC npc, Player player, int type){
-//        String npcType = CitizensManager.getInstance().getNpcType(npc);
-//        switch (npcType) {
-//            case "practice" -> {
-//                if (ServerManager.getInstance().getServerInfo(npcType) == null) {
-//                    player.sendMessage(ColorParser.parse("&7很抱歉,该服务器暂时无法进入,请耐心等待..."));
-//                    return;
-//                }
-//                MiarsCore.getBungeeApi().connect(player, "practice");
-//            }
-//        }
+        ServerNPC serverNPC = CitizensManager.getInstance().getServerNPC(npc.data().get(PluginConfig.SERVER_INFO.NAME.get()));
+        switch (serverNPC.getType()) {
+            case "server" -> {
+                if (ServerManager.getInstance().getServerInfo(serverNPC.getValue()) == null) {
+                    player.sendMessage(ColorParser.parse("&7很抱歉,该服务器暂时无法进入,请耐心等待..."));
+                    return;
+                }
+                MiarsCore.getBungeeApi().connect(player, serverNPC.getValue());
+            }
+        }
     }
 }

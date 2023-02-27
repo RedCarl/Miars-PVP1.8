@@ -102,9 +102,8 @@ public class CitizensManager {
         }
         return null;
     }
-
-    public String getNpcType(NPC npc) {
-        return npc.data().get(PluginConfig.SERVER_INFO.NAME.get());
+    public ServerNPC getServerNPC(String name) {
+        return npcMap.get(name);
     }
 
     public Map<String,NPC> getAllNpc() {

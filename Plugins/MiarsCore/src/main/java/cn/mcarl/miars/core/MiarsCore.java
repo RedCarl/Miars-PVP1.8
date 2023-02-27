@@ -97,14 +97,6 @@ public class MiarsCore extends JavaPlugin {
             log("若您想使用全部功能,请安装LuckPerms！");
         }
 
-        //PlaceholderAPI
-        if (MessageUtils.hasPlaceholderAPI()) {
-            log("注册变量...");
-            new PAPIExpansion(this).register();
-        } else {
-            log("检测到未安装PlaceholderAPI，跳过变量注册。");
-        }
-
         //PlayerPointsAPI
         if (Bukkit.getPluginManager().isPluginEnabled("PlayerPoints")) {
             log("正在加载 PlayerPoints 依赖...");
@@ -142,6 +134,7 @@ public class MiarsCore extends JavaPlugin {
         log("正在注册监听器...");
         regListener(new PlayerListener());
         regListener(new ItemManager());
+
 
         log("正在初始化 Bungee 代理...");
         ServerManager.getInstance().onStartServer();
