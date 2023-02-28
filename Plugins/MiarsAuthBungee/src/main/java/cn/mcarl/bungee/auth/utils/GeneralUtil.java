@@ -26,7 +26,9 @@ public class GeneralUtil {
         while (true) {
             var cause = throwable.getCause();
 
-            if (cause == null) return throwable;
+            if (cause == null) {
+                return throwable;
+            }
 
             throwable = cause;
         }
@@ -41,7 +43,9 @@ public class GeneralUtil {
 
     @Nullable
     public static TextComponent formatComponent(@Nullable TextComponent component, Map<String, String> replacements) {
-        if (component == null) return null;
+        if (component == null) {
+            return null;
+        }
 
         for (Map.Entry<String, String> entry : replacements.entrySet()) {
             //noinspection UnstableApiUsage
@@ -51,7 +55,9 @@ public class GeneralUtil {
     }
 
     public static UUID getCrackedUUIDFromName(String name) {
-        if (name == null) return null;
+        if (name == null) {
+            return null;
+        }
         return UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
     }
 
