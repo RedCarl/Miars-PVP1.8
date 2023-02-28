@@ -2,8 +2,13 @@ package cn.mcarl.miars.lobby.manager;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
+import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.core.utils.fastboard.FastBoard;
+import cn.mcarl.miars.storage.entity.MPlayer;
+import cn.mcarl.miars.storage.entity.MRank;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
+import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
+import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaStateDataStorage;
 import cn.mcarl.miars.storage.storage.data.serverInfo.ServerInfoDataStorage;
 import org.bukkit.Bukkit;
@@ -29,7 +34,7 @@ public class ScoreBoardManager {
     public void init(){
         tick();
     }
-    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy");
 
     public void tick(){
         new BukkitRunnable() {
@@ -44,15 +49,18 @@ public class ScoreBoardManager {
 
     private void updateBoard(FastBoard board) {
         Player p = board.getPlayer();
+        MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(p);
+        MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
 
         List<String> lines = new ArrayList<>();
-        board.updateTitle("&cLobby &8| &c"+ ServerInfoDataStorage.getInstance().getServerInfo().getNameCn());
-        lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis()));
+        board.updateTitle("&eLOBBY &8| &e"+ ServerInfoDataStorage.getInstance().getServerInfo().getNameCn());
+        lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis())+" &8"+ ToolUtils.getServerCode());
         lines.add("");
-        lines.add("&7玩家: &c"+p.getName());
+        lines.add("&f 玩家 &6"+p.getName());
+        lines.add("&f 头衔 &6"+mRank.getPrefix());
         lines.add("");
-        lines.add("&7硬币: &c"+MiarsCore.getEcon().getBalance(p));
-        lines.add("&7金子: &c"+MiarsCore.getPpAPi().look(p.getUniqueId()));
+        lines.add("&f 硬币 &6"+MiarsCore.getEcon().getBalance(p));
+        lines.add("&f 金子 &6"+MiarsCore.getPpAPi().look(p.getUniqueId()));
         lines.add("");
         lines.add("&7&o"+ ServerInfoDataStorage.getInstance().getServerInfo().getIp());
 

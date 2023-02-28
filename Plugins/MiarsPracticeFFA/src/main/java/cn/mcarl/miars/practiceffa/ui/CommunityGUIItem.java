@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class CommunityGUIItem {
 
-    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 
     /**
      * 游戏模式 (图标)

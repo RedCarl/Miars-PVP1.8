@@ -16,4 +16,8 @@ public class PluginConfig extends ConfigurationRoot {
     public static final ConfigValue<Integer> TEAM_LIMIT = ConfiguredValue.of(Integer.class, 25);
     @HeaderComment({"多少人后准备开始游戏"})
     public static final ConfigValue<Integer> READY_PLAYERS = ConfiguredValue.of(Integer.class, 25);
+    @HeaderComment({"准备阶段时间 (秒)"})
+    public static final ConfigValue<Long> WAIT = ConfiguredValue.of(Long.class, 300L);
+    @HeaderComment({"凋零的血量"})
+    public static final ConfigValue<Integer> WITHER_HP = ConfiguredValue.of(Integer.class, 500);
 }

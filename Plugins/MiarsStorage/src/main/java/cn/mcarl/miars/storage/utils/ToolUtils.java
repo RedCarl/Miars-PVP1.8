@@ -21,7 +21,7 @@ import java.util.Random;
  * @DATE: 2023/1/4 23:50
  */
 public class ToolUtils {
-    public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy");
     public static DecimalFormat decimalFormat = new DecimalFormat("#0"); // 保留两位小数，四舍五入
     public static Location spawn = new Location(Bukkit.getWorld("Spawn"),1403,135,809,-179.95163f,-0.09630036f);
 

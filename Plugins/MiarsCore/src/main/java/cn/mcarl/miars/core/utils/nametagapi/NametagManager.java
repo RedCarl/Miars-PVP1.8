@@ -1,10 +1,18 @@
 package cn.mcarl.miars.core.utils.nametagapi;
 
+import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
+import cn.mcarl.miars.core.utils.MiarsUtil;
+import cn.mcarl.miars.storage.entity.MPlayer;
+import cn.mcarl.miars.storage.entity.MRank;
+import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
+import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
+import cn.mcarl.miars.storage.utils.CustomSort;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -61,30 +69,44 @@ public final class NametagManager {
             }
         }
 
-//        getTeamInfo(ColorParser.parse("&c[总管]"),"");
-//        getTeamInfo(ColorParser.parse("&9[管理]"),"");
-//        getTeamInfo(ColorParser.parse("&5[客服]"),"");
-//        getTeamInfo(ColorParser.parse("&3[志愿者]"),"");
-//        getTeamInfo(ColorParser.parse("&d[主播]"),"");
-//        getTeamInfo(ColorParser.parse("&6[MVP++]"),"");
-//        getTeamInfo(ColorParser.parse("&e[MVP+]"),"");
-//        getTeamInfo(ColorParser.parse("&b[MVP]"),"");
-//        getTeamInfo(ColorParser.parse("&a[VIP+]"),"");
-//        getTeamInfo(ColorParser.parse("&2[VIP]"),"");
-//        getTeamInfo(ColorParser.parse("&7"),"");
+        List<MRank> mRanks = new ArrayList<>(MRankDataStorage.getInstance().getMRankList().values());
+        CustomSort.sort(mRanks,"power",false);
+
+        for (MRank rank:mRanks) {
+            getTeamInfo(ColorParser.parse(rank.getPrefix()),"");
+        }
 
 
-//        for (Player p:Bukkit.getOnlinePlayers()){
-//            KalosAPI.setPlayerNameTag(p);//头衔
+//        for (Player player:Bukkit.getOnlinePlayers()){
+//            MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(player);
+//            MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
+//
+//
+//            NametagManager.sendTeamsToPlayer(player);
+////            NametagManager.clear(player.getName());
+////            NametagAPI.updateNametagHard(
+////                    player.getName(),
+////                    ColorParser.parse(mRank.getPrefix()),
+////                    null
+////            );
 //        }
-//        new BukkitRunnable() {
-//            @Override
-//            public void run() {
-//                for (Player player:Bukkit.getOnlinePlayers()) {
-//                    KalosAPI.setPlayerNameTag(player);
-//                }
-//            }
-//        }.runTaskTimer(plugin,0,300);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player player:Bukkit.getOnlinePlayers()) {
+                    MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(player);
+                    MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
+
+                    //NametagManager.clear(player.getName());
+
+                    NametagAPI.updateNametagHard(
+                            player.getName(),
+                            ColorParser.parse(mRank.getPrefix()),
+                            null
+                    );
+                }
+            }
+        }.runTaskTimer(plugin,0,20);
     }
 
     static boolean isManaged(String player) {

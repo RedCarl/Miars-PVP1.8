@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 
 import java.util.UUID;
 
@@ -22,5 +24,14 @@ public class GamePlayer {
     }
     public void sendMessageAll(String message){
         Bukkit.broadcastMessage(ColorParser.parse(message));
+    }
+    public void tp(Location location){
+        Bukkit.getPlayer(this.uuid).teleport(location);
+    }
+    public void clearInv(){
+        Bukkit.getPlayer(this.uuid).getInventory().clear();
+    }
+    public boolean isSpectator(){
+        return Bukkit.getPlayer(this.uuid).getGameMode() == GameMode.SPECTATOR;
     }
 }

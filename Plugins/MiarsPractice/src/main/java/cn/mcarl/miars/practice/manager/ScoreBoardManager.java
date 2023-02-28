@@ -29,7 +29,7 @@ public class ScoreBoardManager {
     public void init(){
         tick();
     }
-    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy");
 
     public void tick(){
         new BukkitRunnable() {

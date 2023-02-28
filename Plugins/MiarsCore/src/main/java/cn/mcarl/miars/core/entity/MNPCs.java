@@ -58,4 +58,16 @@ public interface MNPCs {
 
         return npc;
     }
+    static NPC createNPCString(EntityType entityType,Location location, Consumer<NPC> consumer) {
+        //temp name
+        String name = "§8[NPC] " + UUID.randomUUID().toString().split("-")[0];
+        NPC npc = REGISTRY.createNPC(entityType, name);
+        consumer.accept(npc);
+        // real name
+        npc.setName("§8[NPC] " + npc.getUniqueId().toString().split("-")[0]);
+        npc.data().set(NPC.Metadata.NAMEPLATE_VISIBLE, false);
+        npc.spawn(location);
+
+        return npc;
+    }
 }

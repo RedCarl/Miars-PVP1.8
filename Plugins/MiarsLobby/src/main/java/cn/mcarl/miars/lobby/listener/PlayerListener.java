@@ -44,6 +44,17 @@ public class PlayerListener implements Listener {
         ToolUtils.autoEquip(player, LobbyItem.get());
 
         ScoreBoardManager.getInstance().joinPlayer(player);
+
+        player.sendMessage(ColorParser.parse("&6--&e-&8------------------------------------&6-&e--"));
+        player.sendMessage(ColorParser.parse("&r"));
+        player.sendMessage(ColorParser.parse("&6▪ &7您好，欢迎来到 &6磐石 &f(中国) 。"));
+        player.sendMessage(ColorParser.parse("&r"));
+        player.sendMessage(ColorParser.parse("&6▪ &7点击物品栏名为 “&f游戏选择&7”的&f书&7查看游戏列表。"));
+        player.sendMessage(ColorParser.parse("&6▪ &7您可以点击下方的链接进入官网。"));
+        player.sendMessage(ColorParser.parse("&6▪ &7➥ &fhttps://panshimc.cn"));
+        player.sendMessage(ColorParser.parse("&r"));
+        player.sendMessage(ColorParser.parse("&6--&e-&8------------------------------------&6-&e--"));
+
     }
 
     @EventHandler

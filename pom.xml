@@ -78,6 +78,11 @@
             <name>CloudTile's Repo</name>
             <url>https://repo.cloudtile.net/repository/maven-public/</url>
         </repository>
+
+        <repository>
+            <id>codemc-releases</id>
+            <url>https://repo.codemc.org/repository/maven-releases/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -223,6 +228,14 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
             <version>5.8.11</version>
+        </dependency>
+
+        <!-- SkinsRestorer API -->
+        <dependency>
+            <groupId>net.skinsrestorer</groupId>
+            <artifactId>skinsrestorer-api</artifactId>
+            <version>14.2.8</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

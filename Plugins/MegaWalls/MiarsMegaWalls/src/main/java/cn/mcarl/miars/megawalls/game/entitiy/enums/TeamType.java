@@ -5,7 +5,7 @@ import cc.carm.lib.easyplugin.utils.ColorParser;
 public enum TeamType {
     RED("&c","红"),
     YELLOW("&e", "黄"),
-    BLUE("&b", "蓝"),
+    BLUE("&9", "蓝"),
     GREEN("&a", "绿"),
     ;
 

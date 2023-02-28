@@ -2,6 +2,7 @@ package cn.mcarl.miars.core.utils;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
+import cn.mcarl.miars.core.conf.PluginConfig;
 import cn.mcarl.miars.core.manager.ServerManager;
 import cn.mcarl.miars.storage.entity.MServerInfo;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
@@ -28,7 +29,7 @@ import java.util.*;
  * @DATE: 2023/1/4 23:50
  */
 public class ToolUtils {
-    public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy");
     public static DecimalFormat decimalFormat = new DecimalFormat("#0"); // 保留两位小数，四舍五入
     public static Location spawn = new Location(Bukkit.getWorld("Spawn"),1403,135,809,-179.95163f,-0.09630036f);
 
@@ -63,6 +64,13 @@ public class ToolUtils {
 
         /* 开始截取 */
         return str.substring(strStartIndex, strEndIndex).substring(strStart.length());
+    }
+
+    public static String subStringToEnd(String str,String er){
+        String str1=str.substring(0, str.indexOf(er));
+        String str2=str.substring(str1.length()+1, str.length());
+
+        return str2;
     }
 
     /**
@@ -112,6 +120,40 @@ public class ToolUtils {
             long m = (date%3600)/60;
             long s = (date%3600)%60;
             return "&c"+h+" &7小时"+" &c"+m+" &7分"+" &c"+s+" &7秒";
+        }
+    }
+
+    /**
+     * 秒格式化
+     */
+    public static String getDateMode(long date){
+        if (date<=60) {
+            return String.valueOf(date);
+        }else if (date<3600) {
+            long m = date/60;
+            long s = date%60;
+            if (s<10){
+                if (m<10){
+                    return "0"+m+":0"+s;
+                }
+                return m+":0"+s;
+            }
+            return m+":"+s;
+        }else {
+            long h = date/3600;
+            long m = (date%3600)/60;
+            long s = (date%3600)%60;
+
+            if (s<10){
+                if (m<10){
+                    if (h<10){
+                        return "0"+h+":0"+m+":0"+s;
+                    }
+                    return h+":0"+m+":0"+s;
+                }
+                return h+":"+m+":0"+s;
+            }
+            return h+":"+m+":"+s;
         }
     }
 
@@ -356,5 +398,24 @@ public class ToolUtils {
         }
 
         return stringList;
+    }
+
+
+    public static String getServerCode(){
+        String port = String.valueOf(MiarsCore.getInstance().getServer().getPort());
+        String name = PluginConfig.SERVER_INFO.NAME.get().substring(0,1);
+        String pr = null;
+        if (PluginConfig.SERVER_INFO.NAME.get().contains("_")){
+            pr = ToolUtils.subStringToEnd(PluginConfig.SERVER_INFO.NAME.get(),"_");
+        }
+        if (PluginConfig.SERVER_INFO.NAME.get().contains("-")){
+            pr = ToolUtils.subStringToEnd(PluginConfig.SERVER_INFO.NAME.get(),"-");
+        }
+        if (pr==null){
+            pr="a";
+        }
+        String code = name+port.substring(1,port.length())+pr.substring(0,1);
+
+        return code.toUpperCase();
     }
 }

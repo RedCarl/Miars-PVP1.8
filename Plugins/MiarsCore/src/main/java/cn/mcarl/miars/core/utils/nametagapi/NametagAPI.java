@@ -130,18 +130,13 @@ public final class NametagAPI {
      * @param suffix The suffix to use.
      */
     public static void updateNametagHard(final String player, final String prefix, final String suffix) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            NametagChangeEvent event = new NametagChangeEvent(player, getPrefix(player), getSuffix(player), prefix, suffix, NametagChangeType.HARD, NametagChangeReason.CUSTOM);
+            Bukkit.getServer().getPluginManager().callEvent(event);
 
-            @Override
-            public void run() {
-                NametagChangeEvent event = new NametagChangeEvent(player, getPrefix(player), getSuffix(player), prefix, suffix, NametagChangeType.HARD, NametagChangeReason.CUSTOM);
-                Bukkit.getServer().getPluginManager().callEvent(event);
-
-                if (!event.isCancelled()) {
-                    NametagManager.overlap(player, prefix, suffix);
-                }
+            if (!event.isCancelled()) {
+                NametagManager.overlap(player, prefix, suffix);
             }
-
         });
     }
 

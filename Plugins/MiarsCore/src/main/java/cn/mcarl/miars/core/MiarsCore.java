@@ -4,14 +4,17 @@ import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cc.carm.lib.easyplugin.utils.MessageUtils;
 import cn.mcarl.miars.core.command.MiarsCommand;
+import cn.mcarl.miars.core.command.PluginsCommand;
 import cn.mcarl.miars.core.hooker.MiarsEconomy;
 import cn.mcarl.miars.core.hooker.PAPIExpansion;
+import cn.mcarl.miars.core.listener.CitizensListener;
 import cn.mcarl.miars.core.listener.PlayerListener;
 import cn.mcarl.miars.core.manager.CitizensManager;
 import cn.mcarl.miars.core.manager.ConfigManager;
 import cn.mcarl.miars.core.manager.ServerManager;
 import cn.mcarl.miars.core.utils.BungeeApi;
 import cn.mcarl.miars.core.utils.easyitem.ItemManager;
+import cn.mcarl.miars.core.utils.nametagapi.NametagManager;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
@@ -22,10 +25,18 @@ import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
 /**
  * @Author: carl0
@@ -123,6 +134,7 @@ public class MiarsCore extends JavaPlugin {
                 getInstance(),
                 ServicePriority.Normal
         );
+
         //Vault
         if (!setupEconomy() ) {
             log("未安装 Vault 不进行经济管理...");
@@ -133,8 +145,8 @@ public class MiarsCore extends JavaPlugin {
 
         log("正在注册监听器...");
         regListener(new PlayerListener());
+        regListener(new CitizensListener());
         regListener(new ItemManager());
-
 
         log("正在初始化 Bungee 代理...");
         ServerManager.getInstance().onStartServer();
@@ -147,6 +159,9 @@ public class MiarsCore extends JavaPlugin {
 
         log("正在初始化 NPC 模块...");
         CitizensManager.getInstance().init();
+
+        log("正在初始化 NameTag 模块...");
+        NametagManager.load();
 
         log("当前服务端版本 "+Bukkit.getServer().getVersion());
 
@@ -166,6 +181,7 @@ public class MiarsCore extends JavaPlugin {
 
         log("正在关闭 Bungee 代理...");
         ServerManager.getInstance().onStopServer();
+        NametagManager.reset();
 
         log("卸载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 
