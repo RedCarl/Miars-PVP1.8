@@ -7,12 +7,17 @@ authors:
 
 api-version: 1.8
 
-depend:
+softdepend:
+  - PlaceholderAPI
   - LuckPerms
+
+depend:
   - Citizens
   - HolographicDisplays
   - MiarsStorage
   - PlayerPoints
+  - Vault
+  - WorldEdit
 
 commands:
   "Miars":

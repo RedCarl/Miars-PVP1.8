@@ -13,17 +13,20 @@ import cn.mcarl.miars.core.manager.CitizensManager;
 import cn.mcarl.miars.core.manager.ConfigManager;
 import cn.mcarl.miars.core.manager.ServerManager;
 import cn.mcarl.miars.core.utils.BungeeApi;
+import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.core.utils.easyitem.ItemManager;
 import cn.mcarl.miars.core.utils.nametagapi.NametagManager;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import lombok.SneakyThrows;
 import net.luckperms.api.LuckPerms;
 import net.milkbowl.vault.economy.Economy;
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -73,6 +76,11 @@ public class MiarsCore extends JavaPlugin {
     private static Economy econ;
     public static Economy getEcon(){
         return econ;
+    }
+
+    private static WorldEditPlugin we;
+    public static WorldEditPlugin getWe(){
+        return we;
     }
 
     @SneakyThrows
@@ -126,6 +134,8 @@ public class MiarsCore extends JavaPlugin {
             log("未安装 ProtocolLib 不进行数据包注册...");
             log("若您想使用全部功能，请安装ProtocolLib！");
         }
+
+        we = (WorldEditPlugin) getServer().getPluginManager().getPlugin("WorldEdit");
 
         // register vault
         Bukkit.getServicesManager().register(

@@ -4,7 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @Data
 @AllArgsConstructor

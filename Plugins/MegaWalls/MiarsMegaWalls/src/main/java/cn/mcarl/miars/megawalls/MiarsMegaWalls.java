@@ -1,12 +1,11 @@
 package cn.mcarl.miars.megawalls;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
-import cn.mcarl.miars.core.listener.PlayerListener;
 import cn.mcarl.miars.megawalls.conf.PluginConfig;
 import cn.mcarl.miars.megawalls.game.listener.GamePlayerListener;
 import cn.mcarl.miars.megawalls.game.manager.GameManager;
 import cn.mcarl.miars.megawalls.manager.ConfigManager;
-import cn.mcarl.miars.megawalls.manager.ScoreBoardManager;
+import cn.mcarl.miars.megawalls.game.manager.ScoreBoardManager;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -36,7 +35,6 @@ public class MiarsMegaWalls extends JavaPlugin {
         log("正在初始化配置文件...");
         this.configManager = new ConfigManager(getDataFolder());
 
-
         if ("GAME".equals(PluginConfig.MODE.get())){
             log("初始化 MegaWalls 游戏数据...");
             GameManager.getInstance().initGameInfo();
@@ -46,6 +44,7 @@ public class MiarsMegaWalls extends JavaPlugin {
 
         log("正在初始化 ScoreBoard 数据...");
         ScoreBoardManager.getInstance().init();
+
 
         log("加载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 

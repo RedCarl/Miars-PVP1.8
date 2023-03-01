@@ -13,7 +13,6 @@
         <module>Plugins/MiarsPracticeFFA</module>
         <module>Plugins/MiarsCore</module>
         <module>Plugins/MiarsBungee</module>
-        <module>Plugins/MiarsAuthBungee</module>
         <module>Plugins/MiarsLobby</module>
         <module>Plugins/MiarsStorage</module>
         <module>Plugins/MiarsPractice</module>
@@ -67,6 +66,11 @@
         </repository>
 
         <repository>
+            <id>codemc-releases</id>
+            <url>https://repo.codemc.org/repository/maven-releases/</url>
+        </repository>
+
+        <repository>
             <!--采用我的私人依赖库,简单方便,但可能因为变故而无法使用-->
             <id>carm-repo</id>
             <name>Carm's Repo</name>
@@ -74,17 +78,21 @@
         </repository>
 
         <repository>
-            <id>cloudtile-repo</id>
-            <name>CloudTile's Repo</name>
-            <url>https://repo.cloudtile.net/repository/maven-public/</url>
-        </repository>
-
-        <repository>
-            <id>codemc-releases</id>
-            <url>https://repo.codemc.org/repository/maven-releases/</url>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
     </repositories>
-
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.intellectualsites.bom</groupId>
+                <artifactId>bom-1.18.x</artifactId>
+                <version>1.24</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
 
         <dependency>
@@ -229,6 +237,24 @@
             <artifactId>skinsrestorer-api</artifactId>
             <version>14.2.8</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fastasyncworldedit</groupId>
+            <artifactId>FastAsyncWorldEdit-Core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fastasyncworldedit</groupId>
+            <artifactId>FastAsyncWorldEdit-Bukkit</artifactId>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>FastAsyncWorldEdit-Core</artifactId>
+                    <groupId>*</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

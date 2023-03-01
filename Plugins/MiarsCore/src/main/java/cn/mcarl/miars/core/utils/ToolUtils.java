@@ -7,10 +7,19 @@ import cn.mcarl.miars.core.manager.ServerManager;
 import cn.mcarl.miars.storage.entity.MServerInfo;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.enums.FKitType;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Sound;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.function.pattern.Pattern;
+import com.sk89q.worldedit.function.pattern.RandomPattern;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.world.block.BaseBlock;
+import com.sk89q.worldedit.world.block.BlockState;
+import com.sk89q.worldedit.world.block.BlockType;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -127,9 +136,7 @@ public class ToolUtils {
      * 秒格式化
      */
     public static String getDateMode(long date){
-        if (date<=60) {
-            return String.valueOf(date);
-        }else if (date<3600) {
+        if (date<3600) {
             long m = date/60;
             long s = date%60;
             if (s<10){
@@ -310,6 +317,7 @@ public class ToolUtils {
 
         new BukkitRunnable()
         {
+            @Override
             public void run()
             {
                 float currentLevel = p.getExp();
@@ -317,8 +325,9 @@ public class ToolUtils {
                 currentLevel = p.getExp();
 
                 // Reached 0
-                if (currentLevel <= 0)
+                if (currentLevel <= 0) {
                     cancel();
+                }
             }
         }.runTaskTimer(MiarsCore.getInstance(), 0L, 1L);
 
@@ -417,5 +426,20 @@ public class ToolUtils {
         String code = name+port.substring(1,port.length())+pr.substring(0,1);
 
         return code.toUpperCase();
+    }
+
+    public static void reloadWallsBlocks(Location minCorner,Location maxCorner) {
+
+//        World bukkitWorld = minCorner.getWorld();
+//        com.sk89q.worldedit.world.World world = MiarsCore.getWe().getBukkitImplAdapter().adapt(bukkitWorld); // Get the WorldEdit world from the spigot world by using BukkitAdapter
+//        CuboidRegion selection = new CuboidRegion(world, BlockVector3.at(minCorner.getBlockX(), minCorner.getBlockY(), minCorner.getBlockZ()), BlockVector3.at(maxCorner.getBlockX(), maxCorner.getBlockY(), maxCorner.getBlockZ())); // make a selection with two points
+//        try (EditSession editSession = MiarsCore.getWe().getWorldEdit().getEditSessionFactory().getEditSession(world, -1)) { // get the edit session and use -1 for max blocks for no limit, this is a try with resources statement to ensure the edit session is closed after use
+//
+//            Region region = selection.getWalls();
+//            Pattern pattern = new BaseBlock(Material.STONE.getId(),0);
+//            editSession.setBlocks(region,pattern);
+//        } catch (MaxChangedBlocksException ex) {
+//            ex.printStackTrace();
+//        }
     }
 }

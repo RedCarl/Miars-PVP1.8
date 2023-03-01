@@ -56,6 +56,10 @@ public class ScoreBoardManager {
         board.updateTitle("&eLOBBY &8| &e"+ ServerInfoDataStorage.getInstance().getServerInfo().getNameCn());
         lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis())+" &8"+ ToolUtils.getServerCode());
         lines.add("");
+        lines.add("&f 等级 &7[1✩]");
+        lines.add("&f 进度 &a0&7/&b1k");
+        lines.add("&f &7■■■■■■■■■■");
+        lines.add("");
         lines.add("&f 玩家 &6"+p.getName());
         lines.add("&f 头衔 &6"+mRank.getPrefix());
         lines.add("");

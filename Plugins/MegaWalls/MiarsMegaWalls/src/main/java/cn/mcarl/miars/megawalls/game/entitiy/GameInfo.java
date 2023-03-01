@@ -19,4 +19,6 @@ public class GameInfo {
     private GameWall gameWall;
     private Map<TeamType,GameTeam> gameTeams = new HashMap<>();
     private Location lobbySpawn;
+    private boolean isWitherFury;
+    private GameTeam winTeam;
 }

@@ -11,7 +11,6 @@ import cn.mcarl.miars.megawalls.utils.PlayerUtils;
 import net.citizensnpcs.api.CitizensAPI;
 import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_8_R3.event.CraftEventFactory;
 import org.bukkit.entity.Player;
@@ -25,9 +24,6 @@ public class TeamWither extends EntityWither {
     private final GameInfo game = GameManager.getInstance().getGameInfo();
     private int bp;
     private GameTeam gameTeam = null;
-    private boolean warning = false;
-    private boolean deepRed = true;
-    private final HashMap damagerList = new HashMap();
     public TeamWither(World world) {
         super(world);
     }
@@ -36,7 +32,7 @@ public class TeamWither extends EntityWither {
         if (this.gameTeam == null) {
             this.gameTeam = gameTeam;
         }
-        this.setCustomName(ColorParser.parse(gameTeam.getTeamType().getTeamName() + "队 凋零"));
+        this.setCustomName(ColorParser.parse(gameTeam.getTeamType().getTeamName() + "队 凋灵"));
         this.setCustomNameVisible(true);
     }
 
@@ -46,6 +42,11 @@ public class TeamWither extends EntityWither {
 
     @Override
     public EntityLiving getGoalTarget() {
+
+        if (!game.isWitherFury()){
+            return null;
+        }
+
         for (Player player : PlayerUtils.getNearbyPlayers(this.getBukkitEntity().getLocation(), 10.0D)) {
             if (!CitizensAPI.getNPCRegistry().isNPC(player)) {
                 GamePlayer gamePlayer = GamePlayerManager.getInstance().getGamePlayer(player);
@@ -167,6 +168,13 @@ public class TeamWither extends EntityWither {
 
         this.getGameTeam().setWitherDead(true);
 
+        for (GamePlayer gamePlayer:this.getGameTeam().getGamePlayers()) {
+            gamePlayer.sendTitle(
+                    "&c你的凋灵被攻陷了！",
+                    "&7你不能再重生了"
+            );
+            gamePlayer.sendMessage("&7你的凋灵被攻陷了，你无法再重生了！");
+        }
         super.die();
     }
 
@@ -185,21 +193,10 @@ public class TeamWither extends EntityWither {
 
                 GamePlayer gamePlayer = GamePlayerManager.getInstance().getGamePlayer(player);
                 if (gamePlayer != null && !gamePlayer.isSpectator() && !this.getGameTeam().isInTeam(gamePlayer)) {
-                    if (!this.warning) {
-                        this.warning = true;
-                        this.deepRed = !this.deepRed;
-
-                        Bukkit.getScheduler().runTaskLater(MiarsMegaWalls.getInstance(), () -> {
-
-                        }, 11L);
-                        Bukkit.getScheduler().runTaskLater(MiarsMegaWalls.getInstance(), () -> {
-
-                        }, 22L);
-                        Bukkit.getScheduler().runTaskLater(MiarsMegaWalls.getInstance(), () -> TeamWither.this.warning = false, 60L);
+                    if (!game.isWitherFury()){
+                        return super.damageEntity(damagesource, f*2);
                     }
-
-                    this.damagerList.put(gamePlayer, (Float) this.damagerList.getOrDefault(gamePlayer, 0.0F) + f / 5.0F);
-                    return super.damageEntity(damagesource, f / 5.0F);
+                    return super.damageEntity(damagesource, f);
                 }
             }
 

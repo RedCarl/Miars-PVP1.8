@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.UUID;
 
@@ -33,5 +35,17 @@ public class GamePlayer {
     }
     public boolean isSpectator(){
         return Bukkit.getPlayer(this.uuid).getGameMode() == GameMode.SPECTATOR;
+    }
+
+    public void sendTitle(String s,String s1){
+        Bukkit.getPlayer(this.uuid).sendTitle(ColorParser.parse(s),ColorParser.parse(s1));
+    }
+
+    public boolean isOnline(){
+        return Bukkit.getPlayer(this.uuid).isOnline();
+    }
+
+    public void givePotionEffect(PotionEffect potionEffect){
+        Bukkit.getPlayer(this.uuid).addPotionEffect(potionEffect);
     }
 }
