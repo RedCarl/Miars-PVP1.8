@@ -2,7 +2,6 @@ package cn.mcarl.miars.core.listener;
 
 import cn.mcarl.miars.core.conf.PluginConfig;
 import cn.mcarl.miars.core.utils.MiarsUtil;
-import cn.mcarl.miars.core.utils.nametagapi.NametagManager;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;

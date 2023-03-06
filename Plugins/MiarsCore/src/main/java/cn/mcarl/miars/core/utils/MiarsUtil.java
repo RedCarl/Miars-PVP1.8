@@ -1,6 +1,5 @@
 package cn.mcarl.miars.core.utils;
 
-import cc.carm.lib.configuration.core.source.ConfigurationWrapper;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.utils.nametagapi.NametagManager;
 import cn.mcarl.miars.storage.entity.MPlayer;
@@ -106,7 +105,7 @@ public class MiarsUtil {
     public static ItemStack createSkull(String value) {
         ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (short)3);
         SkullMeta meta = (SkullMeta)item.getItemMeta();
-        GameProfile gp = new GameProfile(UUID.randomUUID(), (String)null);
+        GameProfile gp = new GameProfile(UUID.randomUUID(), null);
         gp.getProperties().put("textures", new Property("textures", value));
 
         try {

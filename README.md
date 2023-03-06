@@ -1,2 +1,0 @@
-# Miars
-Miars Server

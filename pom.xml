@@ -21,7 +21,6 @@
         <module>Plugins/MiarsPay</module>
         <module>Plugins/MegaWalls/MiarsMegaWalls</module>
         <module>Plugins/MiarsSkyPVP</module>
-        <module>Server/NachoSpigot</module>
     </modules>
 
     <properties>
@@ -98,16 +97,16 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
+            <groupId>dev.cobblesword.nachospigot</groupId>
+            <artifactId>api</artifactId>
             <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>craftbukkit</artifactId>
-            <version>1.8.8-R0.1-20190527.160046-7</version>
+            <groupId>dev.cobblesword.nachospigot</groupId>
+            <artifactId>nachospigot</artifactId>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -179,6 +178,12 @@
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>bukkit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!--大全集版本,包含项目内所有模块-->
@@ -239,24 +244,6 @@
             <artifactId>skinsrestorer-api</artifactId>
             <version>14.2.8</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fastasyncworldedit</groupId>
-            <artifactId>FastAsyncWorldEdit-Core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fastasyncworldedit</groupId>
-            <artifactId>FastAsyncWorldEdit-Bukkit</artifactId>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>FastAsyncWorldEdit-Core</artifactId>
-                    <groupId>*</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 
@@ -339,12 +326,12 @@
                                         <include name="MiarsSkyPVP-*.jar" />
                                     </fileset>
                                 </copy>
-                                <copy todir="libs/" overwrite="true">
-                                    <fileset dir="Server/NachoSpigot/NachoSpigot-Server/target"
-                                             erroronmissingdir="false">
-                                        <include name="NachoSpigot-*.jar" />
-                                    </fileset>
-                                </copy>
+<!--                                <copy todir="libs/" overwrite="true">-->
+<!--                                    <fileset dir="Server/NachoSpigot/NachoSpigot-Server/target"-->
+<!--                                             erroronmissingdir="false">-->
+<!--                                        <include name="NachoSpigot.jar" />-->
+<!--                                    </fileset>-->
+<!--                                </copy>-->
                             </target>
                         </configuration>
                         <goals>

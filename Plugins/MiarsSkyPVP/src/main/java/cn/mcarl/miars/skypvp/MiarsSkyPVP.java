@@ -42,7 +42,7 @@ public class MiarsSkyPVP extends JavaPlugin {
         regCommand("SkyPVP",new SkyPVPCommand());
 
         log("正在计分板...");
-        ScoreBoardManager.getInstance();
+        ScoreBoardManager.getInstance().init();
 
         log("加载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 
