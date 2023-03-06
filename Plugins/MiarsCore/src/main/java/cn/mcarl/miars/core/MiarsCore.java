@@ -5,6 +5,7 @@ import cc.carm.lib.easyplugin.utils.ColorParser;
 import cc.carm.lib.easyplugin.utils.MessageUtils;
 import cn.mcarl.miars.core.command.MiarsCommand;
 import cn.mcarl.miars.core.command.PluginsCommand;
+import cn.mcarl.miars.core.conf.PluginConfig;
 import cn.mcarl.miars.core.hooker.MiarsEconomy;
 import cn.mcarl.miars.core.hooker.PAPIExpansion;
 import cn.mcarl.miars.core.listener.CitizensListener;
@@ -78,11 +79,6 @@ public class MiarsCore extends JavaPlugin {
         return econ;
     }
 
-    private static WorldEditPlugin we;
-    public static WorldEditPlugin getWe(){
-        return we;
-    }
-
     @SneakyThrows
     @Override
     public void onEnable() {
@@ -135,8 +131,6 @@ public class MiarsCore extends JavaPlugin {
             log("若您想使用全部功能，请安装ProtocolLib！");
         }
 
-        we = (WorldEditPlugin) getServer().getPluginManager().getPlugin("WorldEdit");
-
         // register vault
         Bukkit.getServicesManager().register(
                 Economy.class,
@@ -170,8 +164,10 @@ public class MiarsCore extends JavaPlugin {
         log("正在初始化 NPC 模块...");
         CitizensManager.getInstance().init();
 
-        log("正在初始化 NameTag 模块...");
-        NametagManager.load();
+        if (PluginConfig.SITE.NAME_TAG.get()){
+            log("正在初始化 NameTag 模块...");
+            NametagManager.load();
+        }
 
         log("当前服务端版本 "+Bukkit.getServer().getVersion());
 

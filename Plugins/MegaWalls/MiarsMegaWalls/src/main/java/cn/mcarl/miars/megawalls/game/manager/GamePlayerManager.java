@@ -29,11 +29,10 @@ public class GamePlayerManager {
             return null;
         }
 
-        maps.put(player.getUniqueId(),new GamePlayer(
+        maps.put(
                 player.getUniqueId(),
-                player.getName(),
-                null
-        ));
+                new GamePlayer(player.getUniqueId())
+        );
 
         return maps.get(player.getUniqueId());
     }

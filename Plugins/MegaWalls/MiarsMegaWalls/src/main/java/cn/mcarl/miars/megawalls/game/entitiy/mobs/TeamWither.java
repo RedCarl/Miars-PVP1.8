@@ -1,7 +1,6 @@
 package cn.mcarl.miars.megawalls.game.entitiy.mobs;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
-import cn.mcarl.miars.megawalls.MiarsMegaWalls;
 import cn.mcarl.miars.megawalls.game.entitiy.GameInfo;
 import cn.mcarl.miars.megawalls.game.entitiy.GamePlayer;
 import cn.mcarl.miars.megawalls.game.entitiy.GameTeam;
@@ -10,14 +9,12 @@ import cn.mcarl.miars.megawalls.game.manager.GamePlayerManager;
 import cn.mcarl.miars.megawalls.utils.PlayerUtils;
 import net.citizensnpcs.api.CitizensAPI;
 import net.minecraft.server.v1_8_R3.*;
-import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_8_R3.event.CraftEventFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 
-import java.util.HashMap;
 import java.util.Iterator;
 
 public class TeamWither extends EntityWither {

@@ -76,20 +76,6 @@ public final class NametagManager {
             getTeamInfo(ColorParser.parse(rank.getPrefix()),"");
         }
 
-
-//        for (Player player:Bukkit.getOnlinePlayers()){
-//            MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(player);
-//            MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
-//
-//
-//            NametagManager.sendTeamsToPlayer(player);
-////            NametagManager.clear(player.getName());
-////            NametagAPI.updateNametagHard(
-////                    player.getName(),
-////                    ColorParser.parse(mRank.getPrefix()),
-////                    null
-////            );
-//        }
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -97,16 +83,16 @@ public final class NametagManager {
                     MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(player);
                     MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
 
-                    //NametagManager.clear(player.getName());
+                    clear(player.getName());
 
-                    NametagAPI.updateNametagHard(
+                    overlap(
                             player.getName(),
                             ColorParser.parse(mRank.getPrefix()),
-                            null
+                            ColorParser.parse(mRank.getSuffix())
                     );
                 }
             }
-        }.runTaskTimer(plugin,0,20);
+        }.runTaskTimer(plugin,0,40);
     }
 
     static boolean isManaged(String player) {
@@ -165,7 +151,7 @@ public final class NametagManager {
      * @param prefix The prefix to set for the given player.
      * @param suffix The suffix to set for the given player.
      */
-    static void overlap(String player, String prefix, String suffix) {
+    public static void overlap(String player, String prefix, String suffix) {
         if (prefix == null) {
             prefix = "";
         }
@@ -488,12 +474,12 @@ public final class NametagManager {
     }
 
     private static void register(TeamInfo team) {
-        teams.put(team, new ArrayList<String>());
+        teams.put(team, new ArrayList<>());
         sendPacketsAddTeam(team);
     }
 
     private static boolean removeTeam(String name) {
-        for (TeamInfo team : teams.keySet().toArray(new TeamInfo[teams.size()])) {
+        for (TeamInfo team : teams.keySet().toArray(new TeamInfo[0])) {
             if (team.getName().equals(name)) {
                 removeTeam(team);
                 return true;
@@ -547,7 +533,7 @@ public final class NametagManager {
         TeamInfo[] list = new TeamInfo[teams.size()];
         int at = 0;
 
-        for (TeamInfo team : teams.keySet().toArray(new TeamInfo[teams.size()])) {
+        for (TeamInfo team : teams.keySet().toArray(new TeamInfo[0])) {
             list[at] = team;
             at++;
         }

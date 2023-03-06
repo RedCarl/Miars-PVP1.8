@@ -4,6 +4,8 @@ import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.megawalls.MiarsMegaWalls;
+import cn.mcarl.miars.megawalls.classes.Classes;
+import cn.mcarl.miars.megawalls.classes.ClassesManager;
 import cn.mcarl.miars.megawalls.conf.PluginConfig;
 import cn.mcarl.miars.megawalls.game.entitiy.GameInfo;
 import cn.mcarl.miars.megawalls.game.entitiy.GamePlayer;
@@ -11,8 +13,10 @@ import cn.mcarl.miars.megawalls.game.entitiy.GameTeam;
 import cn.mcarl.miars.megawalls.game.entitiy.GameWall;
 import cn.mcarl.miars.megawalls.game.entitiy.enums.GameState;
 import cn.mcarl.miars.megawalls.game.entitiy.enums.TeamType;
+import cn.mcarl.miars.megawalls.stats.ClassesStats;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -54,8 +58,7 @@ public class GameManager {
         // 初始化墙
         gameInfo.setGameWall(new GameWall(
                 PluginConfig.WALL.MIN.get(),
-                PluginConfig.WALL.MAX.get(),
-                false
+                PluginConfig.WALL.MAX.get()
         ));
 
         // 初始化队伍
@@ -67,11 +70,12 @@ public class GameManager {
                         PluginConfig.RED_TEAM.WITHER_SPAWN.get(),
                         null,
                         false,
+                        PluginConfig.RED_TEAM.CASTLE.MIN.get(),
+                        PluginConfig.RED_TEAM.CASTLE.MAX.get(),
                         PluginConfig.RED_TEAM.DOOR.MIN.get(),
                         PluginConfig.RED_TEAM.DOOR.MAX.get(),
                         PluginConfig.RED_TEAM.DOOR.MATERIAL.get(),
-                        PluginConfig.RED_TEAM.CASTLE.MIN.get(),
-                        PluginConfig.RED_TEAM.CASTLE.MAX.get()
+                        false
                 )
         );
         gameInfo.getGameTeams().put(TeamType.YELLOW,
@@ -82,11 +86,12 @@ public class GameManager {
                         PluginConfig.YELLOW_TEAM.WITHER_SPAWN.get(),
                         null,
                         false,
+                        PluginConfig.YELLOW_TEAM.CASTLE.MIN.get(),
+                        PluginConfig.YELLOW_TEAM.CASTLE.MAX.get(),
                         PluginConfig.YELLOW_TEAM.DOOR.MIN.get(),
                         PluginConfig.YELLOW_TEAM.DOOR.MAX.get(),
                         PluginConfig.YELLOW_TEAM.DOOR.MATERIAL.get(),
-                        PluginConfig.YELLOW_TEAM.CASTLE.MIN.get(),
-                        PluginConfig.YELLOW_TEAM.CASTLE.MAX.get()
+                false
                 )
         );
         gameInfo.getGameTeams().put(TeamType.BLUE,
@@ -97,11 +102,12 @@ public class GameManager {
                         PluginConfig.BLUE_TEAM.WITHER_SPAWN.get(),
                         null,
                         false,
+                        PluginConfig.BLUE_TEAM.CASTLE.MIN.get(),
+                        PluginConfig.BLUE_TEAM.CASTLE.MAX.get(),
                         PluginConfig.BLUE_TEAM.DOOR.MIN.get(),
                         PluginConfig.BLUE_TEAM.DOOR.MAX.get(),
                         PluginConfig.BLUE_TEAM.DOOR.MATERIAL.get(),
-                        PluginConfig.BLUE_TEAM.CASTLE.MIN.get(),
-                        PluginConfig.BLUE_TEAM.CASTLE.MAX.get()
+                        false
                 )
         );
         gameInfo.getGameTeams().put(TeamType.GREEN,
@@ -112,11 +118,12 @@ public class GameManager {
                         PluginConfig.GREEN_TEAM.WITHER_SPAWN.get(),
                         null,
                         false,
+                        PluginConfig.GREEN_TEAM.CASTLE.MIN.get(),
+                        PluginConfig.GREEN_TEAM.CASTLE.MAX.get(),
                         PluginConfig.GREEN_TEAM.DOOR.MIN.get(),
                         PluginConfig.GREEN_TEAM.DOOR.MAX.get(),
                         PluginConfig.GREEN_TEAM.DOOR.MATERIAL.get(),
-                        PluginConfig.GREEN_TEAM.CASTLE.MIN.get(),
-                        PluginConfig.GREEN_TEAM.CASTLE.MAX.get()
+                        false
                 )
         );
 
@@ -150,6 +157,20 @@ public class GameManager {
                 for (GamePlayer gamePlayer : gameTeam.getGamePlayers()) {
                     gamePlayer.tp(gameTeam.getSpawn());
                     gamePlayer.clearInv();
+                    gamePlayer.createEnderChest();
+
+                    Player player = gamePlayer.getPlayer();
+                    player.getInventory().clear();
+                    player.getInventory().setArmorContents(null);
+                    player.setLevel(0);
+                    player.setExp(0.0F);
+                    player.setGameMode(GameMode.SURVIVAL);
+
+                    Classes classes = ClassesManager.getClassesByName(gamePlayer.getPlayerStats().getClasses());
+                    ClassesStats classesStats = gamePlayer.getPlayerStats().getClassesStats(classes);
+                    player.setMaxHealth(classesStats.getLevel() >= 2 ? 44.0D : 40.0D);
+                    player.setHealth(player.getMaxHealth());
+                    ClassesManager.giveItems(gamePlayer);
 
                     gamePlayer.sendTitle(
                             "&e&l超级战墙 &8| &e&l磐石",
@@ -195,10 +216,7 @@ public class GameManager {
                 if (wallTime!=0){
                     wallTime--;
                 }else {
-                    if (!gameInfo.getGameWall().isCollapse()){
-                        ToolUtils.reloadWallsBlocks(gameInfo.getGameWall().getMinCorner(),gameInfo.getGameWall().getMaxCorner());
-                    }
-                    gameInfo.getGameWall().setCollapse(true);
+                    gameInfo.getGameWall().collapse();
                     if (witherFury!=0){
                         witherFury--;
                         gameInfo.setWitherFury(true);

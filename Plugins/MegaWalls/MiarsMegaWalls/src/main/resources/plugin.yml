@@ -9,6 +9,7 @@ api-version: 1.8
 
 depend:
   - MiarsCore
+  - SkinsRestorer
 
 commands:
   "MegaWalls":

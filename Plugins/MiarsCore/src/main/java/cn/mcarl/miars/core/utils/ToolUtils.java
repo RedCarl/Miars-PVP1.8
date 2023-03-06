@@ -427,19 +427,4 @@ public class ToolUtils {
 
         return code.toUpperCase();
     }
-
-    public static void reloadWallsBlocks(Location minCorner,Location maxCorner) {
-
-//        World bukkitWorld = minCorner.getWorld();
-//        com.sk89q.worldedit.world.World world = MiarsCore.getWe().getBukkitImplAdapter().adapt(bukkitWorld); // Get the WorldEdit world from the spigot world by using BukkitAdapter
-//        CuboidRegion selection = new CuboidRegion(world, BlockVector3.at(minCorner.getBlockX(), minCorner.getBlockY(), minCorner.getBlockZ()), BlockVector3.at(maxCorner.getBlockX(), maxCorner.getBlockY(), maxCorner.getBlockZ())); // make a selection with two points
-//        try (EditSession editSession = MiarsCore.getWe().getWorldEdit().getEditSessionFactory().getEditSession(world, -1)) { // get the edit session and use -1 for max blocks for no limit, this is a try with resources statement to ensure the edit session is closed after use
-//
-//            Region region = selection.getWalls();
-//            Pattern pattern = new BaseBlock(Material.STONE.getId(),0);
-//            editSession.setBlocks(region,pattern);
-//        } catch (MaxChangedBlocksException ex) {
-//            ex.printStackTrace();
-//        }
-    }
 }

@@ -56,7 +56,7 @@ public class PlayerListener implements Listener {
                 @Override
                 public void run() {
                     if (!(state.getState()>=2)){
-                        ServerManager.getInstance().sendPlayerToServer(player.getName(),"practice");
+                        ServerManager.getInstance().sendPlayerToServer(player.getName(),"duelgame");
                     }
                     cancel();
                 }
@@ -161,7 +161,7 @@ public class PlayerListener implements Listener {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        ServerManager.getInstance().sendPlayerToServer(attackPlayer.getName(),"practice");
+                        ServerManager.getInstance().sendPlayerToServer(attackPlayer.getName(),"duelgame");
                     }
                 }.runTaskLaterAsynchronously(MiarsPractice.getInstance(),100);
             }
@@ -252,8 +252,8 @@ public class PlayerListener implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                ServerManager.getInstance().sendPlayerToServer(deathPlayer.getName(),"practice");
-                ServerManager.getInstance().sendPlayerToServer(attackPlayer.getName(),"practice");
+                ServerManager.getInstance().sendPlayerToServer(deathPlayer.getName(),"duelgame");
+                ServerManager.getInstance().sendPlayerToServer(attackPlayer.getName(),"duelgame");
             }
         }.runTaskLaterAsynchronously(MiarsPractice.getInstance(),100);
 

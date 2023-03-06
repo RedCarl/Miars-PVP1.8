@@ -1,11 +1,17 @@
 package cn.mcarl.miars.core.listener;
 
+import cn.mcarl.miars.core.conf.PluginConfig;
 import cn.mcarl.miars.core.utils.MiarsUtil;
+import cn.mcarl.miars.core.utils.nametagapi.NametagManager;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
+import org.bukkit.Effect;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -23,7 +29,10 @@ public class PlayerListener implements Listener {
         MPlayerDataStorage.getInstance().checkMPlayer(player);
 
         player.setGameMode(GameMode.SURVIVAL);
-        MiarsUtil.initPlayerNametag(player);
+
+        if (PluginConfig.SITE.NAME_TAG.get()){
+            MiarsUtil.initPlayerNametag(player);
+        }
 
         // 禁止玩家进入消息
         e.setJoinMessage(null);
@@ -40,37 +49,22 @@ public class PlayerListener implements Listener {
     }
 
 
-//    @EventHandler
-//    public void ServerCommandEvent(ServerCommandEvent e){
-//        System.out.println(e.getCommand());
-//        if ("pl".equalsIgnoreCase(e.getCommand()) || "plugins".equalsIgnoreCase(e.getCommand())){
-//            MiarsUtil.getPlugins(e.getSender());
-//            e.setCancelled(true);
-//        }
-//        if ("ver".equalsIgnoreCase(e.getCommand()) || "version".equalsIgnoreCase(e.getCommand())){
-//            MiarsUtil.getVersion(e.getSender());
-//            e.setCancelled(true);
-//        }
-//        if ("bukkit:pl".equalsIgnoreCase(e.getCommand()) || "bukkit:plugins".equalsIgnoreCase(e.getCommand())){
-//            MiarsUtil.getPlugins(e.getSender());
-//            e.setCancelled(true);
-//        }
-//        if ("bukkit:ver".equalsIgnoreCase(e.getCommand()) || "bukkit:version".equalsIgnoreCase(e.getCommand())){
-//            MiarsUtil.getVersion(e.getSender());
-//            e.setCancelled(true);
-//        }
-//    }
-//
-//    @EventHandler
-//    public void PlayerCommandSendEvent(PlayerCommandSendEvent e){
-//        System.out.println(e.getCommands());
-//        for (String s:e.getCommands()){
-//            if (s.toLowerCase().contains("pl") || s.toLowerCase().contains("plugins")){
-//                MiarsUtil.getPlugins(e.getPlayer());
-//            }
-//            if (s.toLowerCase().contains("ver") || s.toLowerCase().contains("version")){
-//                MiarsUtil.getVersion(e.getPlayer());
-//            }
-//        }
-//    }
+    @EventHandler
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            if (event.getDamage() == 0.0D) {
+                return;
+            }
+            Location location = player.getLocation();
+            location.getWorld().playEffect(location, Effect.STEP_SOUND, 152);
+        }
+        if (!(event.getEntity() instanceof Player)) {
+            if (event.getDamage() == 0.0D) {
+                return;
+            }
+            Entity entity = event.getEntity();
+            Location location = entity.getLocation();
+            location.getWorld().playEffect(location, Effect.STEP_SOUND, 152);
+        }
+    }
 }

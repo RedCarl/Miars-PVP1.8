@@ -1,0 +1,18 @@
+name: MiarsSkyPVP
+main: cn.mcarl.miars.skypvp.MiarsSkyPVP
+version: ${project.version}
+
+authors:
+  - Red_Carl
+
+api-version: 1.8
+
+depend:
+  - MiarsCore
+
+commands:
+  "SkyPVP":
+    description: "主指令"
+    aliases:
+      - skypvp
+      - sp

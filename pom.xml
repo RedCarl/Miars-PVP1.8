@@ -20,6 +20,8 @@
         <module>Plugins/MiarsFaction</module>
         <module>Plugins/MiarsPay</module>
         <module>Plugins/MegaWalls/MiarsMegaWalls</module>
+        <module>Plugins/MiarsSkyPVP</module>
+        <module>Server/NachoSpigot</module>
     </modules>
 
     <properties>
@@ -329,6 +331,18 @@
                                     <fileset dir="Plugins/MegaWalls/MiarsMegaWalls/target"
                                              erroronmissingdir="false">
                                         <include name="MiarsMegaWalls-*.jar" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="libs/" overwrite="true">
+                                    <fileset dir="Plugins/MiarsSkyPVP/target"
+                                             erroronmissingdir="false">
+                                        <include name="MiarsSkyPVP-*.jar" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="libs/" overwrite="true">
+                                    <fileset dir="Server/NachoSpigot/NachoSpigot-Server/target"
+                                             erroronmissingdir="false">
+                                        <include name="NachoSpigot-*.jar" />
                                     </fileset>
                                 </copy>
                             </target>

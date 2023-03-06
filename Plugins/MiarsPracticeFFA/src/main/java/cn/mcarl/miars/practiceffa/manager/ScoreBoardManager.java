@@ -67,7 +67,7 @@ public class ScoreBoardManager {
                 lines.add("&7   Name: &c"+opponent.getName());
                 lines.add("&7   K/D: &c"+ FFAUtil.getPlayerKD(FPlayerDataStorage.getInstance().getFPlayer(opponent)));
                 lines.add("&7   Health: &c" + ToolUtils.decimalFormat(opponent.getHealth(), 2));
-                lines.add("§e");
+                lines.add("&e");
                 lines.add("&7   Fighting... (&c" + CombatManager.getInstance().getLastSecond(p)+"&7)");
             }
 

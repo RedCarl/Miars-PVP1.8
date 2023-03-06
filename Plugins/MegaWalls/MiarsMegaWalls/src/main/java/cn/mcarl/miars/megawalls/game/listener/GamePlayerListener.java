@@ -1,6 +1,9 @@
 package cn.mcarl.miars.megawalls.game.listener;
 
 import cn.mcarl.miars.core.utils.ToolUtils;
+import cn.mcarl.miars.megawalls.MiarsMegaWalls;
+import cn.mcarl.miars.megawalls.classes.Classes;
+import cn.mcarl.miars.megawalls.classes.ClassesManager;
 import cn.mcarl.miars.megawalls.conf.PluginConfig;
 import cn.mcarl.miars.megawalls.game.entitiy.GamePlayer;
 import cn.mcarl.miars.megawalls.game.entitiy.GameTeam;
@@ -11,11 +14,13 @@ import cn.mcarl.miars.megawalls.game.item.ClassesSelect;
 import cn.mcarl.miars.megawalls.game.manager.GameManager;
 import cn.mcarl.miars.megawalls.game.manager.GamePlayerManager;
 import cn.mcarl.miars.megawalls.game.manager.ScoreBoardManager;
+import cn.mcarl.miars.megawalls.utils.PlayerUtils;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -27,22 +32,21 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 
 public class GamePlayerListener implements Listener {
+
     @EventHandler
     public void PlayerJoinEvent(PlayerJoinEvent e){
         Player player = e.getPlayer();
         ToolUtils.playerInitialize(player);
 
+        GamePlayer gamePlayer = GamePlayerManager.getInstance().getGamePlayer(player);
+        gamePlayer.getPlayerStats().update();
         // 判断房间的状态
         switch (GameManager.getInstance().getGameInfo().getGameState()){
             case WAIT, READY -> {
                 // 初始化玩家身份
-                GamePlayer gamePlayer = GamePlayerManager.getInstance().getGamePlayer(player);
                 gamePlayer.sendMessageAll(
                         MRankDataStorage.getInstance().getMRank(
                                 MPlayerDataStorage.getInstance().getMPlayer(player).getRank()
@@ -52,13 +56,32 @@ public class GamePlayerListener implements Listener {
                 ScoreBoardManager.getInstance().joinPlayer(player);
                 player.teleport(GameManager.getInstance().getGameInfo().getLobbySpawn());
 
+                player.setGameMode(GameMode.ADVENTURE);
                 player.getInventory().clear();
+                player.getInventory().setArmorContents(null);
+                player.getActivePotionEffects().clear();
+                player.setMaxHealth(20.0D);
+                player.setHealth(20.0D);
+                player.setFoodLevel(20);
+                player.setFireTicks(0);
+                player.setLevel(0);
+                player.setExp(0.0F);
 
                 new ClassesSelect().give(player,0);
                 new ClassesHead().give(player,1);
                 new BackLobby().give(player,8);
+
+                if (gamePlayer.getPlayerStats().getClasses()==null|| "".equals(gamePlayer.getPlayerStats().getClasses())){
+                    gamePlayer.getPlayerStats().setClasses("Cow");
+                }
+                System.out.println(gamePlayer.getPlayerStats().getClasses());
+                Classes classes = ClassesManager.getClassesByName(gamePlayer.getPlayerStats().getClasses());
+
+                Bukkit.getScheduler().runTaskLaterAsynchronously(MiarsMegaWalls.getInstance(), () -> {
+                    PlayerUtils.skinChange(player, classes.getDefaultSkin().getValue(), classes.getDefaultSkin().getSignature());
+                }, 1L);
             }
-            case CONDUCT -> {
+            case START,CONDUCT -> {
                 player.kickPlayer("您无法中途进入房间。");
             }
             case END -> {
@@ -262,4 +285,5 @@ public class GamePlayerListener implements Listener {
     public void onEntityExplode(EntityExplodeEvent e) {
         e.setCancelled(true);
     }
+
 }

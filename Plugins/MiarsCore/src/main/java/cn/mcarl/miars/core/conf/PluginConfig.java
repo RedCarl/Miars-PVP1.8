@@ -15,6 +15,13 @@ public class PluginConfig extends ConfigurationRoot {
         @HeaderComment({"代理URL"})
         public static final ConfigValue<String> URL = ConfiguredValue.of(String.class, "proxy url");
     }
+    @HeaderComment({"插件配置文件"})
+    public static final class SITE extends ConfigurationRoot {
+
+        @HeaderComment({"是否开启NameTag"})
+        public static final ConfigValue<Boolean> NAME_TAG = ConfiguredValue.of(Boolean.class, true);
+    }
+
 
 
 }

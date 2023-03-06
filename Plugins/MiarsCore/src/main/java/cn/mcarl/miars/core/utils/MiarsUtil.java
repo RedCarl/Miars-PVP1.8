@@ -1,7 +1,7 @@
 package cn.mcarl.miars.core.utils;
 
+import cc.carm.lib.configuration.core.source.ConfigurationWrapper;
 import cc.carm.lib.easyplugin.utils.ColorParser;
-import cn.mcarl.miars.core.utils.nametagapi.NametagAPI;
 import cn.mcarl.miars.core.utils.nametagapi.NametagManager;
 import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
@@ -10,6 +10,7 @@ import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -17,12 +18,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 public class MiarsUtil {
     /**
@@ -96,10 +95,10 @@ public class MiarsUtil {
 
         NametagManager.sendTeamsToPlayer(player);
         NametagManager.clear(player.getName());
-        NametagAPI.updateNametagHard(
+        NametagManager.overlap(
                 player.getName(),
                 ColorParser.parse(mRank.getPrefix()),
-               null
+                ColorParser.parse(mRank.getSuffix())
         );
 
     }
@@ -119,5 +118,17 @@ public class MiarsUtil {
 
         item.setItemMeta(meta);
         return item;
+    }
+
+    public static Location locationParse(@NotNull Object section) {
+        Map<String, Object> map = (Map<String, Object>) section;
+        return new Location(
+                Bukkit.getWorld((String) map.get("world")),
+                (Double) map.get("x"),
+                (Double) map.get("y"),
+                (Double) map.get("z"),
+                ((Double) (map.get("yaw") != null ? map.get("yaw") : 0)).floatValue(),
+                ((Double) (map.get("pitch") != null ? map.get("pitch") : 0)).floatValue()
+        );
     }
 }

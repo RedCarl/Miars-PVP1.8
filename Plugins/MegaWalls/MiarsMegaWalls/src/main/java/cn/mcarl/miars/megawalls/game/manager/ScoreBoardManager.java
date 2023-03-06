@@ -81,7 +81,7 @@ public class ScoreBoardManager {
                 }
                 if (GameManager.getInstance().getReadyTime()==0){
                     gamePlayer.givePotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING,(int) (PluginConfig.WALL_TIME.get()*20),1));
-                    ToolUtils.reloadWallsBlocks(meGameTeam.getDoorMin(),meGameTeam.getDoorMax());
+                    meGameTeam.collapse();
                     gamePlayer.sendMessage("&7做好防御准备迎接敌人的袭击。");
                 }
             }else if (gameInfo.getGameState() == GameState.CONDUCT && !gameInfo.getGameWall().isCollapse()){

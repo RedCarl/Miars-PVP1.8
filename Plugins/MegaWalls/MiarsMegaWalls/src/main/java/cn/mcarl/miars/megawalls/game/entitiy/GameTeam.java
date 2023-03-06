@@ -16,6 +16,8 @@ import net.minecraft.server.v1_8_R3.DamageSource;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wither;
@@ -30,65 +32,58 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GameTeam {
-
-    /**
-     * 队伍的颜色
-     */
+    
     private TeamType teamType;
-
-    /**
-     * 队伍玩家
-     */
     private List<GamePlayer> gamePlayers = new ArrayList<>();
-
-    /**
-     * 出生点
-     */
     private Location spawn;
 
-    /**
-     * 凋灵生成的位置
-     */
+    public GameTeam(TeamType teamType,
+                    List<GamePlayer> gamePlayers,
+                    Location spawn,
+                    Location witherLocation,
+                    TeamWither teamWither,
+                    boolean isWitherDead,
+                    Location castleMin,
+                    Location castleMax,
+                    Location doorMin,
+                    Location doorMax,
+                    String material,
+                    boolean collapse
+    ) {
+        this.teamType = teamType;
+        this.gamePlayers = gamePlayers;
+        this.spawn = spawn;
+        this.witherLocation = witherLocation;
+        this.teamWither = teamWither;
+        this.isWitherDead = isWitherDead;
+        this.castleMin = castleMin;
+        this.castleMax = castleMax;
+        this.doorMin = doorMin;
+        this.doorMax = doorMax;
+        this.material = material;
+        this.collapse = collapse;
+        
+        if (doorMin != null && doorMax != null && doorMin.getWorld().getName().equals(doorMax.getWorld().getName())) {
+            this.world = doorMin.getWorld();
+            this.setMinMax(doorMin, doorMax);
+            this.loadBlocks();
+        }
+    }
+
     private Location witherLocation;
-
-    /**
-     * 凋灵实体
-     */
     private TeamWither teamWither;
-
-    /**
-     * 凋灵是否死亡
-     */
     private boolean isWitherDead;
-
-
-
-    /**
-     * 出生点门最小点
-     */
-    private Location doorMin;
-
-
-    /**
-     * 出生点门最大点
-     */
-    private Location doorMax;
-
-    /**
-     * 门的材质
-     */
-    private String material;
-
-    /**
-     * 城堡最小点
-     */
     private Location castleMin;
-
-
-    /**
-     * 城堡最大点
-     */
     private Location castleMax;
+
+    
+    
+    private Location doorMin;
+    private Location doorMax;
+    private String material;
+    private boolean collapse;
+    private World world;
+    private final List<Block> blocks = new ArrayList<>();
 
 
     public void spawnWither(GameTeam gameTeam){
@@ -164,5 +159,65 @@ public class GameTeam {
         }
         return list;
     }
+ 
+    private void setMinMax(Location pos1, Location pos2) {
+        this.doorMin = this.getMinimumCorner(pos1, pos2);
+        this.doorMax = this.getMaximumCorner(pos1, pos2);
+    }
 
+    private Location getMinimumCorner(Location pos1, Location pos2) {
+        return new Location(this.world, Math.min(pos1.getBlockX(), pos2.getBlockX()), Math.min(pos1.getBlockY(), pos2.getBlockY()), Math.min(pos1.getBlockZ(), pos2.getBlockZ()));
+    }
+
+    private Location getMaximumCorner(Location pos1, Location pos2) {
+        return new Location(this.world, Math.max(pos1.getBlockX(), pos2.getBlockX()), Math.max(pos1.getBlockY(), pos2.getBlockY()), Math.max(pos1.getBlockZ(), pos2.getBlockZ()));
+    }
+
+    public List<Block> getBlocks() {
+        return this.blocks;
+    }
+
+    private void loadBlocks() {
+
+        for (int y = this.doorMin.getBlockY(); y <= this.doorMax.getBlockY(); y++) {
+            for (int x = this.doorMin.getBlockX(); x <= this.doorMax.getBlockX() ; x++) {
+                Location loc = new Location(this.world, x, y, doorMin.getBlockZ());
+                if (loc.getBlock().getType() == Material.getMaterial(this.material)) {
+                    this.blocks.add(loc.getBlock());
+                }
+            }
+
+            for (int z = this.doorMin.getBlockZ(); z <= this.doorMax.getBlockZ() ; z++) {
+                Location loc = new Location(this.world, doorMin.getX(), y, z);
+                if (loc.getBlock().getType() == Material.getMaterial(this.material)) {
+                    this.blocks.add(loc.getBlock());
+                }
+            }
+
+            for (int x = this.doorMax.getBlockX(); x >= this.doorMin.getBlockX() ; x--) {
+                Location loc = new Location(this.world, x, y, doorMax.getBlockZ());
+                if (loc.getBlock().getType() == Material.getMaterial(this.material)) {
+                    this.blocks.add(loc.getBlock());
+                }
+            }
+
+            for (int z = this.doorMax.getBlockZ(); z >= this.doorMin.getBlockZ() ; z--) {
+                Location loc = new Location(this.world, doorMax.getBlockX(), y, z);
+                if (loc.getBlock().getType() == Material.getMaterial(this.material)) {
+                    this.blocks.add(loc.getBlock());
+                }
+            }
+        }
+
+    }
+
+    public void collapse() {
+        if (!this.collapse) {
+            this.collapse = true;
+
+            for (Block block : this.blocks) {
+                this.world.getBlockAt(block.getLocation()).setType(Material.AIR);
+            }
+        }
+    }
 }

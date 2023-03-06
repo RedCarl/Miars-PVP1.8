@@ -1,16 +1,22 @@
 package cn.mcarl.miars.megawalls;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.megawalls.classes.ClassesManager;
 import cn.mcarl.miars.megawalls.conf.PluginConfig;
 import cn.mcarl.miars.megawalls.game.listener.GamePlayerListener;
 import cn.mcarl.miars.megawalls.game.manager.GameManager;
 import cn.mcarl.miars.megawalls.manager.ConfigManager;
 import cn.mcarl.miars.megawalls.game.manager.ScoreBoardManager;
+import com.comphenix.protocol.ProtocolLibrary;
 import lombok.SneakyThrows;
+import net.skinsrestorer.api.SkinsRestorerAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.Listener;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Random;
 
 public class MiarsMegaWalls extends JavaPlugin {
 
@@ -22,7 +28,22 @@ public class MiarsMegaWalls extends JavaPlugin {
     public ConfigManager getConfigManager(){
         return configManager;
     };
+    private SkinsRestorerAPI skinsRestorerAPI;
+    public SkinsRestorerAPI getSkinsRestorerAPI(){
+        return skinsRestorerAPI;
+    };
+    private static final Random random = new Random();
+    public static Random getRandom() {
+        return random;
+    }
 
+    public static String getMetadataValue() {
+        return "MegaWalls";
+    }
+
+    public static FixedMetadataValue getFixedMetadataValue() {
+        return new FixedMetadataValue(instance, true);
+    }
     @SneakyThrows
     @Override
     public void onEnable() {
@@ -40,10 +61,22 @@ public class MiarsMegaWalls extends JavaPlugin {
             GameManager.getInstance().initGameInfo();
             log("正在注册监听器...");
             regListener(new GamePlayerListener());
+            log("正在注册职业...");
+            ClassesManager.registerAll();
         }
 
         log("正在初始化 ScoreBoard 数据...");
         ScoreBoardManager.getInstance().init();
+
+        //SkinsRestorer
+        if(Bukkit.getPluginManager().getPlugin("SkinsRestorer") != null) {
+            skinsRestorerAPI = SkinsRestorerAPI.getApi();
+            log("正在注册皮肤插件...");
+        }else {
+            log("未安装 SkinsRestorer 请安装后重新启动...");
+            this.setEnabled(false);
+            return;
+        }
 
 
         log("加载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
@@ -99,4 +132,5 @@ public class MiarsMegaWalls extends JavaPlugin {
         log("&7感谢您使用 &c&l"+getDescription().getName()+" v" + getDescription().getVersion());
         log("&7本插件由 &c&lMCarl Studios &7提供长期支持与维护。");
     }
+
 }

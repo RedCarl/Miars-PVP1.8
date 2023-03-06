@@ -18,11 +18,11 @@ public interface MNPCs {
 
     static NPC createNPC(EntityType entityType,Location location,List<Object> texts, Consumer<NPC> consumer) {
         //temp name
-        String name = "§8[NPC] " + UUID.randomUUID().toString().split("-")[0];
+        String name = "&8[NPC] " + UUID.randomUUID().toString().split("-")[0];
         NPC npc = REGISTRY.createNPC(entityType, name);
         consumer.accept(npc);
         // real name
-        npc.setName("§8[NPC] " + npc.getUniqueId().toString().split("-")[0]);
+        npc.setName("&8[NPC] " + npc.getUniqueId().toString().split("-")[0]);
         npc.data().set(NPC.Metadata.NAMEPLATE_VISIBLE, false);
         npc.spawn(location);
 
@@ -39,11 +39,11 @@ public interface MNPCs {
     }
     static NPC createNPCString(EntityType entityType,Location location,List<String> texts, Consumer<NPC> consumer) {
         //temp name
-        String name = "§8[NPC] " + UUID.randomUUID().toString().split("-")[0];
+        String name = "&8[NPC] " + UUID.randomUUID().toString().split("-")[0];
         NPC npc = REGISTRY.createNPC(entityType, name);
         consumer.accept(npc);
         // real name
-        npc.setName("§8[NPC] " + npc.getUniqueId().toString().split("-")[0]);
+        npc.setName("&8[NPC] " + npc.getUniqueId().toString().split("-")[0]);
         npc.data().set(NPC.Metadata.NAMEPLATE_VISIBLE, false);
         npc.spawn(location);
 
@@ -60,11 +60,11 @@ public interface MNPCs {
     }
     static NPC createNPCString(EntityType entityType,Location location, Consumer<NPC> consumer) {
         //temp name
-        String name = "§8[NPC] " + UUID.randomUUID().toString().split("-")[0];
+        String name = "&8[NPC] " + UUID.randomUUID().toString().split("-")[0];
         NPC npc = REGISTRY.createNPC(entityType, name);
         consumer.accept(npc);
         // real name
-        npc.setName("§8[NPC] " + npc.getUniqueId().toString().split("-")[0]);
+        npc.setName("&8[NPC] " + npc.getUniqueId().toString().split("-")[0]);
         npc.data().set(NPC.Metadata.NAMEPLATE_VISIBLE, false);
         npc.spawn(location);
 

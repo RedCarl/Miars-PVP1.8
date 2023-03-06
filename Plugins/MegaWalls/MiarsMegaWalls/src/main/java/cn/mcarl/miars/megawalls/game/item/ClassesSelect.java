@@ -3,6 +3,7 @@ package cn.mcarl.miars.megawalls.game.item;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.utils.ItemBuilder;
 import cn.mcarl.miars.core.utils.easyitem.AbstractItem;
+import cn.mcarl.miars.megawalls.game.ui.ClassesSelectGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -21,7 +22,7 @@ public class ClassesSelect extends AbstractItem {
 
         id = "classes_select";
         item = new ItemBuilder(Material.IRON_SWORD)
-                .setName("&c职业选择")
+                .setName("&a职业选择")
                 .setLore("&7选择你的职业。")
                 .toItemStack();
     }
@@ -29,7 +30,7 @@ public class ClassesSelect extends AbstractItem {
     @Override
     public void onInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
-        player.sendMessage(ColorParser.parse("&7敬请期待...."));
+        ClassesSelectGUI.open(player);
     }
 
     @Override

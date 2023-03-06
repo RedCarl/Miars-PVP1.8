@@ -17,7 +17,6 @@ depend:
   - MiarsStorage
   - PlayerPoints
   - Vault
-  - WorldEdit
 
 commands:
   "Miars":

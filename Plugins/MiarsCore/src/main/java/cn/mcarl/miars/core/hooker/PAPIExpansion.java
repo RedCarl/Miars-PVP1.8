@@ -54,7 +54,9 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
 	@Override
 	public String onPlaceholderRequest(Player player, @NotNull String identifier) {
-		if (player == null) return "加载中...";
+		if (player == null) {
+			return "加载中...";
+		}
 		String[] args = identifier.split("_");
 
 		MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(player);
@@ -64,18 +66,27 @@ public class PAPIExpansion extends PlaceholderExpansion {
 		switch (args[0].toLowerCase()) {
 			case "prefix" -> {
 				String prefix = data.getPrefix();
-				if (prefix == null) return "Depository or Item not exists";
-				else return ColorParser.parse(prefix);
+				if (prefix == null) {
+					return "Depository or Item not exists";
+				} else {
+					return ColorParser.parse(prefix);
+				}
 			}
 			case "suffix" -> {
 				String suffix = data.getSuffix();
-				if (suffix == null) return "Depository or Item not exists";
-				else return ColorParser.parse(suffix);
+				if (suffix == null) {
+					return "Depository or Item not exists";
+				} else {
+					return ColorParser.parse(suffix);
+				}
 			}
 			case "namecolor" -> {
 				String nameColor = data.getNameColor();
-				if (nameColor == null) return "Depository or Item not exists";
-				else return ColorParser.parse(nameColor);
+				if (nameColor == null) {
+					return "Depository or Item not exists";
+				} else {
+					return ColorParser.parse(nameColor);
+				}
 			}
 			case "version" -> {
 				return getVersion();
