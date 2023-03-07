@@ -52,16 +52,16 @@ public class PlayerListener implements Listener {
     }
 
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void EntityDamageEvent(EntityDamageByEntityEvent e) {
-        if (e.getDamager() instanceof Player damager){
-            if (e.getEntity() instanceof Player player) {
-                if (e.getDamage() == 0.0D || e.isCancelled() || e.getEntity().hasMetadata("NPC")) {
-                    return;
-                }
-                Location location = player.getLocation();
-                location.getWorld().playEffect(location, Effect.STEP_SOUND, 152);
-            }
-        }
-    }
+//    @EventHandler(priority = EventPriority.LOWEST)
+//    public void EntityDamageEvent(EntityDamageByEntityEvent e) {
+//        if (e.getDamager() instanceof Player damager){
+//            if (e.getEntity() instanceof Player player) {
+//                if (e.getDamage() == 0.0D || e.isCancelled() || e.getEntity().hasMetadata("NPC")) {
+//                    return;
+//                }
+//                Location location = player.getLocation();
+//                location.getWorld().playEffect(location, Effect.STEP_SOUND, 152);
+//            }
+//        }
+//    }
 }

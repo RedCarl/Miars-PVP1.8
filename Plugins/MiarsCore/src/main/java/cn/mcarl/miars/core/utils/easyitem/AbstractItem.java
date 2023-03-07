@@ -3,6 +3,7 @@ package cn.mcarl.miars.core.utils.easyitem;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -39,4 +40,6 @@ public abstract class AbstractItem {
     public void onInventoryClick(InventoryClickEvent e) {}
 
     public void onHeldItem(PlayerItemHeldEvent e) {}
+
+    public void onPlayerDeath(PlayerDeathEvent e,Player p,ItemStack i) {}
 }

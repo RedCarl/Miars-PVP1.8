@@ -7,6 +7,7 @@ import cn.mcarl.miars.skypvp.listener.PlayerListener;
 import cn.mcarl.miars.skypvp.manager.ConfigManager;
 import cn.mcarl.miars.skypvp.manager.OreRespawnManager;
 import cn.mcarl.miars.skypvp.manager.ScoreBoardManager;
+import cn.mcarl.miars.skypvp.manager.SpawnManager;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -47,6 +48,9 @@ public class MiarsSkyPVP extends JavaPlugin {
 
         log("正在加载矿物重生...");
         OreRespawnManager.getInstance().init();
+
+        log("正在加载延时回城...");
+        SpawnManager.getInstance().init();
 
         log("加载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 

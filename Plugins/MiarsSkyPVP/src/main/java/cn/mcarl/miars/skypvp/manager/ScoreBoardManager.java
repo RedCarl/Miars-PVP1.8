@@ -4,11 +4,15 @@ import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.core.utils.fastboard.FastBoard;
+import cn.mcarl.miars.skypvp.entitiy.GamePlayer;
+import cn.mcarl.miars.skypvp.utils.PlayerUtils;
 import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
+import cn.mcarl.miars.storage.storage.data.practice.FPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.serverInfo.ServerInfoDataStorage;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -52,14 +56,33 @@ public class ScoreBoardManager {
         board.updateTitle("&eSKYPVP &8| &e"+ ServerInfoDataStorage.getInstance().getServerInfo().getNameCn());
         lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis())+" &8"+ ToolUtils.getServerCode());
         lines.add("");
-        lines.add("&f 等级 &7[1✩]");
-        lines.add("&f 进度 &a0&7/&b1k");
-        lines.add("&f &8[&7■■■■■■■■■■&8]");
+        lines.add("&f 等级 &6"+0);
         lines.add("");
-        lines.add("&f 击杀 &60");
-        lines.add("&f 死亡 &60");
+
+        // 战斗模式的计分板
+        if (CombatManager.getInstance().isCombat(p)){
+
+            Player opponent = Bukkit.getPlayer(CombatManager.getInstance().getCombatInfo(p).getOpponent());
+            if (opponent==null){
+                CombatManager.getInstance().clear(p);
+            }else {
+                lines.add("&f 对 手");
+                lines.add("&f   名称 &6" + opponent.getName());
+                lines.add("&f   K/D &6" + GamePlayer.get(opponent).getKb());
+                lines.add("&f   血量 &6" + ToolUtils.decimalFormat(opponent.getHealth(), 2));
+                lines.add("&r");
+                lines.add("&7   战斗中... (&6" + CombatManager.getInstance().getLastSecond(p)+"&7)");
+            }
+
+        }else {
+            lines.add("&f 击杀 &6" + GamePlayer.get(p).getSPlayer().getKillsCount());
+            lines.add("&f 死亡 &6" + GamePlayer.get(p).getSPlayer().getDeathCount());
+        }
+
+        // KD
         lines.add("");
-        lines.add("&f 硬币 &6"+MiarsCore.getEcon().getBalance(p));
+        lines.add("&f K/D &6" + GamePlayer.get(p).getKb());
+        lines.add("&f 硬币 &6" + GamePlayer.get(p).getSPlayer().getCoin());
         lines.add("");
         lines.add("&7&o"+ ServerInfoDataStorage.getInstance().getServerInfo().getIp());
 

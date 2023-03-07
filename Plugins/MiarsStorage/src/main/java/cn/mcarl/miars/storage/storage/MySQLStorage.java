@@ -13,6 +13,7 @@ import cn.mcarl.miars.storage.entity.serverMenu.ServerMenuItem;
 import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.entity.serverNpc.ServerNPC;
+import cn.mcarl.miars.storage.entity.skypvp.SPlayer;
 import cn.mcarl.miars.storage.enums.FKitType;
 import cn.mcarl.miars.storage.enums.QueueType;
 import cn.mcarl.miars.storage.utils.BukkitUtils;
@@ -49,6 +50,9 @@ public class MySQLStorage {
 	DatabaseTable serverMenuDataTable;
 	DatabaseTable serverInfoDataTable;
 	DatabaseTable serverNpcDataTable;
+
+
+	DatabaseTable skyPvpDataTable;
 
 	private Gson gson = new Gson();
 
@@ -233,6 +237,21 @@ public class MySQLStorage {
 							"PRIMARY KEY (`id`)"
 					});
 			getServerNpcDataTable().createTable(sqlManager);
+
+
+			// SKYPVP
+			this.skyPvpDataTable = new DatabaseTable(
+					PluginConfig.DATABASE.TABLE_NAME.get() + "_skypvp",
+					new String[]{
+							"`uuid` int(11) NOT NULL",
+							"`name` varchar(255) DEFAULT NULL",
+							"`killsCount` bigint(20) DEFAULT NULL",
+							"`deathCount` bigint(20) DEFAULT NULL",
+							"`exp` bigint(20) DEFAULT NULL",
+							"`coin` bigint(20) DEFAULT NULL",
+							"PRIMARY KEY (`uuid`)"
+					});
+			getSkyPvpDataTable().createTable(sqlManager);
 
 		} catch (SQLException exception) {
 			MiarsStorage.getInstance().log("无法创建插件所需的表，请检查数据库权限。");
@@ -809,7 +828,45 @@ public class MySQLStorage {
 
 
 
+	public SPlayer querySkyPvp(UUID uuid) {
+		return getSQLManager().createQuery()
+				.inTable(getSkyPvpDataTable().getTableName())
+				.addCondition("uuid", uuid.toString())
+				.build()
+				.execute(
+						(query) -> {
+							ResultSet result = query.getResultSet();
+							SPlayer data = new SPlayer();
 
+							if (result != null && result.next()) {
+								data.setUuid(UUID.fromString(result.getString("uuid")));
+								data.setName(result.getString("name"));
+								data.setKillsCount(result.getLong("killsCount"));
+								data.setDeathCount(result.getLong("deathCount"));
+								data.setExp(result.getLong("exp"));
+								data.setCoin(result.getLong("coin"));
+								return data;
+							}
+							return null;
+
+
+						},
+						((exception, sqlAction) -> { /*SQL异常处理-SQLExceptionHandler*/ })
+				);
+	}
+
+	public void replaceSkyPvp(@NotNull SPlayer data) throws Exception {
+		getSQLManager().createReplace(getSkyPvpDataTable().getTableName())
+				.setColumnNames("uuid", "name", "killsCount", "deathCount", "exp", "coin")
+				.setParams(
+						data.getUuid().toString(),
+						data.getName(),
+						data.getKillsCount(),
+						data.getDeathCount(),
+						data.getExp(),
+						data.getCoin())
+				.execute();
+	}
 
 
 
@@ -847,6 +904,9 @@ public class MySQLStorage {
 	}
 	public DatabaseTable getServerNpcDataTable() {
 		return serverNpcDataTable;
+	}
+	public DatabaseTable getSkyPvpDataTable() {
+		return skyPvpDataTable;
 	}
 
 }

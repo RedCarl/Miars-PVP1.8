@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -90,6 +91,18 @@ public class ItemManager implements Listener {
                 return;
             }
             item.onInventoryClick(e);
+        }
+    }
+
+    @EventHandler
+    public void PlayerDeathEvent(PlayerDeathEvent e) {
+        Player player = e.getEntity();
+
+        for (ItemStack i:player.getInventory().getContents()) {
+            final AbstractItem item = getAbstractItem(i);
+            if (item!=null){
+                item.onPlayerDeath(e,player,i);
+            }
         }
     }
 
