@@ -1,43 +1,50 @@
 package cn.mcarl.miars.skypvp.listener;
 
-import cc.carm.lib.easyplugin.utils.ColorParser;
-import cn.mcarl.miars.core.utils.CustomizeColor;
-import net.minecraft.server.v1_8_R3.EnumParticle;
-import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
+import cn.mcarl.miars.skypvp.entitiy.OreBlock;
+import cn.mcarl.miars.skypvp.manager.OreRespawnManager;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class BlockListener implements Listener {
-    
+
     @EventHandler
     public void BlockPlaceEvent(BlockPlaceEvent e) {
         if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
             e.setCancelled(true);
-            e.getPlayer().sendMessage(ColorParser.parse("&7很抱歉，这里不适合您这样做，换个地方试试吧。"));
-
-            Location location = e.getBlockPlaced().getLocation().add(0.5, 1.5, 0.5);
-
-            PacketPlayOutWorldParticles particles = new PacketPlayOutWorldParticles(EnumParticle.REDSTONE, true, (float) location.getX(), (float) location.getY(), (float) location.getZ(), CustomizeColor.RED, CustomizeColor.GREEN, CustomizeColor.BLUE, (float) 255, 0, 10);
-            ((CraftPlayer) e.getPlayer()).getHandle().playerConnection.sendPacket(particles);
         }
 
     }
     
     @EventHandler
     public void BlockBreakEvent(BlockBreakEvent e) {
+        Block block = e.getBlock();
         if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
-            e.setCancelled(true);
-            e.getPlayer().sendMessage(ColorParser.parse("&7很抱歉,这里不适合您这样做,换个地方试试吧。"));
+            if (!block.getType().name().contains("_ORE")){
+                e.setCancelled(true);
+            }else {
+                OreRespawnManager.getInstance().put(new OreBlock(
+                        block.getType(),
+                        block.getLocation()
+                ));
 
-            Location location = e.getBlock().getLocation().add(0.5, 1.5, 0.5);
-
-            PacketPlayOutWorldParticles particles = new PacketPlayOutWorldParticles(EnumParticle.REDSTONE, true, (float) location.getX(), (float) location.getY(), (float) location.getZ(), CustomizeColor.RED, CustomizeColor.GREEN, CustomizeColor.BLUE, (float) 255, 0, 10);
-            ((CraftPlayer) e.getPlayer()).getHandle().playerConnection.sendPacket(particles);
+                // 掉落物品
+                switch (block.getType()){
+                    case IRON_ORE -> {
+                        block.setType(Material.AIR);
+                        block.getLocation().getWorld().dropItem(block.getLocation(),new ItemStack(Material.IRON_INGOT));
+                    }
+                    case GOLD_ORE -> {
+                        block.setType(Material.AIR);
+                        block.getLocation().getWorld().dropItem(block.getLocation(),new ItemStack(Material.GOLD_INGOT));
+                    }
+                }
+            }
         }
     }
 }

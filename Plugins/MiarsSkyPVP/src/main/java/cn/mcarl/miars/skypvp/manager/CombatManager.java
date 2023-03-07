@@ -1,10 +1,7 @@
-package cn.mcarl.miars.practiceffa.manager;
+package cn.mcarl.miars.skypvp.manager;
 
-import cn.mcarl.miars.practiceffa.MiarsPracticeFFA;
 import cn.mcarl.miars.storage.entity.ffa.FCombatInfo;
-import cn.mcarl.miars.practiceffa.utils.FFAUtil;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +21,9 @@ public class CombatManager {
 
     /**
      * 开始战斗
-     * @param uuid 玩家ID
-     * @param second 持续多少秒
+     * @param opponent 对手
+     * @param uuid 自己
+     * @param second 多少秒
      */
     public void start(Player opponent,String uuid,int second){
         data.put(uuid,new FCombatInfo(opponent.getUniqueId(),System.currentTimeMillis()+(second* 1000L)));
@@ -77,11 +75,5 @@ public class CombatManager {
      */
     public void clear(Player p){
         data.remove(p.getUniqueId().toString());
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                FFAUtil.removeVirtualBorder(p);
-            }
-        }.runTaskLaterAsynchronously(MiarsPracticeFFA.getInstance(),10);
     }
 }

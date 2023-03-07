@@ -47,9 +47,6 @@ public class MiarsPracticeFFA extends JavaPlugin {
         log("正在初始化FFA竞技场...");
         FFABorderManager.getInstance().init();
 
-        log("正在初始化战斗系统...");
-        CombatManager.getInstance().init();
-
         log("正在初始化 Board 模块...");
         ScoreBoardManager.getInstance().init();
 

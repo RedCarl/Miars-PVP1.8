@@ -5,6 +5,7 @@ import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
+import cn.mcarl.miars.core.conf.PluginConfig;
 import cn.mcarl.miars.core.manager.ServerManager;
 import cn.mcarl.miars.core.utils.ItemBuilder;
 import cn.mcarl.miars.core.utils.ToolUtils;
@@ -24,8 +25,8 @@ import java.util.Objects;
 
 public class ServerMenuGUI extends GUI {
     boolean is = false;
-    public ServerMenuGUI(Player player,String guiName) {
-        super(GUIType.SIX_BY_NINE, guiName);
+    public ServerMenuGUI(Player player,String guiName,String sizeType,List<ServerMenuItem> list) {
+        super(GUIType.valueOf(sizeType), guiName);
 
         new BukkitRunnable() {
             @Override
@@ -42,7 +43,7 @@ public class ServerMenuGUI extends GUI {
                     cancel();
                 }
 
-                load(is);
+                load(is,list);
 
                 updateView();
 
@@ -50,8 +51,8 @@ public class ServerMenuGUI extends GUI {
         }.runTaskTimerAsynchronously(MiarsCore.getInstance(),0,20L);
     }
 
-    public void load(boolean is){
-        List<ServerMenuItem> list = ServerMenuDataStorage.getInstance().getServerMenuItem(getGUIName());
+    public void load(boolean is,List<ServerMenuItem> list){
+
 
         if (list.size()==0){
             return;
@@ -69,6 +70,10 @@ public class ServerMenuGUI extends GUI {
                     if (type.name().equals(menuItem.getClickType()) || "ALL".equals(menuItem.getClickType())){
                         switch (menuItem.getType()){
                             case "server" -> {
+                                if (PluginConfig.SERVER_INFO.NAME.get().equals(menuItem.getValue())){
+                                    clicker.sendMessage(ColorParser.parse("&7很抱歉,您正在这个服务器,无需再次加入。"));
+                                    return;
+                                }
                                 if (ServerManager.getInstance().getServerInfo(menuItem.getValue()) == null) {
                                     clicker.sendMessage(ColorParser.parse("&7很抱歉,该服务器暂时无法进入,请耐心等待..."));
                                     return;
@@ -90,7 +95,8 @@ public class ServerMenuGUI extends GUI {
 
     public static void open(Player player,String guiName) {
         player.closeInventory();
-        ServerMenuGUI gui = new ServerMenuGUI(player,guiName);
+        List<ServerMenuItem> list = ServerMenuDataStorage.getInstance().getServerMenuItem(guiName);
+        ServerMenuGUI gui = new ServerMenuGUI(player,guiName,list.get(0).getSizeType(),list);
         gui.openGUI(player);
     }
 }

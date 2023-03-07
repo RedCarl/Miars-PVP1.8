@@ -5,6 +5,7 @@ import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.core.conf.PluginConfig;
 import cn.mcarl.miars.core.manager.CitizensManager;
 import cn.mcarl.miars.core.manager.ServerManager;
+import cn.mcarl.miars.core.ui.ServerMenuGUI;
 import cn.mcarl.miars.storage.entity.serverNpc.ServerNPC;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
@@ -34,6 +35,9 @@ public class CitizensListener implements Listener {
                     return;
                 }
                 MiarsCore.getBungeeApi().connect(player, serverNPC.getValue());
+            }
+            case "menu" -> {
+                ServerMenuGUI.open(player,serverNPC.getValue());
             }
         }
     }

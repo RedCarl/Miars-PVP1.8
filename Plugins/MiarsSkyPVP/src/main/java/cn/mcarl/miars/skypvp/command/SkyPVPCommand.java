@@ -1,6 +1,7 @@
 package cn.mcarl.miars.skypvp.command;
 
 import cn.mcarl.miars.skypvp.MiarsSkyPVP;
+import cn.mcarl.miars.skypvp.conf.PluginConfig;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

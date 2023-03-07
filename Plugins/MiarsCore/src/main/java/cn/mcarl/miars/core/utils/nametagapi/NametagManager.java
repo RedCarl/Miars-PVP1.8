@@ -71,9 +71,8 @@ public final class NametagManager {
 
         List<MRank> mRanks = new ArrayList<>(MRankDataStorage.getInstance().getMRankList().values());
         CustomSort.sort(mRanks,"power",false);
-
         for (MRank rank:mRanks) {
-            getTeamInfo(ColorParser.parse(rank.getPrefix()),"");
+            getTeamInfo(ColorParser.parse(rank.getPrefix()),ColorParser.parse(rank.getSuffix()));
         }
 
         new BukkitRunnable() {
@@ -91,6 +90,12 @@ public final class NametagManager {
                             ColorParser.parse(mRank.getSuffix())
                     );
                 }
+//                for (TeamInfo t:teams.keySet()) {
+//                    System.out.println(t.getName()+" / "+t.getPrefix()+" / "+t.getSuffix());
+//                    for (String s:teams.get(t)) {
+//                        System.out.println(s);
+//                    }
+//                }
             }
         }.runTaskTimer(plugin,0,40);
     }
@@ -286,7 +291,7 @@ public final class NametagManager {
     private static TeamInfo getTeamInfo(String prefix, String suffix) {
         update();
 
-        for (int t : list.toArray(new Integer[list.size()])) {
+        for (int t : list.toArray(new Integer[0])) {
             if (getTeam(TEAM_NAME_PREFIX + SN.get(t)) != null) {
                 TeamInfo team = getTeam(TEAM_NAME_PREFIX + SN.get(t));
 

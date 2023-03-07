@@ -27,4 +27,12 @@ public class ConfigManager {
         }
     }
 
+    public void save() {
+        try {
+            getConfigProvider().save();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

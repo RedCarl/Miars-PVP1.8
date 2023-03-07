@@ -178,6 +178,7 @@ public class MySQLStorage {
 					PluginConfig.DATABASE.TABLE_NAME.get() + "_server_menu",
 					new String[]{
 							"`id` int(11) NOT NULL AUTO_INCREMENT",
+							"`size_type` varchar(255) DEFAULT NULL",
 							"`gui_name` varchar(255) DEFAULT NULL",
 							"`icon` varchar(255) DEFAULT NULL",
 							"`name` varchar(255) DEFAULT NULL",
@@ -727,6 +728,7 @@ public class MySQLStorage {
 								}
 
 								data.setName(result.getString("name"));
+								data.setSizeType(result.getString("size_type"));
 								data.setLore(List.of(result.getString("lore").split("/n")));
 								data.setSlot(result.getInt("slot"));
 								data.setClickType(result.getString("click_type"));

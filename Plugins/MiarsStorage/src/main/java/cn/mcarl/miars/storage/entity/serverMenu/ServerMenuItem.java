@@ -16,6 +16,7 @@ import java.util.List;
 public class ServerMenuItem {
 
     private Integer id;
+    private String sizeType;
     private String guiName;
     private ItemStack icon;
     private String name;

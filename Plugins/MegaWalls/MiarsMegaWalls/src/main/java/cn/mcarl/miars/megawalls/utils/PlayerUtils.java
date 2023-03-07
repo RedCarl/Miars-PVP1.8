@@ -50,8 +50,6 @@ public class PlayerUtils {
       return players;
    }
 
-
-
    public static void skinChange(Player player,String value, String signature) {
       SkinsRestorerAPI api = MiarsMegaWalls.getInstance().getSkinsRestorerAPI();
       api.applySkin(new PlayerWrapper(player),api.createPlatformProperty("textures", value, signature));

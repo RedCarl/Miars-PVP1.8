@@ -3,13 +3,17 @@ package cn.mcarl.miars.core.listener;
 import cn.mcarl.miars.core.conf.PluginConfig;
 import cn.mcarl.miars.core.utils.MiarsUtil;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
+import net.citizensnpcs.Citizens;
+import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -48,22 +52,16 @@ public class PlayerListener implements Listener {
     }
 
 
-    @EventHandler
-    public void onEntityDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            if (event.getDamage() == 0.0D) {
-                return;
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void EntityDamageEvent(EntityDamageByEntityEvent e) {
+        if (e.getDamager() instanceof Player damager){
+            if (e.getEntity() instanceof Player player) {
+                if (e.getDamage() == 0.0D || e.isCancelled() || e.getEntity().hasMetadata("NPC")) {
+                    return;
+                }
+                Location location = player.getLocation();
+                location.getWorld().playEffect(location, Effect.STEP_SOUND, 152);
             }
-            Location location = player.getLocation();
-            location.getWorld().playEffect(location, Effect.STEP_SOUND, 152);
-        }
-        if (!(event.getEntity() instanceof Player)) {
-            if (event.getDamage() == 0.0D) {
-                return;
-            }
-            Entity entity = event.getEntity();
-            Location location = entity.getLocation();
-            location.getWorld().playEffect(location, Effect.STEP_SOUND, 152);
         }
     }
 }

@@ -14,6 +14,18 @@ import org.bukkit.Material;
 import java.util.List;
 
 public class PluginConfig extends ConfigurationRoot {
+
+    @HeaderComment({"保护区"})
+    public static final class PROTECTED_REGION extends ConfigurationRoot {
+        @HeaderComment({"出生点"})
+        public static final ConfigValue<Location> SPAWN = ConfiguredValue.of(Location.class, new Location(Bukkit.getWorld("world"),3.5,150,-0.5));
+        @HeaderComment({"最小位置"})
+        public static final ConfigValue<Location> MIN = ConfiguredValue.of(Location.class, new Location(Bukkit.getWorld("world"),-32.5,0,-29));
+        @HeaderComment({"最大位置"})
+        public static final ConfigValue<Location> MAX = ConfiguredValue.of(Location.class, new Location(Bukkit.getWorld("world"),36.5,256,28.5));
+    }
+
+
     @HeaderComment({"幸运方块配置"})
     public static final class LUCKY extends ConfigurationRoot {
         @HeaderComment({"普通幸运方块"})

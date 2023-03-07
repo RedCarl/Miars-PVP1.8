@@ -29,7 +29,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-
     <repositories>
         <repository>
             <id>codemc-repo</id>
@@ -85,8 +84,6 @@
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
     </repositories>
-
-
 
     <dependencies>
 
@@ -290,7 +287,6 @@
         </dependency>
     </dependencies>
 
-
     <build>
         <plugins>
             <plugin>
@@ -370,12 +366,12 @@
                                         <include name="MiarsSkyPVP-*.jar" />
                                     </fileset>
                                 </copy>
-<!--                                <copy todir="libs/" overwrite="true">-->
-<!--                                    <fileset dir="Server/NachoSpigot/NachoSpigot-Server/target"-->
-<!--                                             erroronmissingdir="false">-->
-<!--                                        <include name="NachoSpigot.jar" />-->
-<!--                                    </fileset>-->
-<!--                                </copy>-->
+                                <copy todir="libs/" overwrite="true">
+                                    <fileset dir="NachoSpigot/NachoSpigot-Server/target"
+                                             erroronmissingdir="false">
+                                        <include name="NachoSpigot.jar" />
+                                    </fileset>
+                                </copy>
                             </target>
                         </configuration>
                         <goals>
