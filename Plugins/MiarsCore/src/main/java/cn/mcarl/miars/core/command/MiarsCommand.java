@@ -59,7 +59,7 @@ public class MiarsCommand implements CommandExecutor, TabCompleter {
                         ArenaState state = PracticeGameDataStorage.getInstance().getArenaDataById(id);
 
                         Player player = (Player) sender;
-                        OpenInvGUI.open(player, BukkitUtils.byteConvertItemStack(name.equals(state.getPlayerA()) ? state.getAFInventory() : state.getBFInventory()),name);
+                        OpenInvGUI.open(player, state,name);
 
                         return true;
                     }

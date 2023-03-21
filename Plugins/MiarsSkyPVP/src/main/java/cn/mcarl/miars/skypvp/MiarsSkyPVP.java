@@ -2,12 +2,10 @@ package cn.mcarl.miars.skypvp;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.skypvp.command.SkyPVPCommand;
+import cn.mcarl.miars.skypvp.entitiy.LuckyBlock;
 import cn.mcarl.miars.skypvp.listener.BlockListener;
 import cn.mcarl.miars.skypvp.listener.PlayerListener;
-import cn.mcarl.miars.skypvp.manager.ConfigManager;
-import cn.mcarl.miars.skypvp.manager.OreRespawnManager;
-import cn.mcarl.miars.skypvp.manager.ScoreBoardManager;
-import cn.mcarl.miars.skypvp.manager.SpawnManager;
+import cn.mcarl.miars.skypvp.manager.*;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -52,6 +50,9 @@ public class MiarsSkyPVP extends JavaPlugin {
         log("正在加载延时回城...");
         SpawnManager.getInstance().init();
 
+        log("正在加载幸运方块...");
+        LuckyManager.getInstance().init();
+
         log("加载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 
         showAD();
@@ -65,6 +66,7 @@ public class MiarsSkyPVP extends JavaPlugin {
 
         log("卸载监听器...");
         Bukkit.getServicesManager().unregisterAll(this);
+        LuckyManager.getInstance().clear();
 
         log("卸载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 

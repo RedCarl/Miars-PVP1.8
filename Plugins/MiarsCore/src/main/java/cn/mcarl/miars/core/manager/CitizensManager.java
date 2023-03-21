@@ -8,10 +8,11 @@ import cn.mcarl.miars.core.entity.MNPCs;
 import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.storage.entity.serverNpc.ServerNPC;
 import cn.mcarl.miars.storage.storage.data.serverNpc.ServerNpcDataStorage;
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
-import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
+import me.filoghost.holographicdisplays.api.hologram.Hologram;
+import me.filoghost.holographicdisplays.api.hologram.line.TextHologramLine;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
+import net.citizensnpcs.trait.MirrorTrait;
 import net.citizensnpcs.trait.SkinTrait;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -60,7 +61,11 @@ public class CitizensManager {
                                 n.getOrAddTrait(Equipment.class).set(0, new ItemStack(Material.getMaterial(npc.getItem())));
                             }
 
-                            if (npc.getSkinName()!=null && npc.getSignature()!=null && npc.getData()!=null){
+                            if (npc.getSkinName().equals("PLAYER")){
+                                MirrorTrait trait = n.getOrAddTrait(MirrorTrait.class);
+                                boolean enabled = true;
+                                trait.setEnabled(enabled);
+                            }else if (npc.getSkinName()!=null && npc.getSignature()!=null && npc.getData()!=null){
                                 SkinTrait skinTrait = n.getOrAddTrait(SkinTrait.class);
                                 skinTrait.setSkinPersistent(
                                         npc.getSkinName(),
@@ -85,10 +90,11 @@ public class CitizensManager {
                     List<String> stringList = ColorParser.parse(ToolUtils.initLorePapi(serverNPC.getTitle(),true,"npc"));
                     Hologram hologram = MHolograms.getHologramByName(npcList.get(npc).getName());
 
-                    for (int i = 0; i < MHolograms.getHologramByName(npcList.get(npc).getName()).size(); i++) {
-                        TextLine line = (TextLine) hologram.getLine(i);
+                    for (int i = 0; i < MHolograms.getHologramByName(npcList.get(npc).getName()).getLines().size(); i++) {
+                        TextHologramLine line = (TextHologramLine) hologram.getLines().get(i);
                         line.setText(stringList.get(i));
                     }
+
                 }
             }
         }.runTaskTimer(MiarsCore.getInstance(),0,200);
@@ -113,7 +119,7 @@ public class CitizensManager {
     public void clear(){
         for (NPC n:npcList.values()) {
             Hologram hologram = MHolograms.getHologramByName(n.getName());
-            hologram.clearLines();
+            hologram.delete();
             n.destroy();
         }
     }

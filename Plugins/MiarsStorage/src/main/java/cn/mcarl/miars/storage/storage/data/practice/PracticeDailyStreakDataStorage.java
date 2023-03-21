@@ -2,8 +2,8 @@ package cn.mcarl.miars.storage.storage.data.practice;
 
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.practice.DailyStreak;
-import cn.mcarl.miars.storage.enums.FKitType;
-import cn.mcarl.miars.storage.enums.QueueType;
+import cn.mcarl.miars.storage.enums.practice.FKitType;
+import cn.mcarl.miars.storage.enums.practice.QueueType;
 import cn.mcarl.miars.storage.utils.CustomSort;
 import com.alibaba.fastjson.JSONArray;
 import org.bukkit.entity.Player;

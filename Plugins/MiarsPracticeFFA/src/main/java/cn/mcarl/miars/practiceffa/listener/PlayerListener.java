@@ -236,5 +236,4 @@ public class PlayerListener implements Listener {
         MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
         e.setFormat(ColorParser.parse(mRank.getPrefix()+mRank.getNameColor()+"%1$s&f: %2$s"));
     }
-
 }

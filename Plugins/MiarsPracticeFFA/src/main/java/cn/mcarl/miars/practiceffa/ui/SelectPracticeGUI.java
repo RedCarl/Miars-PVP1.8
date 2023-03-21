@@ -6,17 +6,19 @@ import cc.carm.lib.easyplugin.gui.GUIType;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.utils.GUIUtils;
 import cn.mcarl.miars.practiceffa.MiarsPracticeFFA;
+import cn.mcarl.miars.practiceffa.kits.BuildUHC;
 import cn.mcarl.miars.practiceffa.kits.FFAGame;
 import cn.mcarl.miars.practiceffa.kits.NoDeBuff;
 import cn.mcarl.miars.practiceffa.manager.PlayerInventoryManager;
+import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.entity.ffa.FKit;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.storage.data.practice.FKitDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.FPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeGameDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
-import cn.mcarl.miars.storage.enums.FKitType;
-import cn.mcarl.miars.storage.enums.QueueType;
+import cn.mcarl.miars.storage.enums.practice.FKitType;
+import cn.mcarl.miars.storage.enums.practice.QueueType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -45,8 +47,7 @@ public class SelectPracticeGUI extends GUI {
                     cancel();
                 }
 
-                setFFAGameItem(0,queueType);
-                setNODeBuffItem(1,queueType);
+                setNODeBuffItem(queueType);
 
                 updateView();
             }
@@ -62,68 +63,57 @@ public class SelectPracticeGUI extends GUI {
 
     }
 
-    // FFAGAME
-    public void setFFAGameItem(int slot,QueueType queueType){
-        GUIItem guiItem = new GUIItem(CommunityGUIItem.getPracticeTypeItem(player,FKitType.FFAGAME, QueueType.UNRANKED)){
-            @Override
-            public void onClick(Player clicker, ClickType type) {
-                // 开始匹配
-                PracticeQueueDataStorage.getInstance().addQueue(FKitType.FFAGAME,queueType, FPlayerDataStorage.getInstance().getFPlayer(player));
-                player.closeInventory();
-
-                // 初始化背包
-                PlayerInventoryManager.getInstance().setQueue(player);
-
-                // 初始化Kit
-                if (FKitDataStorage.getInstance().getFKitData(player,FKitType.FFAGAME).size()==0){
-                    FKitDataStorage.getInstance().putFKitData(new FKit(
-                            null,
-                            player.getUniqueId().toString(),
-                            FKitType.FFAGAME,
-                            "Default",
-                            FFAGame.get(),
-                            0,
-                            null,
-                            new Date(System.currentTimeMillis())
-
-                    ));
-                }
+    public void setNODeBuffItem(QueueType queueType){
+        int i = 0;
+        for (FKitType ft:FKitType.values()) {
+            if (ft==FKitType.PRACTICE || ft==FKitType.FFAGAME){
+                continue;
             }
-        };
+            setItem(i,new GUIItem(CommunityGUIItem.getPracticeTypeItem(player,ft, queueType)){
+                @Override
+                public void onClick(Player clicker, ClickType type) {
+                    // 开始匹配
+                    PracticeQueueDataStorage.getInstance().addQueue(ft,queueType,FPlayerDataStorage.getInstance().getFPlayer(player));
+                    player.closeInventory();
 
-        setItem(slot,guiItem);
+                    // 初始化背包
+                    PlayerInventoryManager.getInstance().setQueue(player);
+
+                    // 初始化Kit
+                    if (FKitDataStorage.getInstance().getFKitData(player,ft).size()==0) {
+                        FKitDataStorage.getInstance().putFKitData(new FKit(
+                                null,
+                                player.getUniqueId().toString(),
+                                ft,
+                                "Default",
+                                getFI(ft),
+                                0,
+                                null,
+                                new Date(System.currentTimeMillis())
+
+                        ));
+                    }
+                }
+            });
+            i++;
+        }
     }
 
-    // NO_DEBUFF
-    public void setNODeBuffItem(int slot,QueueType queueType){
-        GUIItem guiItem = new GUIItem(CommunityGUIItem.getPracticeTypeItem(player,FKitType.NO_DEBUFF, QueueType.UNRANKED)){
-            @Override
-            public void onClick(Player clicker, ClickType type) {
-                // 开始匹配
-                PracticeQueueDataStorage.getInstance().addQueue(FKitType.NO_DEBUFF,queueType,FPlayerDataStorage.getInstance().getFPlayer(player));
-                player.closeInventory();
 
-                // 初始化背包
-                PlayerInventoryManager.getInstance().setQueue(player);
-
-                // 初始化Kit
-                if (FKitDataStorage.getInstance().getFKitData(player,FKitType.NO_DEBUFF).size()==0) {
-                    FKitDataStorage.getInstance().putFKitData(new FKit(
-                            null,
-                            player.getUniqueId().toString(),
-                            FKitType.NO_DEBUFF,
-                            "Default",
-                            NoDeBuff.get(),
-                            0,
-                            null,
-                            new Date(System.currentTimeMillis())
-
-                    ));
-                }
+    public FInventory getFI(FKitType ft){
+        switch (ft){
+            case FFAGAME -> {
+                return FFAGame.get();
             }
-        };
+            case NO_DEBUFF -> {
+                return NoDeBuff.get();
+            }
+            case BUILD_UHC -> {
+                return BuildUHC.get();
+            }
+        }
 
-        setItem(slot,guiItem);
+        return null;
     }
 
 

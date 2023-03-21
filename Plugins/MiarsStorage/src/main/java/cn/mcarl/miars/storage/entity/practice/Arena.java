@@ -1,18 +1,15 @@
 package cn.mcarl.miars.storage.entity.practice;
 
-import cn.mcarl.miars.storage.enums.FKitType;
+import cn.mcarl.miars.storage.enums.practice.FKitType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Date;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class Arena {
 
     // 编号
@@ -45,4 +42,9 @@ public class Arena {
 
     // 创建时间
     private Date createTime;
+
+
+    public Arena(){
+        this.build = false;
+    }
 }

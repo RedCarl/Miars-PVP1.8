@@ -103,6 +103,6 @@ public class MiarsStorage extends JavaPlugin {
      */
     private void showAD() {
         log("&7感谢您使用 &c&l"+getDescription().getName()+" v" + getDescription().getVersion());
-        log("&7本插件由 &c&lMCarl Studios &7提供长期支持与维护。");
+        log("&7本插件由 &c&lMiars Studios &7提供长期支持与维护。");
     }
 }

@@ -1,4 +1,4 @@
-package cn.mcarl.miars.storage.enums;
+package cn.mcarl.miars.storage.enums.practice;
 
 public enum QueueType {
     UNRANKED,

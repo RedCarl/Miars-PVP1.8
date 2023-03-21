@@ -4,7 +4,7 @@ import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
 import cn.mcarl.miars.core.utils.GUIUtils;
-import cn.mcarl.miars.storage.enums.FKitType;
+import cn.mcarl.miars.storage.enums.practice.FKitType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
@@ -20,20 +20,19 @@ public class SelectFKitTypeGUI extends GUI {
         super(GUIType.ONE_BY_NINE, "&0请选择模式...");
         this.player = player;
 
-        setItem(0,new GUIItem(CommunityGUIItem.getPracticeTypeItem(player,FKitType.FFAGAME,null)){
-            @Override
-            public void onClick(Player clicker, ClickType type) {
-                SelectFKitEditGUI.open(player,FKitType.FFAGAME);
+        int i = 0;
+        for (FKitType ft:FKitType.values()) {
+            if (ft==FKitType.PRACTICE){
+                continue;
             }
-        });
-
-
-        setItem(1,new GUIItem(CommunityGUIItem.getPracticeTypeItem(player,FKitType.NO_DEBUFF,null)){
-            @Override
-            public void onClick(Player clicker, ClickType type) {
-                SelectFKitEditGUI.open(player,FKitType.NO_DEBUFF);
-            }
-        });
+            setItem(i,new GUIItem(CommunityGUIItem.getPracticeTypeItem(player,ft,null)){
+                @Override
+                public void onClick(Player clicker, ClickType type) {
+                    SelectFKitEditGUI.open(player,ft);
+                }
+            });
+            i++;
+        }
 
         setItem(8,new GUIItem(GUIUtils.getCancelItem()){
             @Override

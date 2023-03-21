@@ -7,7 +7,7 @@ import cn.mcarl.miars.storage.utils.CustomSort;
 import cn.mcarl.miars.core.utils.ItemBuilder;
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.ffa.FKit;
-import cn.mcarl.miars.storage.enums.FKitType;
+import cn.mcarl.miars.storage.enums.practice.FKitType;
 import cn.mcarl.miars.practiceffa.manager.PlayerInventoryManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

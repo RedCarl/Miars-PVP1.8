@@ -1,8 +1,11 @@
 package cn.mcarl.miars.core.entity;
 
 import cn.mcarl.miars.core.MiarsCore;
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
+import me.filoghost.holographicdisplays.api.hologram.Hologram;
+import me.filoghost.holographicdisplays.api.hologram.PlaceholderSetting;
+import me.filoghost.holographicdisplays.api.hologram.line.ItemHologramLine;
+import me.filoghost.holographicdisplays.api.hologram.line.TextHologramLine;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
@@ -16,15 +19,17 @@ import java.util.Map;
  */
 public interface MHolograms {
 
-    Map<String,Hologram> map = new HashMap<>();
+    Map<String, Hologram> map = new HashMap<>();
     static Hologram createHologram(String name, Location location, List<Object> texts){
-        Hologram api = HologramsAPI.createHologram(MiarsCore.getInstance(),location);
+        HolographicDisplaysAPI holograms = HolographicDisplaysAPI.get(MiarsCore.getInstance());
+        Hologram api = holograms.createHologram(location);
+        api.setPlaceholderSetting(PlaceholderSetting.ENABLE_ALL);
 
         for (Object o:texts){
             if (o instanceof ItemStack){
-                api.appendItemLine((ItemStack) o);
+                api.getLines().appendItem((ItemStack) o);
             }else {
-                api.appendTextLine((String) o);
+                api.getLines().appendText((String) o);
             }
         }
 
@@ -33,11 +38,14 @@ public interface MHolograms {
         return api;
     }
     static Hologram createHologramString(String name, Location location, List<String> texts){
-        Hologram api = HologramsAPI.createHologram(MiarsCore.getInstance(),location);
+        HolographicDisplaysAPI holograms = HolographicDisplaysAPI.get(MiarsCore.getInstance());
+        Hologram api = holograms.createHologram(location);
+        api.setPlaceholderSetting(PlaceholderSetting.ENABLE_ALL);
 
         for (String o:texts){
-            api.appendTextLine(o);
+            api.getLines().appendText(o);
         }
+
 
         map.put(name,api);
 
@@ -49,7 +57,8 @@ public interface MHolograms {
     }
 
     static void clear(){
-        HologramsAPI.getHolograms(MiarsCore.getInstance()).clear();
+        HolographicDisplaysAPI holograms = HolographicDisplaysAPI.get(MiarsCore.getInstance());
+        holograms.getHolograms().clear();
     }
 
 }

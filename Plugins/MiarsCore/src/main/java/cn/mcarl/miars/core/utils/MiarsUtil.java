@@ -11,15 +11,22 @@ import com.mojang.authlib.properties.Property;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.util.NumberConversions;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 
 public class MiarsUtil {
@@ -120,14 +127,66 @@ public class MiarsUtil {
     }
 
     public static Location locationParse(@NotNull Object section) {
-        Map<String, Object> map = (Map<String, Object>) section;
-        return new Location(
-                Bukkit.getWorld((String) map.get("world")),
-                (Double) map.get("x"),
-                (Double) map.get("y"),
-                (Double) map.get("z"),
-                ((Double) (map.get("yaw") != null ? map.get("yaw") : 0)).floatValue(),
-                ((Double) (map.get("pitch") != null ? map.get("pitch") : 0)).floatValue()
-        );
+
+        Map<String, Object> args = (Map<String, Object>) section;
+
+        World world = Bukkit.getWorld((String) args.get("world"));
+        if (world == null) {
+            throw new IllegalArgumentException("unknown world");
+        }
+
+        return new Location(world, NumberConversions.toDouble(args.get("x")), NumberConversions.toDouble(args.get("y")), NumberConversions.toDouble(args.get("z")), NumberConversions.toFloat(args.get("yaw")), NumberConversions.toFloat(args.get("pitch")));
+    }
+
+    public static ItemStack itemStackParse(@NotNull Object section) {
+
+        Map<String, Object> args = (Map<String, Object>) section;
+
+        Material type = Material.getMaterial((String) args.get("type"));
+        short damage = 0;
+        int amount = 1;
+
+        if (args.containsKey("damage")) {
+            damage = ((Number) args.get("damage")).shortValue();
+        }
+
+        if (args.containsKey("amount")) {
+            amount = ((Number) args.get("amount")).intValue();
+        }
+
+        ItemStack result = new ItemStack(type, amount, damage);
+
+        if (args.containsKey("enchantments")) { // Backward compatiblity, @deprecated
+            Object raw = args.get("enchantments");
+
+            if (raw instanceof Map<?, ?> map) {
+
+                for (Map.Entry<?, ?> entry : map.entrySet()) {
+                    Enchantment enchantment = Enchantment.getByName(entry.getKey().toString());
+
+                    if ((enchantment != null) && (entry.getValue() instanceof Integer)) {
+                        result.addUnsafeEnchantment(enchantment, (Integer) entry.getValue());
+                    }
+                }
+            }
+        } else if (args.containsKey("meta")) { // We cannot and will not have meta when enchantments (pre-ItemMeta) exist
+            Object raw = args.get("meta");
+            if (raw instanceof ItemMeta) {
+                result.setItemMeta((ItemMeta) raw);
+            }
+        }
+
+        return result;
+    }
+
+
+    public static int accuracy(double num, double total, int scale){
+        DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
+        //可以设置精确几位小数
+        df.setMaximumFractionDigits(scale);
+        //模式 例如四舍五入
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        double accuracy_num = num / total * 100;
+        return Integer.parseInt(df.format(accuracy_num));
     }
 }

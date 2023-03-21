@@ -6,11 +6,8 @@ import cn.mcarl.miars.core.conf.PluginConfig;
 import cn.mcarl.miars.core.manager.ServerManager;
 import cn.mcarl.miars.storage.entity.MServerInfo;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
-import cn.mcarl.miars.storage.enums.FKitType;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Sound;
+import cn.mcarl.miars.storage.enums.practice.FKitType;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -358,7 +355,7 @@ public class ToolUtils {
     }
 
 
-    public static List<String> initLorePapi(List<String> list,boolean is,String type){
+    public static List<String> initLorePapi(List<String> list, boolean is, String type){
 
         List<String> stringList = new ArrayList<>();
 

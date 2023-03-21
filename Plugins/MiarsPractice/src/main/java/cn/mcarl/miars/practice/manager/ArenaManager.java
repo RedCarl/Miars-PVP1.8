@@ -3,8 +3,8 @@ package cn.mcarl.miars.practice.manager;
 import cn.mcarl.miars.core.manager.ServerManager;
 import cn.mcarl.miars.practice.conf.PluginConfig;
 import cn.mcarl.miars.storage.entity.practice.Arena;
-import cn.mcarl.miars.storage.enums.FKitType;
-import cn.mcarl.miars.storage.enums.QueueType;
+import cn.mcarl.miars.storage.enums.practice.FKitType;
+import cn.mcarl.miars.storage.enums.practice.QueueType;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaStateDataStorage;
 

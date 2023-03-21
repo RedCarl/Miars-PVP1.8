@@ -24,8 +24,7 @@ public class RotatingHead {
     public static RotatingHead getInstance() {
         return instance;
     }
-    private final Map<String,ArmorStand> standMap = new HashMap<>();
-    public void spawnOrb(String name, Location location, LuckBlockType luckBlockType) {
+    public ArmorStand spawnOrb(Location location, LuckBlockType luckBlockType) {
 
         // Gets world the player is in.
         World world = location.getWorld();
@@ -51,8 +50,6 @@ public class RotatingHead {
                         .toItemStack()
         );
 
-        standMap.put(name,stand);
-
         new BukkitRunnable() {
             int i = 5;
             boolean a = true;
@@ -73,10 +70,10 @@ public class RotatingHead {
                 }
 
                 if (a){
-                    l.add(0,0.20,0);
+                    l.add(0,0.17,0);
                     i--;
                 }else{
-                    l.add(0,-0.20,0);
+                    l.add(0,-0.17,0);
                     i++;
                 }
 
@@ -86,5 +83,6 @@ public class RotatingHead {
 
         }.runTaskTimer(MiarsSkyPVP.getInstance(), 0, 2);
 
+        return stand;
     }
 }

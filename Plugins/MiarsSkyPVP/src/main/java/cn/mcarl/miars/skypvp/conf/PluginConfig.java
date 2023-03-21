@@ -5,13 +5,13 @@ import cc.carm.lib.configuration.core.annotation.HeaderComment;
 import cc.carm.lib.configuration.core.value.ConfigValue;
 import cc.carm.lib.configuration.core.value.type.ConfiguredList;
 import cc.carm.lib.configuration.core.value.type.ConfiguredValue;
+import cn.mcarl.miars.core.utils.ItemBuilder;
 import cn.mcarl.miars.core.utils.MiarsUtil;
-import cn.mcarl.miars.skypvp.entitiy.RewardItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-
-import java.util.List;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
 
 public class PluginConfig extends ConfigurationRoot {
 
@@ -25,14 +25,13 @@ public class PluginConfig extends ConfigurationRoot {
         public static final ConfigValue<Location> MAX = ConfiguredValue.of(Location.class, new Location(Bukkit.getWorld("world"),36.5,256,28.5));
     }
 
-
     @HeaderComment({"幸运方块配置"})
     public static final class LUCKY extends ConfigurationRoot {
         @HeaderComment({"普通幸运方块"})
         public static final class NORMAL extends ConfigurationRoot {
             @HeaderComment({"多久刷新一次 (秒)"})
             public static final ConfigValue<Long> REFRESH = ConfiguredValue.of(Long.class, 10L);
-            @HeaderComment({"位置"})
+            @HeaderComment({"位置列表"})
             public static final ConfiguredList<Location> LOCATION = ConfigValue.builder()
                     .asList(Location.class).fromObject()
                     .parseValue(MiarsUtil::locationParse)
@@ -42,14 +41,25 @@ public class PluginConfig extends ConfigurationRoot {
                             new Location(Bukkit.getWorld("world"),1,1,1)
                     )
                     .build();
+
             @HeaderComment({"奖励内容"})
-            public static final ConfiguredList<RewardItem> REWARD = ConfigValue.builder()
-                    .asList(RewardItem.class).fromObject()
-                    .parseValue(RewardItem::deserialize)
-                    .serializeValue(RewardItem::serialize)
+            public static final ConfiguredList<ItemStack> REWARD = ConfigValue.builder()
+                    .asList(ItemStack.class).fromObject()
+                    .parseValue(MiarsUtil::itemStackParse)
+                    .serializeValue(ItemStack::serialize)
                     .defaults(
-                            new RewardItem("没有就不填",Material.DIAMOND_SWORD.name(), (short) 0,"钻石剑",List.of("事实上"),50),
-                            new RewardItem("没有就不填",Material.STONE.name(), (short) 0,"石头",List.of("啊啊啊"),60)
+                            new ItemBuilder(Material.STONE_SWORD)
+                                    .setName("test")
+                                    .setLore("probability: 100")
+                                    .addEnchant(Enchantment.DAMAGE_ALL,5,true)
+                                    .toItemStack(),
+                            new ItemBuilder(Material.DIAMOND)
+                                    .setName("test")
+                                    .setLore("probability: 100")
+                                    .toItemStack(),
+                            new ItemBuilder(Material.POTION, 1)
+                                    .setData((short) 16421)
+                                    .toItemStack()
                     )
                     .build();
         }
@@ -57,7 +67,7 @@ public class PluginConfig extends ConfigurationRoot {
         public static final class RARE extends ConfigurationRoot {
             @HeaderComment({"多久刷新一次 (秒)"})
             public static final ConfigValue<Long> REFRESH = ConfiguredValue.of(Long.class, 10L);
-            @HeaderComment({"位置"})
+            @HeaderComment({"位置列表"})
             public static final ConfiguredList<Location> LOCATION = ConfigValue.builder()
                     .asList(Location.class).fromObject()
                     .parseValue(MiarsUtil::locationParse)
@@ -67,14 +77,22 @@ public class PluginConfig extends ConfigurationRoot {
                             new Location(Bukkit.getWorld("world"),1,1,1)
                     )
                     .build();
+
             @HeaderComment({"奖励内容"})
-            public static final ConfiguredList<RewardItem> REWARD = ConfigValue.builder()
-                    .asList(RewardItem.class).fromObject()
-                    .parseValue(RewardItem::deserialize)
-                    .serializeValue(RewardItem::serialize)
+            public static final ConfiguredList<ItemStack> REWARD = ConfigValue.builder()
+                    .asList(ItemStack.class).fromObject()
+                    .parseValue(MiarsUtil::itemStackParse)
+                    .serializeValue(ItemStack::serialize)
                     .defaults(
-                            new RewardItem("没有就不填",Material.DIAMOND_SWORD.name(), (short) 0,"钻石剑",List.of("事实上"),50),
-                            new RewardItem("没有就不填",Material.STONE.name(), (short) 0,"石头",List.of("啊啊啊"),60)
+                            new ItemBuilder(Material.STONE_SWORD)
+                                    .setName("test")
+                                    .setLore("probability: 100")
+                                    .addEnchant(Enchantment.DAMAGE_ALL,5,true)
+                                    .toItemStack(),
+                            new ItemBuilder(Material.DIAMOND)
+                                    .setName("test")
+                                    .setLore("probability: 100")
+                                    .toItemStack()
                     )
                     .build();
         }
@@ -82,7 +100,7 @@ public class PluginConfig extends ConfigurationRoot {
         public static final class EPIC extends ConfigurationRoot {
             @HeaderComment({"多久刷新一次 (秒)"})
             public static final ConfigValue<Long> REFRESH = ConfiguredValue.of(Long.class, 10L);
-            @HeaderComment({"位置"})
+            @HeaderComment({"位置列表"})
             public static final ConfiguredList<Location> LOCATION = ConfigValue.builder()
                     .asList(Location.class).fromObject()
                     .parseValue(MiarsUtil::locationParse)
@@ -92,14 +110,22 @@ public class PluginConfig extends ConfigurationRoot {
                             new Location(Bukkit.getWorld("world"),1,1,1)
                     )
                     .build();
+
             @HeaderComment({"奖励内容"})
-            public static final ConfiguredList<RewardItem> REWARD = ConfigValue.builder()
-                    .asList(RewardItem.class).fromObject()
-                    .parseValue(RewardItem::deserialize)
-                    .serializeValue(RewardItem::serialize)
+            public static final ConfiguredList<ItemStack> REWARD = ConfigValue.builder()
+                    .asList(ItemStack.class).fromObject()
+                    .parseValue(MiarsUtil::itemStackParse)
+                    .serializeValue(ItemStack::serialize)
                     .defaults(
-                            new RewardItem("没有就不填",Material.DIAMOND_SWORD.name(), (short) 0,"钻石剑",List.of("事实上"),50),
-                            new RewardItem("没有就不填",Material.STONE.name(), (short) 0,"石头",List.of("啊啊啊"),60)
+                            new ItemBuilder(Material.STONE_SWORD)
+                                    .setName("test")
+                                    .setLore("probability: 100")
+                                    .addEnchant(Enchantment.DAMAGE_ALL,5,true)
+                                    .toItemStack(),
+                            new ItemBuilder(Material.DIAMOND)
+                                    .setName("test")
+                                    .setLore("probability: 100")
+                                    .toItemStack()
                     )
                     .build();
         }
@@ -107,7 +133,7 @@ public class PluginConfig extends ConfigurationRoot {
         public static final class LEGENDARY extends ConfigurationRoot {
             @HeaderComment({"多久刷新一次 (秒)"})
             public static final ConfigValue<Long> REFRESH = ConfiguredValue.of(Long.class, 10L);
-            @HeaderComment({"位置"})
+            @HeaderComment({"位置列表"})
             public static final ConfiguredList<Location> LOCATION = ConfigValue.builder()
                     .asList(Location.class).fromObject()
                     .parseValue(MiarsUtil::locationParse)
@@ -117,14 +143,22 @@ public class PluginConfig extends ConfigurationRoot {
                             new Location(Bukkit.getWorld("world"),1,1,1)
                     )
                     .build();
+
             @HeaderComment({"奖励内容"})
-            public static final ConfiguredList<RewardItem> REWARD = ConfigValue.builder()
-                    .asList(RewardItem.class).fromObject()
-                    .parseValue(RewardItem::deserialize)
-                    .serializeValue(RewardItem::serialize)
+            public static final ConfiguredList<ItemStack> REWARD = ConfigValue.builder()
+                    .asList(ItemStack.class).fromObject()
+                    .parseValue(MiarsUtil::itemStackParse)
+                    .serializeValue(ItemStack::serialize)
                     .defaults(
-                            new RewardItem("没有就不填",Material.DIAMOND_SWORD.name(), (short) 0,"钻石剑",List.of("事实上"),50),
-                            new RewardItem("没有就不填",Material.STONE.name(), (short) 0,"石头",List.of("啊啊啊"),60)
+                            new ItemBuilder(Material.STONE_SWORD)
+                                    .setName("test")
+                                    .setLore("probability: 100")
+                                    .addEnchant(Enchantment.DAMAGE_ALL,5,true)
+                                    .toItemStack(),
+                            new ItemBuilder(Material.DIAMOND)
+                                    .setName("test")
+                                    .setLore("probability: 100")
+                                    .toItemStack()
                     )
                     .build();
         }

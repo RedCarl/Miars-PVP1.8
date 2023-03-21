@@ -6,7 +6,7 @@ import cn.mcarl.miars.practiceffa.kits.Queue;
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.entity.ffa.FKit;
-import cn.mcarl.miars.storage.enums.FKitType;
+import cn.mcarl.miars.storage.enums.practice.FKitType;
 import cn.mcarl.miars.practiceffa.kits.FFAGame;
 import cn.mcarl.miars.practiceffa.kits.Practice;
 import cn.mcarl.miars.practiceffa.utils.FFAUtil;

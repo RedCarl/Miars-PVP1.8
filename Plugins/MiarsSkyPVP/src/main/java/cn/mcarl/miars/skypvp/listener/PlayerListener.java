@@ -7,11 +7,15 @@ import cn.mcarl.miars.skypvp.entitiy.GamePlayer;
 import cn.mcarl.miars.skypvp.enums.LuckBlockType;
 import cn.mcarl.miars.skypvp.items.SpawnSlimeball;
 import cn.mcarl.miars.skypvp.manager.CombatManager;
+import cn.mcarl.miars.skypvp.manager.LuckyManager;
 import cn.mcarl.miars.skypvp.manager.ScoreBoardManager;
 import cn.mcarl.miars.skypvp.manager.SpawnManager;
 import cn.mcarl.miars.skypvp.utils.PlayerUtils;
-import cn.mcarl.miars.storage.MiarsStorage;
+import cn.mcarl.miars.storage.entity.MPlayer;
+import cn.mcarl.miars.storage.entity.MRank;
 import cn.mcarl.miars.storage.entity.ffa.FCombatInfo;
+import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
+import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
 import cn.mcarl.miars.storage.storage.data.skypvp.SkyPVPDataStorage;
 import com.destroystokyo.paper.Title;
 import org.bukkit.Bukkit;
@@ -51,12 +55,10 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void PlayerMoveEvent(PlayerMoveEvent e){
         Player player = e.getPlayer();
-        for (Entity entity:player.getWorld().getNearbyEntities(player.getLocation(),2,2,2)) {
+        for (Entity entity:player.getWorld().getNearbyEntities(player.getLocation(),0.5,1,0.5)) {
             if (entity instanceof ArmorStand stand){
                 if (stand.getCustomName().contains("miars_lucky")){
-                    String name = stand.getCustomName().substring(stand.getCustomName().indexOf(".")+1);
-                    player.sendMessage(ColorParser.parse("&7你开启了一个 "+ LuckBlockType.valueOf(name).getName()+" &7幸运方块！"));
-                    stand.remove();
+                    LuckyManager.getInstance().useBlock(stand,player);
                 }
             }
         }
@@ -101,8 +103,9 @@ public class PlayerListener implements Listener {
             player.setGameMode(GameMode.SURVIVAL);
         }
         SkyPVPDataStorage.getInstance().getSPlayer(player);
-
         ScoreBoardManager.getInstance().joinPlayer(player);
+
+        player.teleport(PluginConfig.PROTECTED_REGION.SPAWN.get());
     }
 
     @EventHandler
@@ -110,7 +113,7 @@ public class PlayerListener implements Listener {
         Player player = e.getPlayer();
         ScoreBoardManager.getInstance().removePlayer(player);
         if (CombatManager.getInstance().isCombat(player)){
-            player.setHealth(0);
+            player.damage(player.getMaxHealth(),player.getKiller());
         }
     }
 
@@ -166,7 +169,7 @@ public class PlayerListener implements Listener {
                 Long coin = new Random().nextLong(4)+1;
                 GamePlayer.get(attackPlayer).addCoin(coin);
                 attackPlayer.sendMessage(ColorParser.parse("&6&l奖励! &7从敌人身上缴获了 &6"+coin+" &7硬币。"));
-                Long exp = new Random().nextLong(4)+1;
+                Long exp = new Random().nextLong(80)+20;
                 GamePlayer.get(attackPlayer).addExp(exp);
                 attackPlayer.sendMessage(ColorParser.parse("&e&l经验! &7战斗中获得了 &e"+exp+" &7经验。"));
 
@@ -223,5 +226,12 @@ public class PlayerListener implements Listener {
                 i--;
             }
         }.runTaskTimer(MiarsSkyPVP.getInstance(),0,20);
+    }
+
+    @EventHandler
+    public void AsyncPlayerChatEvent(AsyncPlayerChatEvent e){
+        MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(e.getPlayer());
+        MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
+        e.setFormat(ColorParser.parse(GamePlayer.get(e.getPlayer()).getLevelString()+" "+mRank.getPrefix()+mRank.getNameColor()+"%1$s&f: %2$s"));
     }
 }

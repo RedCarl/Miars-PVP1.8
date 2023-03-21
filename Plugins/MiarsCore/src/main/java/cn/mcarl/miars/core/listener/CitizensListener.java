@@ -10,6 +10,7 @@ import cn.mcarl.miars.storage.entity.serverNpc.ServerNPC;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -38,6 +39,9 @@ public class CitizensListener implements Listener {
             }
             case "menu" -> {
                 ServerMenuGUI.open(player,serverNPC.getValue());
+            }
+            case "command" -> {
+                Bukkit.dispatchCommand(player,serverNPC.getValue());
             }
         }
     }

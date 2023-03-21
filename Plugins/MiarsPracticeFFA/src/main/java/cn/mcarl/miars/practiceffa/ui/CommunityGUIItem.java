@@ -1,19 +1,17 @@
 package cn.mcarl.miars.practiceffa.ui;
 
 import cn.mcarl.miars.core.utils.ItemBuilder;
-import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.entity.practice.DailyStreak;
 import cn.mcarl.miars.storage.entity.practice.QueueInfo;
-import cn.mcarl.miars.storage.enums.FKitType;
-import cn.mcarl.miars.storage.enums.QueueType;
+import cn.mcarl.miars.storage.enums.practice.FKitType;
+import cn.mcarl.miars.storage.enums.practice.QueueType;
 import cn.mcarl.miars.storage.storage.data.practice.*;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
-import javax.xml.crypto.Data;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +77,18 @@ public class CommunityGUIItem {
             case FFAGAME -> {
                 return new ItemBuilder(Material.FISHING_ROD)
                         .setName("&a&lFFAGAME")
+                        .setLore(getLoreInfo(
+                                String.valueOf(dailyStreak!=null ? dailyStreak.getStreak() : 0),
+                                String.valueOf(queueInfos.size()!=0 ? queueInfos.get(0).getPlayers().size() : 0),
+                                String.valueOf(arenaStates.size()),
+                                dailyStreaks,
+                                lore
+                        ))
+                        .toItemStack();
+            }
+            case BUILD_UHC -> {
+                return new ItemBuilder(Material.LAVA_BUCKET)
+                        .setName("&a&lBuild UHC")
                         .setLore(getLoreInfo(
                                 String.valueOf(dailyStreak!=null ? dailyStreak.getStreak() : 0),
                                 String.valueOf(queueInfos.size()!=0 ? queueInfos.get(0).getPlayers().size() : 0),

@@ -53,10 +53,14 @@ public class ScoreBoardManager {
         MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
 
         List<String> lines = new ArrayList<>();
-        board.updateTitle("&eSKYPVP &8| &e"+ ServerInfoDataStorage.getInstance().getServerInfo().getNameCn());
+        board.updateTitle("&eSKYPVP &8┃ &e"+ ServerInfoDataStorage.getInstance().getServerInfo().getNameCn());
         lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis())+" &8"+ ToolUtils.getServerCode());
         lines.add("");
-        lines.add("&f 等级 &6"+0);
+        lines.add("&6&l┃ &f等级: "+GamePlayer.get(p).getLevelString());
+        lines.add(GamePlayer.get(p).getNextLevel());
+        lines.add("");
+        lines.add("&6&l┃ &f硬币: &6" + GamePlayer.get(p).getSPlayer().getCoin());
+        lines.add("&6&l┃ &f金子: &e" + MiarsCore.getPpAPi().look(p.getUniqueId()));
         lines.add("");
 
         // 战斗模式的计分板
@@ -66,23 +70,18 @@ public class ScoreBoardManager {
             if (opponent==null){
                 CombatManager.getInstance().clear(p);
             }else {
-                lines.add("&f 对 手");
-                lines.add("&f   名称 &6" + opponent.getName());
-                lines.add("&f   K/D &6" + GamePlayer.get(opponent).getKb());
-                lines.add("&f   血量 &6" + ToolUtils.decimalFormat(opponent.getHealth(), 2));
+                lines.add("&6&l┃ &f对手:");
+                lines.add("&f   名称 &c" + opponent.getName());
+                lines.add("&f   血量 &c" + ToolUtils.decimalFormat(opponent.getHealth(), 2));
                 lines.add("&r");
-                lines.add("&7   战斗中... (&6" + CombatManager.getInstance().getLastSecond(p)+"&7)");
+                lines.add("&c   战斗中... (&7" + CombatManager.getInstance().getLastSecond(p)+"&c)");
             }
 
         }else {
-            lines.add("&f 击杀 &6" + GamePlayer.get(p).getSPlayer().getKillsCount());
-            lines.add("&f 死亡 &6" + GamePlayer.get(p).getSPlayer().getDeathCount());
+            lines.add("&6&l┃ &f击杀: &a" + GamePlayer.get(p).getSPlayer().getKillsCount());
+            lines.add("&6&l┃ &f死亡: &c" + GamePlayer.get(p).getSPlayer().getDeathCount());
+            lines.add("&6&l┃ &fK/D: &d" + GamePlayer.get(p).getKb());
         }
-
-        // KD
-        lines.add("");
-        lines.add("&f K/D &6" + GamePlayer.get(p).getKb());
-        lines.add("&f 硬币 &6" + GamePlayer.get(p).getSPlayer().getCoin());
         lines.add("");
         lines.add("&7&o"+ ServerInfoDataStorage.getInstance().getServerInfo().getIp());
 

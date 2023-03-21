@@ -1,8 +1,8 @@
 package cn.mcarl.miars.storage.entity.practice;
 
 import cn.mcarl.miars.storage.entity.ffa.FInventoryByte;
-import cn.mcarl.miars.storage.enums.FKitType;
-import cn.mcarl.miars.storage.enums.QueueType;
+import cn.mcarl.miars.storage.enums.practice.FKitType;
+import cn.mcarl.miars.storage.enums.practice.QueueType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,10 +23,12 @@ public class ArenaState {
 
     // 玩家
     private String playerA;
+    private PlayerState playerStateA;
     // 玩家的库存
     private FInventoryByte aFInventory;
     // 玩家
     private String playerB;
+    private PlayerState playerStateB;
     // 玩家的库存
     private FInventoryByte bFInventory;
 

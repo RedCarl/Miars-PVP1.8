@@ -6,11 +6,13 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -103,6 +105,17 @@ public class ItemManager implements Listener {
             if (item!=null){
                 item.onPlayerDeath(e,player,i);
             }
+        }
+    }
+
+    @EventHandler
+    public void PlayerItemConsumeEvent(PlayerItemConsumeEvent e) {
+        Player player = e.getPlayer();
+        ItemStack itemStack = e.getItem();
+
+        final AbstractItem item = getAbstractItem(itemStack);
+        if (item!=null){
+            item.onItemConsume(e,player,itemStack);
         }
     }
 

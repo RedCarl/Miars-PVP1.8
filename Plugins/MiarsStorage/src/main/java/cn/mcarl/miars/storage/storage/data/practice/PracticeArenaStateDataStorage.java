@@ -3,8 +3,8 @@ package cn.mcarl.miars.storage.storage.data.practice;
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
-import cn.mcarl.miars.storage.enums.FKitType;
-import cn.mcarl.miars.storage.enums.QueueType;
+import cn.mcarl.miars.storage.enums.practice.FKitType;
+import cn.mcarl.miars.storage.enums.practice.QueueType;
 import com.alibaba.fastjson.JSONArray;
 import org.bukkit.entity.Player;
 
@@ -33,6 +33,8 @@ public class PracticeArenaStateDataStorage {
                     0,
                     o.getId(),
                     0,
+                    null,
+                    null,
                     null,
                     null,
                     null,

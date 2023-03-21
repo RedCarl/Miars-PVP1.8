@@ -3,7 +3,7 @@ package cn.mcarl.miars.practice.command;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.practice.conf.PluginConfig;
 import cn.mcarl.miars.storage.entity.practice.Arena;
-import cn.mcarl.miars.storage.enums.FKitType;
+import cn.mcarl.miars.storage.enums.practice.FKitType;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaDataStorage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

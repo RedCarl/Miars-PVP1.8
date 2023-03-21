@@ -1,6 +1,6 @@
 package cn.mcarl.miars.storage.entity.ffa;
 
-import cn.mcarl.miars.storage.enums.FKitType;
+import cn.mcarl.miars.storage.enums.practice.FKitType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

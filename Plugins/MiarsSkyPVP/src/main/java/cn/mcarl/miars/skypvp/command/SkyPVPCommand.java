@@ -2,6 +2,8 @@ package cn.mcarl.miars.skypvp.command;
 
 import cn.mcarl.miars.skypvp.MiarsSkyPVP;
 import cn.mcarl.miars.skypvp.conf.PluginConfig;
+import cn.mcarl.miars.skypvp.entitiy.GamePlayer;
+import cn.mcarl.miars.skypvp.manager.LuckyManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,9 +39,18 @@ public class SkyPVPCommand implements CommandExecutor, TabCompleter {
                 if (sender instanceof Player player){
                     if (player.hasPermission("miars.admin")){
                         MiarsSkyPVP.getInstance().getConfigManager().reload();
+                        LuckyManager.getInstance().clear();
+                        LuckyManager.getInstance().init();
                     }
                 }else {
                     MiarsSkyPVP.getInstance().getConfigManager().reload();
+                }
+            }
+            case "addexp": {
+                if (sender instanceof Player player){
+                    if (player.hasPermission("miars.admin")){
+                        GamePlayer.get(player).addExp(1000L);
+                    }
                 }
             }
             default:

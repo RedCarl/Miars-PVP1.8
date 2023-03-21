@@ -5,7 +5,7 @@ import cn.mcarl.miars.core.utils.ItemBuilder;
 import cn.mcarl.miars.practice.conf.PluginConfig;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.entity.ffa.FKit;
-import cn.mcarl.miars.storage.enums.FKitType;
+import cn.mcarl.miars.storage.enums.practice.FKitType;
 import cn.mcarl.miars.storage.storage.data.practice.FKitDataStorage;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

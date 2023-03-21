@@ -1,9 +1,8 @@
 package cn.mcarl.miars.lobby.listener;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
-import cn.mcarl.miars.core.utils.ToolUtils;
-import cn.mcarl.miars.lobby.kit.LobbyItem;
-import cn.mcarl.miars.lobby.manager.ItemInteractManager;
+import cn.mcarl.miars.core.publics.items.Ranks;
+import cn.mcarl.miars.core.publics.items.ServerMenu;
 import cn.mcarl.miars.lobby.conf.PluginConfig;
 import cn.mcarl.miars.lobby.manager.ScoreBoardManager;
 import cn.mcarl.miars.storage.entity.MPlayer;
@@ -41,11 +40,12 @@ public class PlayerListener implements Listener {
         Player player = e.getPlayer();
         player.teleport(PluginConfig.LOBBY_SITE.LOCATION.get());
 
-        ToolUtils.autoEquip(player, LobbyItem.get());
+        new ServerMenu().give(player,0);
+        new Ranks().give(player,1);
 
         ScoreBoardManager.getInstance().joinPlayer(player);
 
-        player.sendMessage(ColorParser.parse("&6--&e-&8------------------------------------&6-&e--"));
+        player.sendMessage(ColorParser.parse("&6--&e-&8--------------------------------&6-&e--"));
         player.sendMessage(ColorParser.parse("&r"));
         player.sendMessage(ColorParser.parse("&6▪ &7您好，欢迎来到 &6磐石 &f(中国) 。"));
         player.sendMessage(ColorParser.parse("&r"));
@@ -53,7 +53,7 @@ public class PlayerListener implements Listener {
         player.sendMessage(ColorParser.parse("&6▪ &7您可以点击下方的链接进入官网。"));
         player.sendMessage(ColorParser.parse("&6▪ &7➥ &fhttps://panshimc.cn"));
         player.sendMessage(ColorParser.parse("&r"));
-        player.sendMessage(ColorParser.parse("&6--&e-&8------------------------------------&6-&e--"));
+        player.sendMessage(ColorParser.parse("&6--&e-&8--------------------------------&6-&e--"));
 
     }
 
@@ -85,11 +85,6 @@ public class PlayerListener implements Listener {
         ItemStack itemStack = e.getItem();
         Block block = e.getClickedBlock();
         Action action = e.getAction();
-
-        if (itemStack!=null){
-            // 物品的交互
-            ItemInteractManager.getInstance().init(itemStack,player);
-        }
 
         if(e.getAction().equals(Action.PHYSICAL)) {
             if (e.getClickedBlock().getType() == Material.STONE_PLATE) {

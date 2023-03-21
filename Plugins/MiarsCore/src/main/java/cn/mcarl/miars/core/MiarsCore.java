@@ -5,17 +5,18 @@ import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.command.MiarsCommand;
 import cn.mcarl.miars.core.conf.PluginConfig;
 import cn.mcarl.miars.core.hooker.MiarsEconomy;
+import cn.mcarl.miars.core.hooker.PAPIExpansion;
 import cn.mcarl.miars.core.listener.CitizensListener;
 import cn.mcarl.miars.core.listener.PlayerListener;
 import cn.mcarl.miars.core.manager.CitizensManager;
 import cn.mcarl.miars.core.manager.ConfigManager;
+import cn.mcarl.miars.core.manager.ItemsManager;
 import cn.mcarl.miars.core.manager.ServerManager;
 import cn.mcarl.miars.core.utils.BungeeApi;
 import cn.mcarl.miars.core.utils.easyitem.ItemManager;
 import cn.mcarl.miars.core.utils.nametagapi.NametagManager;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import lombok.SneakyThrows;
 import net.luckperms.api.LuckPerms;
 import net.milkbowl.vault.economy.Economy;
@@ -44,10 +45,6 @@ public class MiarsCore extends JavaPlugin {
     private static LuckPerms luckPerms;
     public static LuckPerms getLuckPerms() {
         return luckPerms;
-    }
-    private static HologramsAPI hologramsAPI;
-    public static HologramsAPI getHologramsAPI() {
-        return hologramsAPI;
     }
     public static ProtocolManager getProtocolManager() {
         return protocolManager;
@@ -133,6 +130,11 @@ public class MiarsCore extends JavaPlugin {
             return;
         }
 
+        /* PlaceholderAPI Support */
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PAPIExpansion(this).register();
+        }
+
         log("正在注册监听器...");
         regListener(new PlayerListener());
         regListener(new CitizensListener());
@@ -149,6 +151,7 @@ public class MiarsCore extends JavaPlugin {
 
         log("正在初始化 NPC 模块...");
         CitizensManager.getInstance().init();
+        new ItemsManager();
 
         if (PluginConfig.SITE.NAME_TAG.get()){
             log("正在初始化 NameTag 模块...");

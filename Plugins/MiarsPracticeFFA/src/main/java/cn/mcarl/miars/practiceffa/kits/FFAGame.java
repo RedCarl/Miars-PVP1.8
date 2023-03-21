@@ -2,7 +2,7 @@ package cn.mcarl.miars.practiceffa.kits;
 
 import cn.mcarl.miars.core.utils.ItemBuilder;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
-import cn.mcarl.miars.storage.enums.FKitType;
+import cn.mcarl.miars.storage.enums.practice.FKitType;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;

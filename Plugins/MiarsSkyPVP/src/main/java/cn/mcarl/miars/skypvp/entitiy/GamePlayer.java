@@ -1,5 +1,6 @@
 package cn.mcarl.miars.skypvp.entitiy;
 
+import cn.mcarl.miars.core.utils.MiarsUtil;
 import cn.mcarl.miars.skypvp.utils.PlayerUtils;
 import cn.mcarl.miars.storage.entity.skypvp.SPlayer;
 import cn.mcarl.miars.storage.storage.data.skypvp.SkyPVPDataStorage;
@@ -41,5 +42,53 @@ public class GamePlayer {
     public void addCoin(Long i){
         this.sPlayer.setCoin(this.getSPlayer().getCoin()+i);
         SkyPVPDataStorage.getInstance().putSPlayer(sPlayer);
+    }
+    public Integer getLevel(){
+        int level = 0;
+
+        long exp = this.sPlayer.getExp();
+        int next = 0;
+
+        while (exp>=next){
+            exp=exp - next;
+            level++;
+            next = level*200;
+        }
+
+        return level;
+    }
+    public String getNextLevel(){
+        int level = 0;
+
+        long exp = this.sPlayer.getExp();
+        int next = 0;
+
+        while (exp>=next){
+            exp=exp - next;
+            level++;
+            next = level*200;
+        }
+
+        int o = MiarsUtil.accuracy(exp,next,0)/10;
+
+        StringBuilder s = new StringBuilder("&8[");
+
+        if (o!=0){
+            s.append("&b");
+        }
+        s.append("■".repeat(Math.max(0, o)));
+
+        if (o!=10){
+            s.append("&7");
+        }
+        s.append("■".repeat(Math.max(0, 10 - o)));
+        s.append("&8]");
+
+
+        return String.valueOf(s);
+    }
+
+    public String getLevelString(){
+        return "&e["+getLevel()+"]";
     }
 }

@@ -14,7 +14,8 @@ import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
 import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
-import cn.mcarl.miars.storage.enums.FKitType;
+import cn.mcarl.miars.storage.entity.practice.PlayerState;
+import cn.mcarl.miars.storage.enums.practice.FKitType;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaStateDataStorage;
@@ -28,16 +29,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerListener implements Listener {
+
+    Map<Integer,List<Location>> placeBlock = new HashMap<>();
 
     @EventHandler
     public void PlayerJoinEvent(PlayerJoinEvent e){
@@ -203,6 +207,14 @@ public class PlayerListener implements Listener {
         deathPlayer.spigot().respawn();
         deathPlayer.teleport(location);
 
+        // 清理地图方块
+        if (placeBlock.containsKey(state.getArenaId())){
+            for (Location l:placeBlock.get(state.getArenaId())) {
+                l.getWorld().getBlockAt(l).setType(Material.AIR);
+            }
+            placeBlock.remove(state.getArenaId());
+        }
+
         Player attackPlayer;
         if (e.getEntity().getKiller() != null) {
             attackPlayer = e.getEntity().getKiller(); // 击杀的玩家
@@ -217,10 +229,38 @@ public class PlayerListener implements Listener {
 
         if (deathPlayer.getName().equals(state.getPlayerA())){
             state.setAFInventory(BukkitUtils.ItemStackConvertByte(ToolUtils.playerToFInv(deathPlayer, FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()))));
+            state.setPlayerStateA(
+                    new PlayerState(
+                            deathPlayer.getHealth(),
+                            deathPlayer.getFoodLevel(),
+                            new ArrayList<>(deathPlayer.getActivePotionEffects())
+                    )
+            );
             state.setBFInventory(BukkitUtils.ItemStackConvertByte(ToolUtils.playerToFInv(attackPlayer, FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()))));
+            state.setPlayerStateB(
+                    new PlayerState(
+                            attackPlayer.getHealth(),
+                            attackPlayer.getFoodLevel(),
+                            new ArrayList<>(attackPlayer.getActivePotionEffects())
+                    )
+            );
         }else {
             state.setAFInventory(BukkitUtils.ItemStackConvertByte(ToolUtils.playerToFInv(attackPlayer, FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()))));
+            state.setPlayerStateA(
+                    new PlayerState(
+                            attackPlayer.getHealth(),
+                            attackPlayer.getFoodLevel(),
+                            new ArrayList<>(attackPlayer.getActivePotionEffects())
+                    )
+            );
             state.setBFInventory(BukkitUtils.ItemStackConvertByte(ToolUtils.playerToFInv(deathPlayer, FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()))));
+            state.setPlayerStateB(
+                    new PlayerState(
+                            deathPlayer.getHealth(),
+                            deathPlayer.getFoodLevel(),
+                            new ArrayList<>(deathPlayer.getActivePotionEffects())
+                    )
+            );
         }
 
 
@@ -234,16 +274,16 @@ public class PlayerListener implements Listener {
         ArenaState arenaState = PracticeGameDataStorage.getInstance().getArenaDataByEndTime(state.getEndTime()); // 取出最新的对战数据
         ArenaManager.getInstance().endGame(state.getArenaId()); // 结束这场战斗
 
-        JSONMessage.create(ColorParser.parse("&r\n&6Post-Match Inventories &7(Click name to view)"))
+        JSONMessage.create(ColorParser.parse("&r\n&6对局背包信息 &7(点击玩家姓名预览)"))
                 .send(attackPlayer,deathPlayer);
-        JSONMessage.create(ColorParser.parse("&aWinner: "))
+        JSONMessage.create(ColorParser.parse("&a胜利: "))
                 .then(ColorParser.parse("&e"+attackPlayer.getName()))
-                .tooltip(ColorParser.parse("&7Click view"))
+                .tooltip(ColorParser.parse("&7点击预览"))
                 .runCommand("/miars practice openInv "+attackPlayer.getName()+" "+arenaState.getId())
-                .then(ColorParser.parse("&7 - &r"))
-                .then(ColorParser.parse("&cLoser: "))
+                .then(ColorParser.parse("&7 ┃ &r"))
+                .then(ColorParser.parse("&c失败: "))
                 .then(ColorParser.parse("&e"+deathPlayer.getName()))
-                .tooltip(ColorParser.parse("&7Click view"))
+                .tooltip(ColorParser.parse("&7点击预览"))
                 .runCommand("/miars practice openInv "+deathPlayer.getName()+" "+arenaState.getId())
                 .then(ColorParser.parse("\n&r"))
                 .send(attackPlayer,deathPlayer);
@@ -349,6 +389,37 @@ public class PlayerListener implements Listener {
         if (event.getItem().getType().equals(Material.POTION)) {
             Bukkit.getScheduler().runTaskLater(MiarsPractice.getInstance(), () -> event.getPlayer().getInventory().remove(Material.GLASS_BOTTLE), 2);
         }
+    }
+
+    @EventHandler
+    public void BlockPlaceEvent(BlockPlaceEvent e){
+        Player player = e.getPlayer();
+        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player);
+        Arena arena = ArenaManager.getInstance().getArenaById(state.getArenaId());
+
+        List<Location> list = new ArrayList<>();
+        if (placeBlock.containsKey(state.getArenaId())){
+            list = placeBlock.get(state.getArenaId());
+        }
+        list.add(e.getBlock().getLocation());
+        placeBlock.put(arena.getId(),list);
+
+    }
+
+    @EventHandler
+    public void BlockBreakEvent(BlockBreakEvent e){
+        Player player = e.getPlayer();
+        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player);
+
+        if (!placeBlock.containsKey(state.getArenaId())){
+            e.setCancelled(true);
+        }else {
+            List<Location> list = placeBlock.get(state.getArenaId());
+            if (!list.contains(e.getBlock().getLocation())){
+                e.setCancelled(true);
+            }
+        }
+
     }
 
 }

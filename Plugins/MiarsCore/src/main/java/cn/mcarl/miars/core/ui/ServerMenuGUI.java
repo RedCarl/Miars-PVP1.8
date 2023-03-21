@@ -14,6 +14,7 @@ import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.entity.serverMenu.ServerMenuItem;
 import cn.mcarl.miars.storage.storage.data.serverMenu.ServerMenuDataStorage;
 import com.comphenix.protocol.PacketType;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -43,7 +44,7 @@ public class ServerMenuGUI extends GUI {
                     cancel();
                 }
 
-                load(is,list);
+                load(is,list,player);
 
                 updateView();
 
@@ -51,7 +52,7 @@ public class ServerMenuGUI extends GUI {
         }.runTaskTimerAsynchronously(MiarsCore.getInstance(),0,20L);
     }
 
-    public void load(boolean is,List<ServerMenuItem> list){
+    public void load(boolean is,List<ServerMenuItem> list,Player player){
 
 
         if (list.size()==0){
@@ -61,8 +62,8 @@ public class ServerMenuGUI extends GUI {
         for (ServerMenuItem menuItem:list) {
             setItem(menuItem.getSlot(),new GUIItem(
                     new ItemBuilder(menuItem.getIcon())
-                            .setName(menuItem.getName())
-                            .setLore(ToolUtils.initLorePapi(menuItem.getLore(),is,"gui"))
+                            .setName(PlaceholderAPI.setPlaceholders(player,menuItem.getName()))
+                            .setLore(ToolUtils.initLorePapi(PlaceholderAPI.setPlaceholders(player,menuItem.getLore()),is,"gui"))
                             .toItemStack()
             ){
                 @Override

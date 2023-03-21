@@ -7,6 +7,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,6 +29,12 @@ public abstract class AbstractItem {
         return true;
     }
 
+    public ItemStack get(int amount) {
+        ItemStack i = new ItemStack(bukkit(item));
+        i.setAmount(amount);
+        return i;
+    }
+
     public ItemStack bukkit(ItemStack item){
         NBTItem nbti = new NBTItem(item);
         nbti.setString("id",id);
@@ -42,4 +49,5 @@ public abstract class AbstractItem {
     public void onHeldItem(PlayerItemHeldEvent e) {}
 
     public void onPlayerDeath(PlayerDeathEvent e,Player p,ItemStack i) {}
+    public void onItemConsume(PlayerItemConsumeEvent e, Player p, ItemStack i) {}
 }
