@@ -3,10 +3,10 @@ package cn.mcarl.miars.skypvp.manager;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.skypvp.MiarsSkyPVP;
 import cn.mcarl.miars.skypvp.conf.PluginConfig;
-import com.destroystokyo.paper.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.github.paperspigot.Title;
 
 import java.util.HashMap;
 import java.util.Map;

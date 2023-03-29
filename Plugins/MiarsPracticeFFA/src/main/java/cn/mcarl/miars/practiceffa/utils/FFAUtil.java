@@ -2,13 +2,18 @@ package cn.mcarl.miars.practiceffa.utils;
 
 import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.practiceffa.conf.PluginConfig;
+import cn.mcarl.miars.practiceffa.kits.FFAGame;
+import cn.mcarl.miars.practiceffa.kits.NoDeBuff;
+import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.practiceffa.listener.ProtocolListener;
 import cn.mcarl.miars.practiceffa.manager.CombatManager;
+import cn.mcarl.miars.storage.enums.practice.FKitType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
 
 /**
@@ -333,4 +338,54 @@ public class FFAUtil {
         return Double.parseDouble(ToolUtils.decimalFormat((double) fPlayer.getKillsCount() / (double) fPlayer.getDeathCount(),1));
     }
 
+
+    /**
+     * 自动初始化该玩家装备
+     * @param p
+     */
+    public static void autoEquip(Player p,FInventory fInv){
+        clearPlayerInv(p);
+
+        Inventory inv = p.getInventory();
+
+        inv.setItem(39,fInv.getHelmet());
+        inv.setItem(38,fInv.getChestPlate());
+        inv.setItem(37,fInv.getLeggings());
+        inv.setItem(36,fInv.getBoots());
+
+        for (Integer i:fInv.getItemCote().keySet()){
+            inv.setItem(i,fInv.getItemCote().get(i));
+        }
+
+        for (Integer i:fInv.getBackpack().keySet()){
+            inv.setItem(i,fInv.getBackpack().get(i));
+        }
+    }
+
+    /**
+     * 根据类型获取对应的库存
+     * @param fKitType
+     * @return
+     */
+    public static FInventory getByFKitType(FKitType fKitType){
+        switch (fKitType){
+            case FFAGAME -> {
+                return FFAGame.get();
+            }
+            case NO_DEBUFF -> {
+                return NoDeBuff.get();
+            }
+        }
+
+        return null;
+    }
+
+    public static void clearPlayerInv(Player p){
+
+        p.getInventory().clear();
+        p.getInventory().setItem(39,null);
+        p.getInventory().setItem(38,null);
+        p.getInventory().setItem(37,null);
+        p.getInventory().setItem(36,null);
+    }
 }

@@ -1,7 +1,9 @@
 package cn.mcarl.miars.core.hooker;
 
+import cn.mcarl.miars.storage.entity.VaultStorage;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.util.List;
@@ -64,12 +66,12 @@ public class MiarsEconomy implements Economy {
 
     @Override
     public double getBalance(String s) {
-        return 0;
+        return VaultStorage.getMoneyFloat(Bukkit.getOfflinePlayer(s).getUniqueId());
     }
 
     @Override
     public double getBalance(OfflinePlayer offlinePlayer) {
-        return 0;
+        return VaultStorage.getMoneyFloat(offlinePlayer.getUniqueId());
     }
 
     @Override
@@ -104,12 +106,12 @@ public class MiarsEconomy implements Economy {
 
     @Override
     public EconomyResponse withdrawPlayer(String s, double v) {
-        return null;
+        return VaultStorage.delValue(Bukkit.getOfflinePlayer(s).getUniqueId(),v);
     }
 
     @Override
     public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double v) {
-        return null;
+        return VaultStorage.delValue(offlinePlayer.getUniqueId(),v);
     }
 
     @Override
@@ -124,12 +126,12 @@ public class MiarsEconomy implements Economy {
 
     @Override
     public EconomyResponse depositPlayer(String s, double v) {
-        return null;
+        return VaultStorage.addValue(Bukkit.getOfflinePlayer(s).getUniqueId(),v);
     }
 
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double v) {
-        return null;
+        return VaultStorage.addValue(offlinePlayer.getUniqueId(),v);
     }
 
     @Override

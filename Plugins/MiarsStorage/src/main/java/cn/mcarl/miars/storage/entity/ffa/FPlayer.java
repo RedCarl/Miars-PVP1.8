@@ -21,7 +21,7 @@ public class FPlayer {
     // 击杀人数
     private Long killsCount;
 
-    // String
+    // 死亡数量
     private Long deathCount;
 
     // 排位分
@@ -32,5 +32,7 @@ public class FPlayer {
 
     // 创建时间
     private Date createTime;
+
+
 
 }

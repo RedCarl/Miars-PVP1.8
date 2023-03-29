@@ -2,6 +2,7 @@ package cn.mcarl.miars.practiceffa.manager;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
+import cn.mcarl.miars.core.manager.ServerManager;
 import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.core.utils.fastboard.FastBoard;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
@@ -50,10 +51,12 @@ public class ScoreBoardManager {
         FPlayer fPlayer = FPlayerDataStorage.getInstance().getFPlayer(p);
 
         List<String> lines = new ArrayList<>();
-        board.updateTitle("&cFFAGAME &8| &c"+ ServerInfoDataStorage.getInstance().getServerInfo().getNameCn());
-        lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis()));
+        board.updateTitle("&ePractice &8| &c"+ ServerInfoDataStorage.getInstance().getServerInfo().getNameCn());
+        lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis())+" &8"+ ToolUtils.getServerCode());
         lines.add("");
-        lines.add("&7Level: &f"+0);
+        lines.add("&6&l┃ &7Level: &f"+0);
+        lines.add("");
+        lines.add("&6&l┃ &7Online: &6"+ ServerManager.getInstance().getServerOnline("practice"));
         lines.add("");
 
         // 战斗模式的计分板
@@ -64,28 +67,25 @@ public class ScoreBoardManager {
                 CombatManager.getInstance().clear(p);
             }else {
                 lines.add("&7Opponent");
-                lines.add("&7   Name: &c"+opponent.getName());
-                lines.add("&7   K/D: &c"+ FFAUtil.getPlayerKD(FPlayerDataStorage.getInstance().getFPlayer(opponent)));
                 lines.add("&7   Health: &c" + ToolUtils.decimalFormat(opponent.getHealth(), 2));
                 lines.add("&e");
                 lines.add("&7   Fighting... (&c" + CombatManager.getInstance().getLastSecond(p)+"&7)");
             }
 
         }else {
-            lines.add("&7Kills: &c" + fPlayer.getKillsCount());
-            lines.add("&7Death: &c" + fPlayer.getDeathCount());
+            lines.add("&6&l┃ &7Kills: &a" + fPlayer.getKillsCount());
+            lines.add("&6&l┃ &7Death: &c" + fPlayer.getDeathCount());
+            lines.add("&6&l┃ &7K/D: &6" + FFAUtil.getPlayerKD(fPlayer));
         }
 
-        // KD
-        lines.add("");
-        lines.add("&7K/D: &c" + FFAUtil.getPlayerKD(fPlayer));
+
 
         // 匹配
         QueueInfo queueInfo = PracticeQueueDataStorage.getInstance().getQueue(fPlayer);
         if (queueInfo!=null){
 
             lines.add("");
-            lines.add("&c"+queueInfo.getQueueType().name() + " " + queueInfo.getFKitType().name());
+            lines.add("&e"+queueInfo.getQueueType().name() + " " + queueInfo.getFKitType().name());
             lines.add("&7正在匹配... ("+ PracticeQueueDataStorage.getInstance().getQueueTime(fPlayer)+"s)");
         }
 

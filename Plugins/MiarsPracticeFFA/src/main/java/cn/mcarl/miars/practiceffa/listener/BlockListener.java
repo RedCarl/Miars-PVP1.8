@@ -1,14 +1,8 @@
 package cn.mcarl.miars.practiceffa.listener;
 
-import cc.carm.lib.easyplugin.utils.ColorParser;
-import cn.mcarl.miars.core.utils.CustomizeColor;
 import cn.mcarl.miars.practiceffa.conf.PluginConfig;
 import cn.mcarl.miars.practiceffa.utils.FFAUtil;
-import net.minecraft.server.v1_8_R3.EnumParticle;
-import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;

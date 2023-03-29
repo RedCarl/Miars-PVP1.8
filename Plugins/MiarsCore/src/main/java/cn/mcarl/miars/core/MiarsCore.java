@@ -3,7 +3,6 @@ package cn.mcarl.miars.core;
 import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.command.MiarsCommand;
-import cn.mcarl.miars.core.conf.PluginConfig;
 import cn.mcarl.miars.core.hooker.MiarsEconomy;
 import cn.mcarl.miars.core.hooker.PAPIExpansion;
 import cn.mcarl.miars.core.listener.CitizensListener;
@@ -14,9 +13,12 @@ import cn.mcarl.miars.core.manager.ItemsManager;
 import cn.mcarl.miars.core.manager.ServerManager;
 import cn.mcarl.miars.core.utils.BungeeApi;
 import cn.mcarl.miars.core.utils.easyitem.ItemManager;
-import cn.mcarl.miars.core.utils.nametagapi.NametagManager;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.nametagedit.plugin.NametagHandler;
+import com.nametagedit.plugin.NametagManager;
+import com.nametagedit.plugin.api.NametagAPI;
+import com.nametagedit.plugin.invisibility.InvisibilityTask;
 import lombok.SneakyThrows;
 import net.luckperms.api.LuckPerms;
 import net.milkbowl.vault.economy.Economy;
@@ -61,6 +63,13 @@ public class MiarsCore extends JavaPlugin {
     public static Economy getEcon(){
         return econ;
     }
+    private static NametagAPI api;
+
+    public static NametagAPI getApi() {
+        return api;
+    }
+    private NametagHandler handler;
+    private NametagManager manager;
 
     @SneakyThrows
     @Override
@@ -153,14 +162,16 @@ public class MiarsCore extends JavaPlugin {
         CitizensManager.getInstance().init();
         new ItemsManager();
 
-        if (PluginConfig.SITE.NAME_TAG.get()){
-            log("正在初始化 NameTag 模块...");
-            NametagManager.load();
-        }
+        log("正在初始化 NameTag 模块...");
+        manager = new NametagManager();
+        handler = new NametagHandler(this,manager);
+        api = new NametagAPI(manager);
+        new InvisibilityTask().runTaskTimerAsynchronously(this, 100L, 20L);
 
         log("当前服务端版本 "+Bukkit.getServer().getVersion());
 
         log("加载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
+
 
         showAD();
     }
@@ -176,7 +187,6 @@ public class MiarsCore extends JavaPlugin {
 
         log("正在关闭 Bungee 代理...");
         ServerManager.getInstance().onStopServer();
-        NametagManager.reset();
 
         log("卸载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 

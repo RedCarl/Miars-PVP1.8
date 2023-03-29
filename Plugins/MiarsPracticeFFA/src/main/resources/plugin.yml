@@ -9,3 +9,10 @@ api-version: 1.8
 
 depend:
   - MiarsCore
+
+commands:
+  "duel":
+    description: duel.
+    aliases:
+      - duel
+      - Duel

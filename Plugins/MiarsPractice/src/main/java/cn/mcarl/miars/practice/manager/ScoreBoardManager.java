@@ -2,14 +2,20 @@ package cn.mcarl.miars.practice.manager;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
+import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.core.utils.fastboard.FastBoard;
+import cn.mcarl.miars.practice.conf.PluginConfig;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
+import cn.mcarl.miars.storage.enums.practice.FKitType;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaStateDataStorage;
 import cn.mcarl.miars.storage.storage.data.serverInfo.ServerInfoDataStorage;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -45,25 +51,47 @@ public class ScoreBoardManager {
     private void updateBoard(FastBoard board) {
         Player p = board.getPlayer();
 
+        p.getWorld().setGameRuleValue("doFireTick","false");
+        p.getWorld().setGameRuleValue("doDaylightCycle","false");
+
         ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(p);
 
         List<String> lines = new ArrayList<>();
-        board.updateTitle("&cPractice &8| &c"+ ServerInfoDataStorage.getInstance().getServerInfo().getNameCn());
-        lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis()));
+        board.updateTitle("&ePractice &8| &c"+ ServerInfoDataStorage.getInstance().getServerInfo().getNameCn());
+        lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis())+" &8"+ ToolUtils.getServerCode());
         lines.add("");
 
         if (state!=null){
-            if (state.getState()==2){
-                Player their = state.getPlayerA().equals(p.getName()) ? Bukkit.getPlayer(state.getPlayerB()) : Bukkit.getPlayer(state.getPlayerA());
+            switch (state.getState()){
+                case IDLE -> {
 
-                lines.add("&7Fighting: &f"+their.getName());
-                lines.add("");
-                lines.add("&aYour Ping: &f"+((CraftPlayer) p).getHandle().ping+"ms");
-                lines.add("&cTheir Ping: &f"+((CraftPlayer) their).getHandle().ping+"ms");
-            }else if (state.getState()<2){
-                lines.add("&7Ready to start!");
-            }else if (state.getState()>2){
-                lines.add("&7Game over!");
+                }
+                case READY -> {
+                    lines.add("&7Ready to start!");
+                }
+                case GAME -> {
+                    Player their = state.getPlayerA().equals(p.getName()) ? Bukkit.getPlayer(state.getPlayerB()) : Bukkit.getPlayer(state.getPlayerA());
+
+                    lines.add("&7Fighting: &f"+their.getName());
+                    lines.add("");
+                    lines.add("&aYour Ping: &f"+((CraftPlayer) p).getHandle().ping+"ms");
+                    lines.add("&cTheir Ping: &f"+((CraftPlayer) their).getHandle().ping+"ms");
+
+                    if (FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get())==FKitType.BUILD_UHC){
+                        int health = (int)p.getHealth();
+                        Objective obj = p.getScoreboard().getObjective(DisplaySlot.BELOW_NAME);
+                        if (obj == null) {
+                            obj = p.getScoreboard().registerNewObjective(String.valueOf(System.currentTimeMillis()), "health");
+                            obj.setDisplaySlot(DisplaySlot.BELOW_NAME);
+                            obj.setDisplayName(ChatColor.RED + "❤");
+                        }
+                        obj.setDisplayName(ChatColor.RED + "❤");
+                        obj.getScore(p).setScore(health);
+                    }
+                }
+                case END -> {
+                    lines.add("&7Game over!");
+                }
             }
         }
 

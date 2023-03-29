@@ -39,4 +39,11 @@ public class PluginConfig extends ConfigurationRoot {
         public static final ConfigValue<String> PASSWORD = ConfiguredValue.of(String.class, "630669");
 
     }
+    @HeaderComment({"Vault存储配置"})
+    public static final class VAULT extends ConfigurationRoot {
+
+        @HeaderComment({"存储Key"})
+        public static final ConfigValue<String> KEY = ConfiguredValue.of(String.class, "global");
+
+    }
 }

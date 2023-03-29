@@ -4,8 +4,10 @@ import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
 import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.core.utils.GUIUtils;
 import cn.mcarl.miars.core.utils.ItemBuilder;
+import cn.mcarl.miars.core.utils.MiarsUtil;
 import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
@@ -83,6 +85,8 @@ public class RanksGUI extends GUI {
                 mPlayer.setRank(mRank.getName());
                 MPlayerDataStorage.getInstance().putMPlayer(mPlayer);
                 clicker.sendMessage(ColorParser.parse("&7您的头衔已经更换为 "+mRank.getPrefix()+" &7请注意查看。"));
+
+                MiarsUtil.initPlayerNametag(player,true);
 
                 load();
                 updateView();

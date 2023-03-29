@@ -22,7 +22,7 @@ public class PracticeArenaDataStorage {
     public void putArenaData(Arena data){
         try {
 
-            Arena arena = MiarsStorage.getMySQLStorage().queryFPlayerDataByName(data.getName());
+            Arena arena = MiarsStorage.getMySQLStorage().queryArenaDataByName(data.getName());
 
             if (arena!=null){
                 data.setId(arena.getId());

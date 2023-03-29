@@ -3,12 +3,12 @@ package cn.mcarl.miars.practiceffa.ui;
 import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
+import cn.mcarl.miars.practiceffa.utils.FFAUtil;
 import cn.mcarl.miars.storage.utils.CustomSort;
 import cn.mcarl.miars.core.utils.ItemBuilder;
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.ffa.FKit;
 import cn.mcarl.miars.storage.enums.practice.FKitType;
-import cn.mcarl.miars.practiceffa.manager.PlayerInventoryManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -96,7 +96,7 @@ public class SelectFKitEditGUI extends GUI {
                         FKitEditGUI.open(player,invs.get(i-1));
                     }else {
                         // 没数据
-                        FKitEditGUI.open(player,new FKit(null,player.getUniqueId().toString(),fKitType,null, PlayerInventoryManager.getInstance().getByFKitType(fKitType),null,null,null));
+                        FKitEditGUI.open(player,new FKit(null,player.getUniqueId().toString(),fKitType,null, FFAUtil.getByFKitType(fKitType),null,null,null));
                     }
                 }
             }

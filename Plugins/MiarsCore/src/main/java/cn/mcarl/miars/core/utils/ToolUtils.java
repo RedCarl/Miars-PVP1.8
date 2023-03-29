@@ -355,6 +355,52 @@ public class ToolUtils {
     }
 
 
+    public static List<String> initLorePapi(List<String> list, boolean is, String type, String value){
+
+        List<String> stringList = new ArrayList<>();
+
+        for (String s:list) {
+            String ss = s;
+
+
+
+            if (ss.contains("{play_")){
+                String name = cn.mcarl.miars.storage.utils.ToolUtils.subString(ss,"{play_","}");
+                MServerInfo mServerInfo = ServerManager.getInstance().getServerInfo(value);
+
+                String server = ServerManager.getInstance().getServerOnline(name);
+
+                if (server!=null && mServerInfo!=null){
+
+                    if (Objects.equals(type, "gui")){
+                        if (!is){
+                            stringList.add("&a  点击连接");
+                        }else {
+                            stringList.add("&a► 点击连接");
+                        }
+                    }
+
+                    ss = s.replace(
+                            "{play_"+name+"}",
+                            server
+                    );
+                    stringList.add(ss);
+                }else {
+                    ss = "&c暂未上线，敬请期待...";
+                    stringList.add(ss);
+                }
+
+            }else {
+                if (!("&a► 点击连接".equals(ss))){
+                    stringList.add(ss);
+                }
+            }
+        }
+
+        return stringList;
+    }
+
+
     public static List<String> initLorePapi(List<String> list, boolean is, String type){
 
         List<String> stringList = new ArrayList<>();
@@ -366,7 +412,10 @@ public class ToolUtils {
 
             if (ss.contains("{play_")){
                 String name = cn.mcarl.miars.storage.utils.ToolUtils.subString(ss,"{play_","}");
-                MServerInfo server = ServerManager.getInstance().getServerInfo(name);
+
+
+                String server = ServerManager.getInstance().getServerOnline(name);
+
                 if (server!=null){
 
                     if (Objects.equals(type, "gui")){
@@ -379,7 +428,7 @@ public class ToolUtils {
 
                     ss = s.replace(
                             "{play_"+name+"}",
-                            String.valueOf(server.getPlayers().size())
+                            server
                     );
                     stringList.add(ss);
                 }else {

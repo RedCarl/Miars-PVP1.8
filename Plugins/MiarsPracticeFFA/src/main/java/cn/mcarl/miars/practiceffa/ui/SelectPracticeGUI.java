@@ -5,11 +5,12 @@ import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.utils.GUIUtils;
+import cn.mcarl.miars.core.utils.jsonmessage.JSONMessage;
 import cn.mcarl.miars.practiceffa.MiarsPracticeFFA;
+import cn.mcarl.miars.practiceffa.entity.GamePlayer;
 import cn.mcarl.miars.practiceffa.kits.BuildUHC;
 import cn.mcarl.miars.practiceffa.kits.FFAGame;
 import cn.mcarl.miars.practiceffa.kits.NoDeBuff;
-import cn.mcarl.miars.practiceffa.manager.PlayerInventoryManager;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.entity.ffa.FKit;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
@@ -19,6 +20,7 @@ import cn.mcarl.miars.storage.storage.data.practice.PracticeGameDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
 import cn.mcarl.miars.storage.enums.practice.FKitType;
 import cn.mcarl.miars.storage.enums.practice.QueueType;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -34,10 +36,13 @@ public class SelectPracticeGUI extends GUI {
 
     final Player player;
 
-    public SelectPracticeGUI(Player player,QueueType queueType) {
-        super(GUIType.ONE_BY_NINE, "&0["+queueType+"] 请选择模式...");
+    public SelectPracticeGUI(Player player,QueueType queueType,Player duel) {
+        super(GUIType.THREE_BY_NINE, "&0["+queueType+"] 请选择模式...");
         this.player = player;
 
+        for (int j = 0; j < 27; j++) {
+            setItem(new GUIItem(GUIUtils.getLineItem()),j);
+        }
 
         new BukkitRunnable() {
             @Override
@@ -47,14 +52,14 @@ public class SelectPracticeGUI extends GUI {
                     cancel();
                 }
 
-                setNODeBuffItem(queueType);
+                setNODeBuffItem(queueType,duel);
 
                 updateView();
             }
         }.runTaskTimerAsynchronously(MiarsPracticeFFA.getInstance(),0,20L);
 
 
-        setItem(8,new GUIItem(GUIUtils.getCancelItem()){
+        setItem(22,new GUIItem(GUIUtils.getCancelItem()){
             @Override
             public void onClick(Player clicker, ClickType type) {
                 player.closeInventory();
@@ -63,8 +68,8 @@ public class SelectPracticeGUI extends GUI {
 
     }
 
-    public void setNODeBuffItem(QueueType queueType){
-        int i = 0;
+    public void setNODeBuffItem(QueueType queueType,Player duel){
+        int i = 10;
         for (FKitType ft:FKitType.values()) {
             if (ft==FKitType.PRACTICE || ft==FKitType.FFAGAME){
                 continue;
@@ -72,15 +77,12 @@ public class SelectPracticeGUI extends GUI {
             setItem(i,new GUIItem(CommunityGUIItem.getPracticeTypeItem(player,ft, queueType)){
                 @Override
                 public void onClick(Player clicker, ClickType type) {
-                    // 开始匹配
-                    PracticeQueueDataStorage.getInstance().addQueue(ft,queueType,FPlayerDataStorage.getInstance().getFPlayer(player));
-                    player.closeInventory();
 
                     // 初始化背包
-                    PlayerInventoryManager.getInstance().setQueue(player);
+                    GamePlayer.get(player).initData();
 
                     // 初始化Kit
-                    if (FKitDataStorage.getInstance().getFKitData(player,ft).size()==0) {
+                    if (FKitDataStorage.getInstance().getFKitData(player.getUniqueId(),ft).size()==0) {
                         FKitDataStorage.getInstance().putFKitData(new FKit(
                                 null,
                                 player.getUniqueId().toString(),
@@ -93,6 +95,32 @@ public class SelectPracticeGUI extends GUI {
 
                         ));
                     }
+
+                    if (duel==null){
+                        // 开始匹配
+                        PracticeQueueDataStorage.getInstance().addQueue(ft,queueType,FPlayerDataStorage.getInstance().getFPlayer(player));
+                    }else {
+                        player.sendMessage(ColorParser.parse("&r"));
+                        player.sendMessage(ColorParser.parse("&e&l"+ft.getName()+" Duel"));
+                        player.sendMessage(ColorParser.parse("&e┃ &7Opponent: &c"+duel.getName()));
+                        player.sendMessage(ColorParser.parse("&e┃ &7Ping: &c"+((CraftPlayer) duel).getHandle().ping+" ms"));
+                        player.sendMessage(ColorParser.parse("&r"));
+
+                        duel.sendMessage(ColorParser.parse("&r"));
+                        duel.sendMessage(ColorParser.parse("&e&l"+ft.getName()+" Duel Request"));
+                        duel.sendMessage(ColorParser.parse("&e┃ &7From: &c"+player.getName()));
+                        duel.sendMessage(ColorParser.parse("&e┃ &7Ping: &c"+((CraftPlayer) player).getHandle().ping+" ms"));
+                        JSONMessage.create()
+                                .then(ColorParser.parse("&a&l[CLICK TO ACCEPT]"))
+                                .tooltip(ColorParser.parse("&7Click to accept"))
+                                .runCommand("/duel accept "+player.getName()+" "+ft.name())
+                                .then(ColorParser.parse("\n&r"))
+                                .send(duel);
+                        duel.sendMessage(ColorParser.parse("&r"));
+                    }
+
+
+                    player.closeInventory();
                 }
             });
             i++;
@@ -118,7 +146,7 @@ public class SelectPracticeGUI extends GUI {
 
 
 
-    public static void open(Player player,QueueType queueType) {
+    public static void open(Player player,QueueType queueType,Player duel) {
 
         // 排位本赛季赢得10场胜利
         if (queueType.equals(QueueType.RANKED)){
@@ -130,7 +158,7 @@ public class SelectPracticeGUI extends GUI {
         }
 
         player.closeInventory();
-        SelectPracticeGUI gui = new SelectPracticeGUI(player,queueType);
+        SelectPracticeGUI gui = new SelectPracticeGUI(player,queueType,duel);
         gui.openGUI(player);
     }
 }

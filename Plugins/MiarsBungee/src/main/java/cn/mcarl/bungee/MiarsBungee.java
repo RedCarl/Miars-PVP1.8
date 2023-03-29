@@ -40,6 +40,7 @@ public class MiarsBungee extends Plugin {
 
         log("正在注册指令...");
         regCommand(new HubCommands("hub"));
+        regCommand(new HubCommands("lobby"));
 
         log("正在开启 HttpServer 服务端...");
         ServerManager.getInstance().run();

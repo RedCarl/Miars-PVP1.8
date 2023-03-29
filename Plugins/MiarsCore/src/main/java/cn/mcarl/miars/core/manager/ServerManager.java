@@ -24,6 +24,7 @@ public class ServerManager {
     BukkitTask bukkitRunnable;
 
     Map<String,MServerInfo> serverInfoMap = new HashMap<>();
+    Map<String,String> serverOnlineMap = new HashMap<>();
     Map<String,Long> serverLongMap = new HashMap<>();
 
 
@@ -86,10 +87,41 @@ public class ServerManager {
 
         MServerInfo mServerInfo = JSON.toJavaObject(JSON.parseObject(state),MServerInfo.class);
 
-        serverInfoMap.put(mServerInfo.getName(), mServerInfo);
-        serverLongMap.put(mServerInfo.getName(), System.currentTimeMillis());
+        serverInfoMap.put(name, mServerInfo);
+        serverLongMap.put(name, System.currentTimeMillis());
 
         return mServerInfo;
+    }
+
+
+    /**
+     * 获取服务器人数
+     * @throws IOException
+     */
+    public String getServerOnline(String name) {
+        name = name+"-";
+
+        if (serverLongMap.containsKey(name)){
+            if (!(System.currentTimeMillis() - serverLongMap.get(name) >= 3000)){
+                return serverOnlineMap.get(name);
+            }
+        }
+
+        String state = "error";
+        String url = PluginConfig.SERVER_INFO.URL.get();
+        try {
+            state = HttpClientHelper.sendGet(url+"/online?name="+name);
+        } catch (IOException e){
+            MiarsCore.getInstance().log("代理服务器链接已关闭,无法获取有效信息...");
+        }
+        if (state.contains("error")){
+            return null;
+        }
+
+        serverOnlineMap.put(name, state);
+        serverLongMap.put(name, System.currentTimeMillis());
+
+        return state;
     }
 
     /**

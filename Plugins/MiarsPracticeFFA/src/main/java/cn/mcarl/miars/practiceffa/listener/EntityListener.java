@@ -22,8 +22,8 @@ public class EntityListener implements Listener {
                 e.setCancelled(true);
             }else {
                 // 进入战斗模式
-                CombatManager.getInstance().start(attacked,attacker.getUniqueId().toString(),15);
-                CombatManager.getInstance().start(attacker,attacked.getUniqueId().toString(),15);
+                CombatManager.getInstance().start(attacked,attacker.getUniqueId(),15);
+                CombatManager.getInstance().start(attacker,attacked.getUniqueId(),15);
             }
         }
     }

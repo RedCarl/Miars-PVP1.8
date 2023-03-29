@@ -6,6 +6,7 @@ import cn.mcarl.miars.storage.enums.practice.FKitType;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @Author: carl0
@@ -16,6 +17,7 @@ public class FKitDataStorage {
     public static FKitDataStorage getInstance() {
         return instance;
     }
+
 
     /**
      * 存储套件数据
@@ -31,9 +33,9 @@ public class FKitDataStorage {
     /**
      * 获取套件数据
      */
-    public List<FKit> getFKitData(Player p, FKitType fKitType){
+    public List<FKit> getFKitData(UUID uuid, FKitType fKitType){
         try {
-            return MiarsStorage.getMySQLStorage().queryFKitDataList(p.getUniqueId(),fKitType);
+            return MiarsStorage.getMySQLStorage().queryFKitDataList(uuid,fKitType);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

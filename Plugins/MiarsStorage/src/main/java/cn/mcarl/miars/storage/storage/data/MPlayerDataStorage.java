@@ -3,6 +3,7 @@ package cn.mcarl.miars.storage.storage.data;
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.sql.Date;
@@ -44,6 +45,26 @@ public class MPlayerDataStorage {
      * 获取玩家数据
      */
     public MPlayer getMPlayer(Player player){
+        if (dataMap.containsKey(player.getUniqueId().toString())){
+            return dataMap.get(player.getUniqueId().toString());
+        }
+        MPlayer data = MiarsStorage.getMySQLStorage().queryMPlayerByUUID(player.getUniqueId().toString());
+
+        //如果没有数据，就初始化玩家数据
+        if (data==null){
+            try {
+                putMPlayer(new MPlayer(player.getUniqueId().toString(),"default", List.of(new String[]{"default"}),null,new Date(System.currentTimeMillis())));
+                data = MiarsStorage.getMySQLStorage().queryMPlayerByUUID(player.getUniqueId().toString());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        dataMap.put(player.getUniqueId().toString(),data);
+        return dataMap.get(player.getUniqueId().toString());
+    }
+
+    public MPlayer getMPlayer(OfflinePlayer player){
         if (dataMap.containsKey(player.getUniqueId().toString())){
             return dataMap.get(player.getUniqueId().toString());
         }

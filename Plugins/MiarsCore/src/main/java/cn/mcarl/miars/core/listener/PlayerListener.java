@@ -3,18 +3,11 @@ package cn.mcarl.miars.core.listener;
 import cn.mcarl.miars.core.conf.PluginConfig;
 import cn.mcarl.miars.core.utils.MiarsUtil;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
-import net.citizensnpcs.Citizens;
-import net.citizensnpcs.api.CitizensAPI;
-import org.bukkit.Effect;
+import com.nametagedit.plugin.NametagManager;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -34,7 +27,7 @@ public class PlayerListener implements Listener {
         player.setGameMode(GameMode.SURVIVAL);
 
         if (PluginConfig.SITE.NAME_TAG.get()){
-            MiarsUtil.initPlayerNametag(player);
+            MiarsUtil.initPlayerNametag(player,true);
         }
 
         // 禁止玩家进入消息
@@ -50,18 +43,4 @@ public class PlayerListener implements Listener {
         // 禁止玩家进入消息
         e.setQuitMessage(null);
     }
-
-
-//    @EventHandler(priority = EventPriority.LOWEST)
-//    public void EntityDamageEvent(EntityDamageByEntityEvent e) {
-//        if (e.getDamager() instanceof Player damager){
-//            if (e.getEntity() instanceof Player player) {
-//                if (e.getDamage() == 0.0D || e.isCancelled() || e.getEntity().hasMetadata("NPC")) {
-//                    return;
-//                }
-//                Location location = player.getLocation();
-//                location.getWorld().playEffect(location, Effect.STEP_SOUND, 152);
-//            }
-//        }
-//    }
 }

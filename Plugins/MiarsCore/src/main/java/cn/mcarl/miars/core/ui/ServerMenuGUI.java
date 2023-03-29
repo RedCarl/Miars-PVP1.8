@@ -15,6 +15,7 @@ import cn.mcarl.miars.storage.entity.serverMenu.ServerMenuItem;
 import cn.mcarl.miars.storage.storage.data.serverMenu.ServerMenuDataStorage;
 import com.comphenix.protocol.PacketType;
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -63,7 +64,7 @@ public class ServerMenuGUI extends GUI {
             setItem(menuItem.getSlot(),new GUIItem(
                     new ItemBuilder(menuItem.getIcon())
                             .setName(PlaceholderAPI.setPlaceholders(player,menuItem.getName()))
-                            .setLore(ToolUtils.initLorePapi(PlaceholderAPI.setPlaceholders(player,menuItem.getLore()),is,"gui"))
+                            .setLore(ToolUtils.initLorePapi(PlaceholderAPI.setPlaceholders(player,menuItem.getLore()),is,"gui",menuItem.getValue()))
                             .toItemStack()
             ){
                 @Override
@@ -71,7 +72,7 @@ public class ServerMenuGUI extends GUI {
                     if (type.name().equals(menuItem.getClickType()) || "ALL".equals(menuItem.getClickType())){
                         switch (menuItem.getType()){
                             case "server" -> {
-                                if (PluginConfig.SERVER_INFO.NAME.get().equals(menuItem.getValue())){
+                                if (Objects.equals(PluginConfig.SERVER_INFO.NAME.get(), menuItem.getValue())){
                                     clicker.sendMessage(ColorParser.parse("&7很抱歉,您正在这个服务器,无需再次加入。"));
                                     return;
                                 }
@@ -85,6 +86,9 @@ public class ServerMenuGUI extends GUI {
                                 for (String s:menuItem.getValue().split("/n")) {
                                     clicker.sendMessage(ColorParser.parse(s));
                                 }
+                            }
+                            case "command" -> {
+                                Bukkit.dispatchCommand(player,menuItem.getValue());
                             }
                         }
                     }

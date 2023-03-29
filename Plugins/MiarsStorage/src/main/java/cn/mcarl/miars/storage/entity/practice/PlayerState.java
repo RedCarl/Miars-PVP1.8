@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -14,5 +15,5 @@ public class PlayerState {
 
     private double health;
     private double hunger;
-    private List<PotionEffect> potionEffects;
+    private List<Map<String,Object>> potionEffects;
 }

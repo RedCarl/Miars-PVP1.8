@@ -8,6 +8,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @Author: carl0
@@ -20,14 +21,14 @@ public class CombatManager {
         return instance;
     }
 
-    private final Map<String, FCombatInfo> data = new HashMap<>();
+    private final Map<UUID, FCombatInfo> data = new HashMap<>();
 
     /**
      * 开始战斗
      * @param uuid 玩家ID
      * @param second 持续多少秒
      */
-    public void start(Player opponent,String uuid,int second){
+    public void start(Player opponent,UUID uuid,int second){
         data.put(uuid,new FCombatInfo(opponent.getUniqueId(),System.currentTimeMillis()+(second* 1000L)));
     }
 
@@ -39,7 +40,7 @@ public class CombatManager {
      */
     public int getLastSecond(Player p){
         if (isCombat(p)){
-            return (int) Math.abs((data.get(p.getUniqueId().toString()).getDate()-System.currentTimeMillis())/1000);
+            return (int) Math.abs((data.get(p.getUniqueId()).getDate()-System.currentTimeMillis())/1000);
         }
         return 0;
     }
@@ -51,7 +52,7 @@ public class CombatManager {
      * @return 秒
      */
     public FCombatInfo getCombatInfo(Player p){
-        return data.get(p.getUniqueId().toString());
+        return data.get(p.getUniqueId());
     }
 
     /**
@@ -61,8 +62,8 @@ public class CombatManager {
      * @return 是否
      */
     public boolean isCombat(Player p){
-        if (p!=null && p.isOnline() && data.get(p.getUniqueId().toString()) != null){
-            if (data.get(p.getUniqueId().toString()).getDate() >= System.currentTimeMillis()){
+        if (p!=null && p.isOnline() && data.get(p.getUniqueId()) != null){
+            if (data.get(p.getUniqueId()).getDate() >= System.currentTimeMillis()){
                 return true;
             }else {
                 clear(p);
@@ -76,7 +77,7 @@ public class CombatManager {
      * @param p 玩家ID
      */
     public void clear(Player p){
-        data.remove(p.getUniqueId().toString());
+        data.remove(p.getUniqueId());
         new BukkitRunnable() {
             @Override
             public void run() {

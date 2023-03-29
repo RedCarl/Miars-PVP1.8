@@ -22,7 +22,7 @@ public class NoDeBuff {
         // 物品栏
         Map<Integer,ItemStack> itemCote = new HashMap<>();
 
-        itemCote.put(0, new ItemBuilder(Material.DIAMOND_SWORD).addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 3).addUnsafeEnchantment(Enchantment.DURABILITY, 3).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 2).setUnbreakable().toItemStack());
+        itemCote.put(0, new ItemBuilder(Material.DIAMOND_SWORD).addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 2).addUnsafeEnchantment(Enchantment.DURABILITY, 3).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 2).setUnbreakable().toItemStack());
         itemCote.put(1, new ItemBuilder(Material.ENDER_PEARL, 16).toItemStack());
         itemCote.put(2, speed);
         itemCote.put(3, fire);

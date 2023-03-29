@@ -13,6 +13,7 @@ import me.filoghost.holographicdisplays.api.hologram.line.TextHologramLine;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import net.citizensnpcs.trait.MirrorTrait;
+import net.citizensnpcs.trait.SkinLayers;
 import net.citizensnpcs.trait.SkinTrait;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -61,11 +62,11 @@ public class CitizensManager {
                                 n.getOrAddTrait(Equipment.class).set(0, new ItemStack(Material.getMaterial(npc.getItem())));
                             }
 
-                            if (npc.getSkinName().equals("PLAYER")){
+                            if ("PLAYER".equals(npc.getSkinName())){
                                 MirrorTrait trait = n.getOrAddTrait(MirrorTrait.class);
                                 boolean enabled = true;
                                 trait.setEnabled(enabled);
-                            }else if (npc.getSkinName()!=null && npc.getSignature()!=null && npc.getData()!=null){
+                            }else if (npc.getSignature() != null && npc.getData() != null){
                                 SkinTrait skinTrait = n.getOrAddTrait(SkinTrait.class);
                                 skinTrait.setSkinPersistent(
                                         npc.getSkinName(),
@@ -73,6 +74,16 @@ public class CitizensManager {
                                         npc.getData()
                                 );
                             }
+
+                            SkinLayers layers = n.getOrAddTrait(SkinLayers.class);
+                            layers.setVisible(SkinLayers.Layer.CAPE,true);
+                            layers.setVisible(SkinLayers.Layer.HAT,true);
+                            layers.setVisible(SkinLayers.Layer.JACKET,true);
+                            layers.setVisible(SkinLayers.Layer.LEFT_PANTS,true);
+                            layers.setVisible(SkinLayers.Layer.LEFT_SLEEVE,true);
+                            layers.setVisible(SkinLayers.Layer.RIGHT_PANTS,true);
+                            layers.setVisible(SkinLayers.Layer.RIGHT_SLEEVE,true);
+
                         })
         );
 

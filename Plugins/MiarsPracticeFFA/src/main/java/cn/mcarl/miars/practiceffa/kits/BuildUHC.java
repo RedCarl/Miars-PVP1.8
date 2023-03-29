@@ -1,11 +1,12 @@
 package cn.mcarl.miars.practiceffa.kits;
 
+import cn.mcarl.miars.core.publics.items.GoldHead;
 import cn.mcarl.miars.core.utils.ItemBuilder;
-import cn.mcarl.miars.practiceffa.kits.items.GoldHead;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.enums.practice.FKitType;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -19,9 +20,24 @@ public class BuildUHC {
         // 物品栏
         Map<Integer,ItemStack> itemCote = new HashMap<>();
 
-        itemCote.put(0, new ItemBuilder(Material.DIAMOND_SWORD).addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 3).setUnbreakable().toItemStack());
-        itemCote.put(1, new ItemBuilder(Material.FISHING_ROD, 1).toItemStack());
-        itemCote.put(2, new ItemBuilder(Material.BOW, 1).addUnsafeEnchantment(Enchantment.ARROW_KNOCKBACK,3).toItemStack());
+        itemCote.put(0,
+                new ItemBuilder(Material.DIAMOND_SWORD)
+                        .addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 3)
+                        .setUnbreakable()
+                        .toItemStack()
+        );
+        itemCote.put(1,
+                new ItemBuilder(Material.FISHING_ROD, 1)
+                        .addFlag(ItemFlag.HIDE_UNBREAKABLE)
+                        .addFlag(ItemFlag.HIDE_ENCHANTS)
+                        .setUnbreakable()
+                        .toItemStack()
+        );
+        itemCote.put(2,
+                new ItemBuilder(Material.BOW, 1)
+                        .addUnsafeEnchantment(Enchantment.ARROW_DAMAGE,3)
+                        .toItemStack()
+        );
         itemCote.put(3, new ItemBuilder(Material.COOKED_BEEF, 64).toItemStack());
         itemCote.put(4, new ItemBuilder(Material.GOLDEN_APPLE, 6).toItemStack());
         itemCote.put(5, new GoldHead().get(3));

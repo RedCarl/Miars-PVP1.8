@@ -7,14 +7,14 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @Author: carl0
@@ -139,6 +139,7 @@ public class ToolUtils {
         return false;
     }
 
+
     //数值转换
     public static String toNumber(float number) {
         String str = String.valueOf(number);
@@ -220,5 +221,14 @@ public class ToolUtils {
         }
 
         return stringBuilder.toString();
+    }
+
+
+    public static List<Map<String,Object>> potionEffectToString(List<PotionEffect> potionEffects){
+        List<Map<String,Object>> list = new ArrayList<>();
+        for (PotionEffect pe:potionEffects){
+            list.add(pe.serialize());
+        }
+        return list;
     }
 }

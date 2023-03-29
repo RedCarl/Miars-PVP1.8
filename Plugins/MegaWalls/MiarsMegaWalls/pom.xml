@@ -25,13 +25,6 @@
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>spigot</groupId>
-            <artifactId>spgiot</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/../libs/Spigot-1.8.8-SNAPSHOT.jar</systemPath>
-        </dependency>
     </dependencies>
 
     <build>

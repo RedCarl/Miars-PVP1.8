@@ -1,27 +1,10 @@
 import cn.mcarl.miars.core.utils.MiarsUtil;
 
 public class Main {
+    private String format = "<%1$s> %2$s";
     public static void main(String[] args) {
-        getLevel();
+        String.format("§f§c[红] §7[§e3§600§c0§l§7]§c[OWNER] Zimrs§c§f: %2$s","RedCarl","我是大帅比");
     }
 
 
-    public static Integer getLevel(){
-        int level = 0;
-
-        int exp = 17431;
-        int next = 0;
-
-        while (exp>=next){
-            System.out.println(next);
-            exp=exp - next;
-            level++;
-            next = level*200;
-        }
-
-        System.out.println(exp+"/"+next);
-
-        System.out.println();
-        return level;
-    }
 }

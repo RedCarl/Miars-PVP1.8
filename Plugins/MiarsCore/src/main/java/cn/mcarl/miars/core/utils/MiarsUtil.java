@@ -1,7 +1,7 @@
 package cn.mcarl.miars.core.utils;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
-import cn.mcarl.miars.core.utils.nametagapi.NametagManager;
+import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
@@ -93,20 +93,35 @@ public class MiarsUtil {
     }
 
 
-    public static void initPlayerNametag(Player player){
+    public static void initPlayerNametag(Player player,boolean prefix){
 
         MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(player);
         MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
+        if (prefix){
+            MiarsCore.getApi().setNametag(player,mRank.getPrefix(),mRank.getSuffix(),mRank.getPower());
+        }else {
+            MiarsCore.getApi().setNametag(player,mRank.getNameColor(),mRank.getNameColor(),mRank.getPower());
+        }
+
+    }
 
 
-        NametagManager.sendTeamsToPlayer(player);
-        NametagManager.clear(player.getName());
-        NametagManager.overlap(
-                player.getName(),
-                ColorParser.parse(mRank.getPrefix()),
-                ColorParser.parse(mRank.getSuffix())
-        );
+    public static void initPlayerNametag(Player player,String p,String s){
+        MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(player);
 
+        MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
+        MiarsCore.getApi().setNametag(player,mRank.getPrefix(),mRank.getSuffix(),mRank.getPower());
+    }
+
+
+    public static void initPlayerNametag(Player player,String s,boolean prefix){
+        MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(player);
+        MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
+        if (prefix){
+            MiarsCore.getApi().setNametag(player,mRank.getPrefix(),s,mRank.getPower());
+        }else {
+            MiarsCore.getApi().setNametag(player,mRank.getNameColor(),s,mRank.getPower());
+        }
     }
 
     public static ItemStack createSkull(String value) {

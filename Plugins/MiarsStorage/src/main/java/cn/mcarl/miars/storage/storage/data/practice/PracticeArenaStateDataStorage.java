@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -26,37 +27,18 @@ public class PracticeArenaStateDataStorage {
     List<ArenaState> arenaState = new ArrayList<>();
 
 
-    public void init(String key){
-        List<Arena> list = PracticeArenaDataStorage.getInstance().getArenaData(FKitType.valueOf(key));
-        for (Arena o:list){
-            arenaState.add(new ArenaState(
-                    0,
-                    o.getId(),
-                    0,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    0L,
-                    0L,
-                    null,
-                    null,
-                    null
-            ));
-        }
 
-
+    public void init(String key,List<ArenaState> data){
+        this.arenaState = data;
         // 更新Redis房间信息
         setArenaStateRedisList(arenaState,key);
     }
 
-    public ArenaState getArenaStateById(Integer id){
+    public ArenaState getArenaStateById(ArenaState state){
         AtomicReference<ArenaState> data = new AtomicReference<>(new ArenaState());
 
         arenaState.forEach(arenaState -> {
-            if (arenaState.getArenaId().equals(id)){
+            if (arenaState.getArenaId().equals(state.getArenaId()) && arenaState.getWorld().equals(state.getWorld())){
                 data.set(arenaState);
             }
         });
@@ -71,34 +53,25 @@ public class PracticeArenaStateDataStorage {
         return null;
     }
 
-
-
-    public Integer isNullArena(){
-        for (ArenaState state:arenaState){
-            if (state.getState()==0){
-
-                return state.getArenaId();
-            }
-        }
-        return null;
+    public void updateRedis(String key){
+        setArenaStateRedisList(arenaState,key);
     }
 
-    /**
-     * 房间释放
-     */
-    public void releaseArena(Integer id,String key){
-        getArenaStateById(id).setState(0);
-        getArenaStateById(id).setPlayerA(null);
-        getArenaStateById(id).setAFInventory(null);
-        getArenaStateById(id).setPlayerB(null);
-        getArenaStateById(id).setBFInventory(null);
-        getArenaStateById(id).setStartTime(null);
-        getArenaStateById(id).setEndTime(null);
-        getArenaStateById(id).setWin(null);
-        getArenaStateById(id).setFKitType(null);
+    public ArenaState isNullArena(){
 
-        // 更新Redis房间信息
-        setArenaStateRedisList(arenaState,key);
+        List<ArenaState> list = new ArrayList<>();
+
+        for (ArenaState state:this.arenaState){
+            if (state.getState() == ArenaState.State.IDLE){
+                list.add(state);
+            }
+        }
+
+        if (list.size()!=0){
+            return list.get((int) (Math.random()* list.size()));
+        }
+
+        return null;
     }
 
     public List<ArenaState> getArenaStateRedisList(String key){
@@ -116,14 +89,13 @@ public class PracticeArenaStateDataStorage {
     /**
      * 房间分配,如果返回 NULL 就是没有房间
      */
-    public void allotArena(String a, String b, Integer id,String key,QueueType queueType){
-        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateById(id);
-        state.setState(1);
-        state.setPlayerA(a);
-        state.setPlayerB(b);
-        state.setStartTime(System.currentTimeMillis());
-        state.setQueueType(queueType);
-        state.setFKitType(FKitType.valueOf(key));
+    public void allotArena(String a, String b, ArenaState state,String key,QueueType queueType){
+        ArenaState data = PracticeArenaStateDataStorage.getInstance().getArenaStateById(state);
+        data.setPlayerA(a);
+        data.setPlayerB(b);
+        data.setStartTime(System.currentTimeMillis());
+        data.setQueueType(queueType);
+        data.setFKitType(FKitType.valueOf(key));
 
         // 更新Redis房间信息
         PracticeArenaStateDataStorage.getInstance().setArenaStateRedisList(arenaState,key);
@@ -137,11 +109,22 @@ public class PracticeArenaStateDataStorage {
         List<ArenaState> list = new ArrayList<>();
 
         for (ArenaState a:arenaState){
-            if (a.getFKitType().equals(fKitType) && a.getQueueType().equals(queueType) && a.getState()==2){
+            if (a.getFKitType().equals(fKitType) && a.getQueueType().equals(queueType) && a.getState() == ArenaState.State.GAME){
                 list.add(a);
             }
         }
 
         return list;
+    }
+
+    public Integer getGamePlayersByQueueType(QueueType type){
+        int i = 0;
+        for (ArenaState a:arenaState) {
+            if (a.getQueueType()==type && a.getState() != ArenaState.State.IDLE){
+                i+=2;
+            }
+        }
+
+        return i;
     }
 }

@@ -8,6 +8,7 @@ import cn.mcarl.miars.storage.entity.*;
 import cn.mcarl.miars.storage.entity.ffa.FInventoryByte;
 import cn.mcarl.miars.storage.entity.ffa.FKit;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
+import cn.mcarl.miars.storage.entity.practice.PlayerState;
 import cn.mcarl.miars.storage.entity.serverInfo.ServerInfo;
 import cn.mcarl.miars.storage.entity.serverMenu.ServerMenuItem;
 import cn.mcarl.miars.storage.entity.practice.Arena;
@@ -21,8 +22,10 @@ import cn.mcarl.miars.storage.utils.DatabaseTable;
 import com.alibaba.fastjson.JSONArray;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,6 +43,8 @@ public class MySQLStorage {
 
 	DatabaseTable mPlayerDataTable;
 	DatabaseTable mRankDataTable;
+
+	DatabaseTable vaultDataTable;
 
 	DatabaseTable fPlayerDataTable;
 	DatabaseTable fKitDataTable;
@@ -83,6 +88,18 @@ public class MySQLStorage {
 							"PRIMARY KEY (`uuid`) USING BTREE"
 					});
 			getMPlayerTable().createTable(sqlManager);
+
+			// 硬币存储
+			this.vaultDataTable = new DatabaseTable(
+					PluginConfig.DATABASE.TABLE_NAME.get()+"_vault",
+					new String[]{
+							"`id` int(11) NOT NULL AUTO_INCREMENT", // 编号
+							"`uuid` VARCHAR(36) NOT NULL", // 用户的UUID
+							"`key` TEXT",// KEY
+							"`value` TEXT", // VALUE
+							"PRIMARY KEY (`id`)", // 主键
+					});
+			getVaultDataTable().createTable(sqlManager);
 
 			// 服务器头衔信息
 			this.mRankDataTable = new DatabaseTable(
@@ -142,16 +159,10 @@ public class MySQLStorage {
 							"`id` int(11) NOT NULL AUTO_INCREMENT",
 							"`mode` varchar(255) DEFAULT NULL",
 							"`name` varchar(255) DEFAULT NULL",
-							"`displayName` varchar(255) DEFAULT NULL",
 							"`build` varchar(255) DEFAULT NULL",
 							"`loc1` longtext",
 							"`loc2` longtext",
-							"`corner1` longtext",
-							"`corner2` longtext",
 							"`center` longtext",
-							"`icon` longtext",
-							"`update_time` datetime DEFAULT NULL",
-							"`create_time` datetime DEFAULT NULL",
 							"PRIMARY KEY (`id`)"
 					});
 			getPracticeArenaDataTable().createTable(sqlManager);
@@ -163,9 +174,11 @@ public class MySQLStorage {
 					new String[]{
 							"`id` int(11) NOT NULL AUTO_INCREMENT",
 							"`arenaId` int(11) DEFAULT NULL",
-							"`state` int(255) DEFAULT NULL",
+							"`state` varchar(255) DEFAULT NULL",
+							"`playerStateA` longtext",
 							"`playerA` varchar(255) DEFAULT NULL",
 							"`aFInventory` longtext",
+							"`playerStateB` longtext",
 							"`playerB` varchar(255) DEFAULT NULL",
 							"`bFInventory` longtext",
 							"`startTime` bigint DEFAULT NULL",
@@ -468,8 +481,38 @@ public class MySQLStorage {
 
 	public void replacePracticeGameData(@NotNull ArenaState data) throws Exception {
 		getSQLManager().createReplace(getPracticeGameDataTable().getTableName())
-				.setColumnNames("id", "arenaId", "state", "playerA", "aFInventory", "playerB", "bFInventory", "startTime", "endTime", "win", "fKitType", "queueType")
-				.setParams(data.getId(), data.getArenaId(), data.getState(), data.getPlayerA(), gson.toJson(data.getAFInventory()), data.getPlayerB(), gson.toJson(data.getBFInventory()), data.getStartTime(), data.getEndTime(), data.getWin(), data.getFKitType().name(), data.getQueueType().name())
+				.setColumnNames(
+						"id",
+						"arenaId",
+						"state",
+						"playerStateA",
+						"playerA",
+						"aFInventory",
+						"playerStateB",
+						"playerB",
+						"bFInventory",
+						"startTime",
+						"endTime",
+						"win",
+						"fKitType",
+						"queueType"
+				)
+				.setParams(
+						data.getId(),
+						data.getArenaId(),
+						data.getState().name(),
+						gson.toJson(data.getPlayerStateA()),
+						data.getPlayerA(),
+						gson.toJson(data.getAFInventory()),
+						gson.toJson(data.getPlayerStateB()),
+						data.getPlayerB(),
+						gson.toJson(data.getBFInventory()),
+						data.getStartTime(),
+						data.getEndTime(),
+						data.getWin(),
+						data.getFKitType().name(),
+						data.getQueueType().name()
+				)
 				.execute();
 	}
 
@@ -489,9 +532,11 @@ public class MySQLStorage {
 								ArenaState data = new ArenaState();
 								data.setId(result.getInt("id"));
 								data.setArenaId(result.getInt("arenaId"));
-								data.setState(result.getInt("state"));
+								data.setState(ArenaState.State.valueOf(result.getString("state")));
+								data.setPlayerStateA(gson.fromJson(result.getString("playerStateA"), PlayerState.class));
 								data.setPlayerA(result.getString("playerA"));
 								data.setAFInventory(gson.fromJson(result.getString("aFInventory"), FInventoryByte.class));
+								data.setPlayerStateB(gson.fromJson(result.getString("playerStateB"), PlayerState.class));
 								data.setPlayerB(result.getString("playerB"));
 								data.setBFInventory(gson.fromJson(result.getString("bFInventory"), FInventoryByte.class));
 								data.setStartTime(result.getLong("startTime"));
@@ -520,9 +565,11 @@ public class MySQLStorage {
 							if (result != null && result.next()) {
 								data.setId(result.getInt("id"));
 								data.setArenaId(result.getInt("arenaId"));
-								data.setState(result.getInt("state"));
+								data.setState(ArenaState.State.valueOf(result.getString("state")));
+								data.setPlayerStateA(gson.fromJson(result.getString("playerStateA"), PlayerState.class));
 								data.setPlayerA(result.getString("playerA"));
 								data.setAFInventory(gson.fromJson(result.getString("aFInventory"), FInventoryByte.class));
+								data.setPlayerStateB(gson.fromJson(result.getString("playerStateB"), PlayerState.class));
 								data.setPlayerB(result.getString("playerB"));
 								data.setBFInventory(gson.fromJson(result.getString("bFInventory"), FInventoryByte.class));
 								data.setStartTime(result.getLong("startTime"));
@@ -550,9 +597,11 @@ public class MySQLStorage {
 							if (result != null && result.next()) {
 								data.setId(result.getInt("id"));
 								data.setArenaId(result.getInt("arenaId"));
-								data.setState(result.getInt("state"));
+								data.setState(ArenaState.State.valueOf(result.getString("state")));
+								data.setPlayerStateA(gson.fromJson(result.getString("playerStateA"), PlayerState.class));
 								data.setPlayerA(result.getString("playerA"));
 								data.setAFInventory(gson.fromJson(result.getString("aFInventory"), FInventoryByte.class));
+								data.setPlayerStateB(gson.fromJson(result.getString("playerStateB"), PlayerState.class));
 								data.setPlayerB(result.getString("playerB"));
 								data.setBFInventory(gson.fromJson(result.getString("bFInventory"), FInventoryByte.class));
 								data.setStartTime(result.getLong("startTime"));
@@ -582,7 +631,7 @@ public class MySQLStorage {
 								ArenaState data = new ArenaState();
 								data.setId(result.getInt("id"));
 								data.setArenaId(result.getInt("arenaId"));
-								data.setState(result.getInt("state"));
+								data.setState(ArenaState.State.valueOf(result.getString("state")));
 								data.setPlayerA(result.getString("playerA"));
 								data.setAFInventory(gson.fromJson(result.getString("aFInventory"), FInventoryByte.class));
 								data.setPlayerB(result.getString("playerB"));
@@ -618,7 +667,7 @@ public class MySQLStorage {
 								ArenaState data = new ArenaState();
 								data.setId(result.getInt("id"));
 								data.setArenaId(result.getInt("arenaId"));
-								data.setState(result.getInt("state"));
+								data.setState(ArenaState.State.valueOf(result.getString("state")));
 								data.setPlayerA(result.getString("playerA"));
 								data.setAFInventory(gson.fromJson(result.getString("aFInventory"), FInventoryByte.class));
 								data.setPlayerB(result.getString("playerB"));
@@ -639,21 +688,16 @@ public class MySQLStorage {
 
 	public void replaceArenaData(@NotNull Arena data) throws Exception {
 		getSQLManager().createReplace(getPracticeArenaDataTable().getTableName())
-				.setColumnNames("id", "mode", "name", "displayName", "build", "loc1", "loc2", "corner1", "corner2", "center", "icon", "update_time", "create_time")
+				.setColumnNames("id", "mode", "name", "build", "loc1", "loc2", "center")
 				.setParams(
 						data.getId(),
 						data.getMode().name(),
 						data.getName(),
-						data.getDisplayName(),
 						data.getBuild().toString(),
 						data.getLoc1()!=null ? gson.toJson(data.getLoc1().serialize()) :null,
 						data.getLoc2()!=null ? gson.toJson(data.getLoc2().serialize()):null,
-						data.getCorner1()!=null ? gson.toJson(data.getCorner1().serialize()):null,
-						data.getCorner2()!=null ? gson.toJson(data.getCorner2().serialize()):null,
-						data.getCenter()!=null ? gson.toJson(data.getCenter().serialize()):null,
-						data.getIcon()!=null ? gson.toJson(BukkitUtils.write(data.getIcon())):null,
-						data.getUpdateTime(),
-						data.getCreateTime())
+						data.getCenter()!=null ? gson.toJson(data.getCenter().serialize()):null
+				)
 				.execute();
 	}
 
@@ -672,17 +716,12 @@ public class MySQLStorage {
 								data.setId(result.getInt("id"));
 								data.setMode(FKitType.valueOf(result.getString("mode")));
 								data.setName(result.getString("name"));
-								data.setDisplayName(result.getString("displayName"));
 								data.setBuild(result.getBoolean("build"));
 								Type type = new TypeToken<Map<String, Object>>() {}.getType();
 								data.setLoc1(result.getString("loc1")!=null ? Location.deserialize(gson.fromJson(result.getString("loc1"), type)):null);
 								data.setLoc2(result.getString("loc2")!=null ? Location.deserialize(gson.fromJson(result.getString("loc2"), type)):null);
-								data.setCorner1(result.getString("corner1")!=null ? Location.deserialize(gson.fromJson(result.getString("corner1"), type)):null);
-								data.setCorner2(result.getString("corner2")!=null ? Location.deserialize(gson.fromJson(result.getString("corner2"), type)):null);
 								data.setCenter(result.getString("center")!=null ? Location.deserialize(gson.fromJson(result.getString("center"), type)):null);
-								data.setIcon(result.getString("icon")!=null ? BukkitUtils.read(gson.fromJson(result.getString("icon"), byte[].class)):null);
-								data.setUpdateTime(result.getDate("update_time"));
-								data.setCreateTime(result.getDate("create_time"));
+
 								datas.add(data);
 							}
 
@@ -692,7 +731,7 @@ public class MySQLStorage {
 				);
 	}
 
-	public Arena queryFPlayerDataByName(@NotNull String name) {
+	public Arena queryArenaDataByName(@NotNull String name) {
 		return getSQLManager().createQuery()
 				.inTable(getPracticeArenaDataTable().getTableName())
 				.addCondition("name", name)
@@ -705,17 +744,11 @@ public class MySQLStorage {
 								data.setId(result.getInt("id"));
 								data.setMode(FKitType.valueOf(result.getString("mode")));
 								data.setName(result.getString("name"));
-								data.setDisplayName(result.getString("displayName"));
 								data.setBuild(result.getBoolean("build"));
 								Type type = new TypeToken<Map<String, Object>>() {}.getType();
 								data.setLoc1(result.getString("loc1")!=null ? Location.deserialize(gson.fromJson(result.getString("loc1"), type)):null);
 								data.setLoc2(result.getString("loc2")!=null ? Location.deserialize(gson.fromJson(result.getString("loc2"), type)):null);
-								data.setCorner1(result.getString("corner1")!=null ? Location.deserialize(gson.fromJson(result.getString("corner1"), type)):null);
-								data.setCorner2(result.getString("corner2")!=null ? Location.deserialize(gson.fromJson(result.getString("corner2"), type)):null);
 								data.setCenter(result.getString("center")!=null ? Location.deserialize(gson.fromJson(result.getString("center"), type)):null);
-								data.setIcon(result.getString("icon")!=null ? BukkitUtils.read(gson.fromJson(result.getString("icon"), byte[].class)):null);
-								data.setUpdateTime(result.getDate("update_time"));
-								data.setCreateTime(result.getDate("create_time"));
 								return data;
 							}
 							return null;
@@ -870,6 +903,44 @@ public class MySQLStorage {
 
 
 
+	public VaultStorage queryVault(@NotNull UUID uuid,String key) {
+		return getSQLManager().createQuery()
+				.inTable(getVaultDataTable().getTableName())
+				.addCondition("uuid", uuid.toString())
+				.addCondition("key", key)
+				.build()
+				.execute(
+						(query) -> {
+							ResultSet result = query.getResultSet();
+
+							VaultStorage vaultStorage = new VaultStorage();
+							if (result != null && result.next()) {
+								vaultStorage.setId(result.getInt("id"));
+								vaultStorage.setUuid(UUID.fromString(result.getString("uuid")));
+								vaultStorage.setKey(result.getString("key"));
+								vaultStorage.setValue(result.getString("value"));
+								return vaultStorage;
+							}
+							return null;
+						},
+						((exception, sqlAction) -> { /*SQL异常处理-SQLExceptionHandler*/ })
+				);
+	}
+
+	public void replaceVault(@NotNull VaultStorage data) throws Exception {
+		getSQLManager().createReplace(getVaultDataTable().getTableName())
+				.setColumnNames("id", "uuid", "key", "value")
+				.setParams(
+						data.getId(),
+						data.getUuid().toString(),
+						data.getKey(),
+						data.getValue()
+				)
+				.execute();
+	}
+
+
+
 
 
 
@@ -907,6 +978,9 @@ public class MySQLStorage {
 	}
 	public DatabaseTable getSkyPvpDataTable() {
 		return skyPvpDataTable;
+	}
+	public DatabaseTable getVaultDataTable() {
+		return vaultDataTable;
 	}
 
 }

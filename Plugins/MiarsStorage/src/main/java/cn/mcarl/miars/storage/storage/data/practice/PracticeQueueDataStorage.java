@@ -6,6 +6,8 @@ import cn.mcarl.miars.storage.entity.practice.QueueInfo;
 import cn.mcarl.miars.storage.enums.practice.FKitType;
 import cn.mcarl.miars.storage.enums.practice.QueueType;
 import com.alibaba.fastjson.JSONArray;
+import lombok.Data;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -57,6 +59,47 @@ public class PracticeQueueDataStorage {
         setQueueInfoRedisList(queueInfos); // 数据同步至Redis
 
         return true;
+    }
+
+    /**
+     * 决斗
+     * @param a
+     * @param b
+     */
+    public boolean addDuel(FKitType fKitType,Player a,Player b){
+        List<Duel> duels = new ArrayList<>(getDuelRedisList());
+
+        for (Duel duel:duels) {
+            if (
+                    duel.getA().equals(a.getName()) ||
+                            duel.getA().equals(b.getName()) ||
+                            duel.getB().equals(a.getName()) ||
+                            duel.getB().equals(b.getName())
+            ){
+                return false;
+            }
+        }
+
+        duels.add(new Duel(
+                fKitType,
+                a.getName(),
+                b.getName()
+        ));
+        MiarsStorage.getRedisStorage().setJedis(REDIS_KEY+"_DUEL",JSONArray.toJSON(duels).toString());
+        return true;
+    }
+    @Data
+    static
+    class Duel{
+        public Duel(FKitType fKitType, String a, String b) {
+            this.fKitType = fKitType;
+            this.a = a;
+            this.b = b;
+        }
+
+        private FKitType fKitType;
+        private String a;
+        private String b;
     }
 
     /**
@@ -138,13 +181,25 @@ public class PracticeQueueDataStorage {
 
         String json = MiarsStorage.getRedisStorage().getJedis(REDIS_KEY);
 
-        if (json==null || json.equals("[]")){
+        if (json==null || "[]".equals(json)){
             return new ArrayList<>();
         }
 
         return JSONArray.parseArray(json).toJavaList(QueueInfo.class);
     }
-    
+
+
+    public List<Duel> getDuelRedisList(){
+
+        String json = MiarsStorage.getRedisStorage().getJedis(REDIS_KEY+"_DUEL");
+
+        if (json==null || "[]".equals(json)){
+            return new ArrayList<>();
+        }
+
+        return JSONArray.parseArray(json).toJavaList(Duel.class);
+    }
+
     public void setQueueInfoRedisList(List<QueueInfo> list){
         if (list.size()==0){
             MiarsStorage.getRedisStorage().delJedis(REDIS_KEY);

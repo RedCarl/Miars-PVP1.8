@@ -17,13 +17,10 @@ import cn.mcarl.miars.storage.entity.ffa.FCombatInfo;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
 import cn.mcarl.miars.storage.storage.data.skypvp.SkyPVPDataStorage;
-import com.destroystokyo.paper.Title;
+import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -33,6 +30,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.github.paperspigot.Title;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -129,7 +127,9 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void EntityDamageByEntityEvent(EntityDamageByEntityEvent e){
         if (e.getEntity() instanceof Player entity){ // 被攻击者
+            if (CitizensAPI.getNPCRegistry().isNPC(entity)){e.setCancelled(true);return;};
             if (e.getDamager() instanceof Player player){// 攻击者
+                if (CitizensAPI.getNPCRegistry().isNPC(player)){e.setCancelled(true);return;};
                 if (PlayerUtils.isProtectedRegion(player) || PlayerUtils.isProtectedRegion(entity)){
                     e.setCancelled(true);
                     e.setDamage(0);
@@ -140,15 +140,26 @@ public class PlayerListener implements Listener {
             }
             if (e.getDamager() instanceof Arrow arrow){// 攻击者
                 ProjectileSource shooter = arrow.getShooter();
-                if(shooter instanceof Player player) {
-                    if (PlayerUtils.isProtectedRegion(player) || PlayerUtils.isProtectedRegion(entity)){
-                        e.setCancelled(true);
-                        e.setDamage(0);
-                    }else {
-                        CombatManager.getInstance().start(entity,player.getUniqueId().toString(),30);
-                        CombatManager.getInstance().start(player,entity.getUniqueId().toString(),30);
-                    }
-                }
+                checkDamager(shooter,entity,e);
+            }
+            if (e.getDamager() instanceof Snowball snowball){// 攻击者
+                ProjectileSource shooter = snowball.getShooter();
+                checkDamager(shooter,entity,e);
+            }
+        }
+    }
+    public void checkDamager(
+            ProjectileSource shooter,
+            Player entity,
+            EntityDamageByEntityEvent e
+    ){
+        if(shooter instanceof Player player) {
+            if (PlayerUtils.isProtectedRegion(player) || PlayerUtils.isProtectedRegion(entity)){
+                e.setCancelled(true);
+                e.setDamage(0);
+            }else {
+                CombatManager.getInstance().start(entity,player.getUniqueId().toString(),30);
+                CombatManager.getInstance().start(player,entity.getUniqueId().toString(),30);
             }
         }
     }

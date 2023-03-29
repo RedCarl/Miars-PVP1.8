@@ -23,10 +23,16 @@ public class PlayerInventoryManager {
     }
 
     public void init(Player p){
-        List<FKit> list = new ArrayList<>(FKitDataStorage.getInstance().getFKitData(p, FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get())));
+        List<FKit> list = new ArrayList<>(FKitDataStorage.getInstance().getFKitData(p.getUniqueId(), FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get())));
         CustomSort.sort(list,"power",false);
 
+        p.getInventory().setItem(39,null);
+        p.getInventory().setItem(38,null);
+        p.getInventory().setItem(37,null);
+        p.getInventory().setItem(36,null);
+
         p.getInventory().clear();
+
         for (int i = 0; i <= 8; i++) {
             if (list.size()>=i+1){
                 FKit fKit = list.get(i);

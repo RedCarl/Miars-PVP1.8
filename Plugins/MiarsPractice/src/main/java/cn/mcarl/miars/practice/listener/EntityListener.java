@@ -15,7 +15,7 @@ public class EntityListener implements Listener {
         if(e.getEntity() instanceof Player player) {
             // 判断战斗是否已经结束
             ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player);
-            if (state != null && state.getState()!=2){
+            if (state != null && state.getState()!= ArenaState.State.GAME){
                 e.setCancelled(true);
             }
         }

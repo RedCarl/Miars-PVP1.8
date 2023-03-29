@@ -2,6 +2,7 @@ package cn.mcarl.miars.practice.manager;
 
 import cn.mcarl.miars.practice.MiarsPractice;
 import cn.mcarl.miars.practice.conf.PluginConfig;
+import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.entity.practice.QueueInfo;
 import cn.mcarl.miars.storage.enums.practice.FKitType;
 import cn.mcarl.miars.storage.enums.practice.QueueType;
@@ -32,13 +33,13 @@ public class QueueManager {
             @Override
             public void run() {
                 for (QueueInfo q: PracticeQueueDataStorage.getInstance().getQueueInfos(FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()),QueueType.UNRANKED)) {
-                    Integer arenaId = PracticeArenaStateDataStorage.getInstance().isNullArena();
-                    if (arenaId!=null){
+                    ArenaState state = PracticeArenaStateDataStorage.getInstance().isNullArena();
+                    if (state!=null){
                         List<String> players = new ArrayList<>();
                         for (String s:q.getPlayers()) {
                             players.add(s);
                             if (players.size()==2){
-                                ArenaManager.getInstance().allotArena(players.get(0),players.get(1),arenaId,QueueType.UNRANKED);
+                                ArenaManager.getInstance().allotArena(players.get(0),players.get(1),state,QueueType.UNRANKED);
                                 players.clear();
                                 break;
                             }

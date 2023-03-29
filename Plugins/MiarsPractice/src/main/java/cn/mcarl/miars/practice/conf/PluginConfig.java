@@ -12,6 +12,8 @@ public class PluginConfig extends ConfigurationRoot {
     public static final class PRACTICE_SITE extends ConfigurationRoot {
         @HeaderComment({"模式"})
         public static final ConfigValue<String> MODE = ConfiguredValue.of(String.class, FKitType.NO_DEBUFF.name());
+        @HeaderComment({"世界数量"})
+        public static final ConfigValue<Integer> WORLD = ConfiguredValue.of(Integer.class, 3);
     }
 
 }

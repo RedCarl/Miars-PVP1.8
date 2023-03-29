@@ -35,6 +35,13 @@ public class ArenaCreateCommand implements CommandExecutor, TabCompleter {
                 arena.setName(args[0]);
                 arena.setMode(FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()));
 
+                if (data.keySet().size()==0){
+                    List<Arena> arenas = PracticeArenaDataStorage.getInstance().getArenaData(FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()));
+                    for (Arena a:arenas) {
+                        data.put(a.getName(),a);
+                    }
+                }
+
                 if (data.containsKey(arena.getName())){
                     arena = data.get(arena.getName());
                 }
@@ -46,11 +53,6 @@ public class ArenaCreateCommand implements CommandExecutor, TabCompleter {
                         arena.setName(args[2]);
                         data.put(arena.getName(),arena);
                         player.sendMessage(ColorParser.parse("&7["+arena.getName()+"] 成功设置编号为 "+arena.getName()));
-                    }
-                    case "setDisplayName" -> {
-                        arena.setDisplayName(args[2]);
-                        data.put(arena.getName(),arena);
-                        player.sendMessage(ColorParser.parse("&7["+arena.getName()+"] 成功设置名称为 "+arena.getDisplayName()));
                     }
                     case "build" -> {
                         arena.setBuild(Boolean.valueOf(args[2]));
@@ -66,6 +68,11 @@ public class ArenaCreateCommand implements CommandExecutor, TabCompleter {
                         arena.setLoc2(player.getLocation());
                         data.put(arena.getName(),arena);
                         player.sendMessage(ColorParser.parse("&7["+arena.getName()+"] 成功2号玩家位置 "+arena.getLoc2().toString()));
+                    }
+                    case "setCenter" -> {
+                        arena.setCenter(player.getLocation());
+                        data.put(arena.getName(),arena);
+                        player.sendMessage(ColorParser.parse("&7["+arena.getName()+"] 成功中心点位置 "+arena.getCenter().toString()));
                     }
                     case "save" -> {
                         PracticeArenaDataStorage.getInstance().putArenaData(data.get(arena.getName()));
@@ -94,10 +101,10 @@ public class ArenaCreateCommand implements CommandExecutor, TabCompleter {
                     }
                     case 2: {
                         allCompletes.add("setName");
-                        allCompletes.add("setDisplayName");
                         allCompletes.add("build");
                         allCompletes.add("setLoc1");
                         allCompletes.add("setLoc2");
+                        allCompletes.add("setCenter");
                         allCompletes.add("save");
                         break;
                     }

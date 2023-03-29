@@ -26,8 +26,7 @@ public class GoldHead extends AbstractItem {
     @Override
     public void onItemConsume(PlayerItemConsumeEvent e, Player p, ItemStack i) {
         i.setType(Material.AIR);
-        p.removePotionEffect(PotionEffectType.HEAL);
-        p.addPotionEffect(new PotionEffect(PotionEffectType.HEAL,10*20,1));
-
+        p.removePotionEffect(PotionEffectType.REGENERATION);
+        p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,10*20,1));
     }
 }

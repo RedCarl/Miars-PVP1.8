@@ -80,15 +80,15 @@ public class OpenInvGUI extends GUI {
     public GUIItem getPlayerHp(){
         return new GUIItem(
                 new ItemBuilder(Material.SKULL_ITEM)
-                        .setName("&7血量: &a"+playerState.getHealth())
+                        .setName("&7血量: &c"+playerState.getHealth())
                         .toItemStack()
         );
     }
 
     public GUIItem getPlayerFoot(){
         return new GUIItem(
-                new ItemBuilder(Material.RAW_BEEF)
-                        .setName("&7饥饿: &a"+playerState.getHunger())
+                new ItemBuilder(Material.RAW_BEEF, (int) playerState.getHunger())
+                        .setName("&7饥饿: &6"+playerState.getHunger())
                         .toItemStack()
         );
     }
@@ -97,12 +97,13 @@ public class OpenInvGUI extends GUI {
         int i = 0;
         ItemStack heal = new ItemBuilder(Material.POTION, 1).setData((short) 16421).toItemStack();
         for (ItemStack itemStack:fInventory.getBackpack().values()){
-            if (itemStack.equals(heal)){
+            if (itemStack!=null && itemStack.equals(heal)){
                 i++;
             }
         }
         return new GUIItem(
-                new ItemBuilder(Material.RAW_BEEF)
+                new ItemBuilder(Material.POTION, i)
+                        .setData((short) 16421)
                         .setName("&7治疗药水: &a"+i)
                         .toItemStack()
         );
