@@ -368,12 +368,6 @@
                                         <include name="MiarsSkyPVP-*.jar" />
                                     </fileset>
                                 </copy>
-                                <copy todir="libs/" overwrite="true">
-                                    <fileset dir="NachoSpigot/NachoSpigot-Server/target"
-                                             erroronmissingdir="false">
-                                        <include name="NachoSpigot.jar" />
-                                    </fileset>
-                                </copy>
                             </target>
                         </configuration>
                         <goals>

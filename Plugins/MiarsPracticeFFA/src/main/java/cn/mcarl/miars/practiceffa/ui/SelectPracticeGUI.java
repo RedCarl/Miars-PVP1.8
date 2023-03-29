@@ -14,6 +14,7 @@ import cn.mcarl.miars.practiceffa.kits.NoDeBuff;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.entity.ffa.FKit;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
+import cn.mcarl.miars.storage.entity.practice.Duel;
 import cn.mcarl.miars.storage.storage.data.practice.FKitDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.FPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeGameDataStorage;
@@ -59,7 +60,7 @@ public class SelectPracticeGUI extends GUI {
         }.runTaskTimerAsynchronously(MiarsPracticeFFA.getInstance(),0,20L);
 
 
-        setItem(22,new GUIItem(GUIUtils.getCancelItem()){
+        setItem(22,new GUIItem(GUIUtils.getCloseItem()){
             @Override
             public void onClick(Player clicker, ClickType type) {
                 player.closeInventory();
@@ -100,23 +101,35 @@ public class SelectPracticeGUI extends GUI {
                         // 开始匹配
                         PracticeQueueDataStorage.getInstance().addQueue(ft,queueType,FPlayerDataStorage.getInstance().getFPlayer(player));
                     }else {
-                        player.sendMessage(ColorParser.parse("&r"));
-                        player.sendMessage(ColorParser.parse("&e&l"+ft.getName()+" Duel"));
-                        player.sendMessage(ColorParser.parse("&e┃ &7Opponent: &c"+duel.getName()));
-                        player.sendMessage(ColorParser.parse("&e┃ &7Ping: &c"+((CraftPlayer) duel).getHandle().ping+" ms"));
-                        player.sendMessage(ColorParser.parse("&r"));
+                        if (
+                                PracticeQueueDataStorage.getInstance().addDuel(
+                                        new Duel(
+                                                ft,clicker.getName(),duel.getName(),System.currentTimeMillis(),0
+                                        )
+                                )
+                        ){
+                            player.sendMessage(ColorParser.parse("&r"));
+                            player.sendMessage(ColorParser.parse("&e&l"+ft.getName()+" Duel"));
+                            player.sendMessage(ColorParser.parse("&e┃ &7Opponent: &c"+duel.getName()));
+                            player.sendMessage(ColorParser.parse("&e┃ &7Ping: &c"+((CraftPlayer) duel).getHandle().ping+" ms"));
+                            player.sendMessage(ColorParser.parse("&r"));
 
-                        duel.sendMessage(ColorParser.parse("&r"));
-                        duel.sendMessage(ColorParser.parse("&e&l"+ft.getName()+" Duel Request"));
-                        duel.sendMessage(ColorParser.parse("&e┃ &7From: &c"+player.getName()));
-                        duel.sendMessage(ColorParser.parse("&e┃ &7Ping: &c"+((CraftPlayer) player).getHandle().ping+" ms"));
-                        JSONMessage.create()
-                                .then(ColorParser.parse("&a&l[CLICK TO ACCEPT]"))
-                                .tooltip(ColorParser.parse("&7Click to accept"))
-                                .runCommand("/duel accept "+player.getName()+" "+ft.name())
-                                .then(ColorParser.parse("\n&r"))
-                                .send(duel);
-                        duel.sendMessage(ColorParser.parse("&r"));
+
+                            duel.sendMessage(ColorParser.parse("&r"));
+                            duel.sendMessage(ColorParser.parse("&e&l"+ft.getName()+" Duel Request"));
+                            duel.sendMessage(ColorParser.parse("&e┃ &7From: &c"+player.getName()));
+                            duel.sendMessage(ColorParser.parse("&e┃ &7Ping: &c"+((CraftPlayer) player).getHandle().ping+" ms"));
+                            JSONMessage.create()
+                                    .then(ColorParser.parse("&a&l[CLICK TO ACCEPT]"))
+                                    .tooltip(ColorParser.parse("&7Click to accept"))
+                                    .runCommand("/duel accept "+player.getName()+" "+ft.name())
+                                    .then(ColorParser.parse("\n&r"))
+                                    .send(duel);
+                            duel.sendMessage(ColorParser.parse("&r"));
+                        }else {
+                            clicker.sendMessage(ColorParser.parse("&7请不要重复申请，耐心等待对方回应。"));
+                        }
+
                     }
 
 

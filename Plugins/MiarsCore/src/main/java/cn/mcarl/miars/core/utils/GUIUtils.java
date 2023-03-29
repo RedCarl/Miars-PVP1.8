@@ -30,6 +30,15 @@ public class GUIUtils {
     }
 
     /**
+     * 关闭按钮
+     */
+    public static ItemStack getCloseItem() {
+        return new ItemBuilder(Material.BARRIER)
+                .setName("&c关闭")
+                .toItemStack();
+    }
+
+    /**
      * 分割线
      */
     public static ItemStack getLineItem() {

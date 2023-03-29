@@ -2,6 +2,7 @@ package cn.mcarl.miars.storage.storage.data.practice;
 
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
+import cn.mcarl.miars.storage.entity.practice.Duel;
 import cn.mcarl.miars.storage.entity.practice.QueueInfo;
 import cn.mcarl.miars.storage.enums.practice.FKitType;
 import cn.mcarl.miars.storage.enums.practice.QueueType;
@@ -63,43 +64,36 @@ public class PracticeQueueDataStorage {
 
     /**
      * 决斗
-     * @param a
-     * @param b
      */
-    public boolean addDuel(FKitType fKitType,Player a,Player b){
+    public boolean addDuel(Duel duel){
         List<Duel> duels = new ArrayList<>(getDuelRedisList());
 
-        for (Duel duel:duels) {
-            if (
-                    duel.getA().equals(a.getName()) ||
-                            duel.getA().equals(b.getName()) ||
-                            duel.getB().equals(a.getName()) ||
-                            duel.getB().equals(b.getName())
-            ){
-                return false;
+        // 判断是否是申请，如果是判断是否重复申请
+        if (duel.getB()==null){
+            for (Duel d:duels) {
+                if (d.isEqual(duel)){
+                    return false;
+                }
             }
+        }else {
+            // 接受的时候判断时间是否超时
+            for (Duel d:duels) {
+                if (d.isEqual(duel)){
+                    if ((System.currentTimeMillis() - d.getTime())/1000/60 >= 5){
+                        return false;
+                    }
+                    d.setState(1);
+                    setDuelRedisList(duels);
+                    return true;
+                }
+            }
+
+
         }
 
-        duels.add(new Duel(
-                fKitType,
-                a.getName(),
-                b.getName()
-        ));
-        MiarsStorage.getRedisStorage().setJedis(REDIS_KEY+"_DUEL",JSONArray.toJSON(duels).toString());
+        duels.add(duel);
+        setDuelRedisList(duels);
         return true;
-    }
-    @Data
-    static
-    class Duel{
-        public Duel(FKitType fKitType, String a, String b) {
-            this.fKitType = fKitType;
-            this.a = a;
-            this.b = b;
-        }
-
-        private FKitType fKitType;
-        private String a;
-        private String b;
     }
 
     /**
@@ -119,6 +113,19 @@ public class PracticeQueueDataStorage {
                 setQueueInfoRedisList(queueInfos); // 数据同步至Redis
             }
         }
+        return false;
+    }
+
+    public boolean removeDuel(Duel duel){
+        List<Duel> duels = new ArrayList<>(getDuelRedisList());
+
+        for (Duel d:getDuelRedisList()){
+            if (d.isEqual(duel)){
+                duels.remove(d);
+            }
+        }
+
+        setDuelRedisList(duels); // 数据同步至Redis
         return false;
     }
 
@@ -173,8 +180,19 @@ public class PracticeQueueDataStorage {
         return list;
     }
 
+    public List<Duel> getDuels(FKitType fKitType){
+        List<Duel> list = new ArrayList<>();
+        for (Duel d:getDuelRedisList()) {
+            if (d.getType().equals(fKitType) && d.getState()==1){
+                list.add(d);
+            }
+        }
+        return list;
+    }
+
     public void clear(){
         setQueueInfoRedisList(new ArrayList<>());
+        setDuelRedisList(new ArrayList<>());
     }
     
     public List<QueueInfo> getQueueInfoRedisList(){
@@ -188,6 +206,12 @@ public class PracticeQueueDataStorage {
         return JSONArray.parseArray(json).toJavaList(QueueInfo.class);
     }
 
+    public void setQueueInfoRedisList(List<QueueInfo> list){
+        if (list.size()==0){
+            MiarsStorage.getRedisStorage().delJedis(REDIS_KEY);
+        }
+        MiarsStorage.getRedisStorage().setJedis(REDIS_KEY,JSONArray.toJSON(list).toString());
+    }
 
     public List<Duel> getDuelRedisList(){
 
@@ -199,12 +223,11 @@ public class PracticeQueueDataStorage {
 
         return JSONArray.parseArray(json).toJavaList(Duel.class);
     }
-
-    public void setQueueInfoRedisList(List<QueueInfo> list){
+    public void setDuelRedisList(List<Duel> list){
         if (list.size()==0){
-            MiarsStorage.getRedisStorage().delJedis(REDIS_KEY);
+            MiarsStorage.getRedisStorage().delJedis(REDIS_KEY+"_DUEL");
         }
-        MiarsStorage.getRedisStorage().setJedis(REDIS_KEY,JSONArray.toJSON(list).toString());
+        MiarsStorage.getRedisStorage().setJedis(REDIS_KEY+"_DUEL",JSONArray.toJSON(list).toString());
     }
 
 }

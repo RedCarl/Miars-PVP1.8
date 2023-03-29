@@ -3,6 +3,7 @@ package cn.mcarl.miars.practiceffa;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.practiceffa.command.DuelCommand;
+import cn.mcarl.miars.practiceffa.hooker.PAPIExpansion;
 import cn.mcarl.miars.practiceffa.listener.BlockListener;
 import cn.mcarl.miars.practiceffa.listener.EntityListener;
 import cn.mcarl.miars.practiceffa.listener.PlayerListener;
@@ -46,7 +47,12 @@ public class MiarsPracticeFFA extends JavaPlugin {
         regListener(new BlockListener());
 
         log("正在注册指令...");
-        regCommand("duel",new DuelCommand());
+        regCommand("Duel",new DuelCommand());
+
+        /* PlaceholderAPI Support */
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PAPIExpansion(this).register();
+        }
 
         log("正在初始化FFA竞技场...");
         FFABorderManager.getInstance().init();

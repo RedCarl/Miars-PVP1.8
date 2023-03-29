@@ -50,7 +50,7 @@ public class BuildUHC {
         // 背包
         Map<Integer,ItemStack> backpack = new HashMap<>();
 
-        backpack.put(9, new ItemBuilder(Material.ARROW, 20).toItemStack());
+        backpack.put(9, new ItemBuilder(Material.ARROW, 16).toItemStack());
         backpack.put(10, new ItemBuilder(Material.COBBLESTONE, 64).toItemStack());
         backpack.put(11, new ItemBuilder(Material.WATER_BUCKET, 1).toItemStack());
         backpack.put(12, new ItemBuilder(Material.WATER_BUCKET, 1).toItemStack());

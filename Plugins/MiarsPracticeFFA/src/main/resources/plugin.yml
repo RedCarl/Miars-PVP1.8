@@ -11,8 +11,7 @@ depend:
   - MiarsCore
 
 commands:
-  "duel":
-    description: duel.
+  "Duel":
+    description: "发起决斗"
     aliases:
       - duel
-      - Duel

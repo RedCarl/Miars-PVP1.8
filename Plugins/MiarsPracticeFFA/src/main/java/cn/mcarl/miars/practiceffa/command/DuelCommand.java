@@ -2,6 +2,7 @@ package cn.mcarl.miars.practiceffa.command;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.practiceffa.ui.SelectPracticeGUI;
+import cn.mcarl.miars.storage.entity.practice.Duel;
 import cn.mcarl.miars.storage.enums.practice.FKitType;
 import cn.mcarl.miars.storage.enums.practice.QueueType;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
@@ -29,7 +30,7 @@ public class DuelCommand implements CommandExecutor, TabCompleter {
             switch (args.length){
                 case 1 -> {
                     Player p = Bukkit.getPlayerExact(args[0]);
-                    if (p.isOnline()){
+                    if (p!=null){
                         SelectPracticeGUI.open(player, QueueType.UNRANKED,p);
                     }else {
                         player.sendMessage(ColorParser.parse("&7No player matching &e"+args[0]+" &7is connected to this server."));
@@ -39,13 +40,28 @@ public class DuelCommand implements CommandExecutor, TabCompleter {
                     String var = args[0];
                     if ("accept".equals(var)){
                         Player p = Bukkit.getPlayerExact(args[1]);
-                        FKitType fKitType = FKitType.valueOf(args[2]);
+                        if (p!=null){
+                            FKitType fKitType = FKitType.valueOf(args[2]);
 
 
-                        if (!PracticeQueueDataStorage.getInstance().addDuel(fKitType,p,player)){
-                            player.sendMessage(ColorParser.parse("&7您无法再次接受这个请求。"));
+                            if (PracticeQueueDataStorage.getInstance().addDuel(
+                                    new Duel(
+                                            fKitType,p.getName(),player.getName(),System.currentTimeMillis(),1
+                                    )
+                            )){
+                                for (int i = 0; i < 20; i++) {
+                                    player.sendMessage("");
+                                }
+                            }else {
+                                player.sendMessage(ColorParser.parse("&7您无法再接受这个请求。"));
+                            }
+                        }else {
+                            player.sendMessage(ColorParser.parse("&7No player matching &e"+args[1]+" &7is connected to this server."));
                         }
                     }
+                }
+                default -> {
+                    player.sendMessage(ColorParser.parse("&7请输入 &e/duel &7玩家名称 来发起决斗申请。"));
                 }
             }
 

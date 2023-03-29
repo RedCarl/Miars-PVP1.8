@@ -99,9 +99,6 @@ public class PracticeArenaStateDataStorage {
 
         // 更新Redis房间信息
         PracticeArenaStateDataStorage.getInstance().setArenaStateRedisList(arenaState,key);
-
-        PracticeQueueDataStorage.getInstance().removeQueue(a);
-        PracticeQueueDataStorage.getInstance().removeQueue(b);
     }
 
 
