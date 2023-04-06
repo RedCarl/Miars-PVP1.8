@@ -6,7 +6,7 @@ import cn.mcarl.miars.core.conf.PluginConfig;
 import cn.mcarl.miars.core.manager.ServerManager;
 import cn.mcarl.miars.storage.entity.MServerInfo;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
-import cn.mcarl.miars.storage.enums.practice.FKitType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;

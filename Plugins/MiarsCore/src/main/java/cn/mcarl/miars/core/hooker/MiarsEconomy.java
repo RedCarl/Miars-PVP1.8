@@ -1,6 +1,6 @@
 package cn.mcarl.miars.core.hooker;
 
-import cn.mcarl.miars.storage.entity.VaultStorage;
+import cn.mcarl.miars.storage.entity.vault.VaultStorage;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -11,7 +11,7 @@ import java.util.List;
 public class MiarsEconomy implements Economy {
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class MiarsEconomy implements Economy {
 
     @Override
     public double getBalance(String s) {
-        return VaultStorage.getMoneyFloat(Bukkit.getOfflinePlayer(s).getUniqueId());
+        return getBalance(Bukkit.getOfflinePlayer(s));
     }
 
     @Override
@@ -86,12 +86,12 @@ public class MiarsEconomy implements Economy {
 
     @Override
     public boolean has(String s, double v) {
-        return false;
+        return getBalance(s)>=v;
     }
 
     @Override
     public boolean has(OfflinePlayer offlinePlayer, double v) {
-        return false;
+        return getBalance(offlinePlayer)>=v;
     }
 
     @Override

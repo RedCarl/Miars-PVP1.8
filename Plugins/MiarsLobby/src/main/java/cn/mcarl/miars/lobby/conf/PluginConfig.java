@@ -12,7 +12,7 @@ public class PluginConfig extends ConfigurationRoot {
     @HeaderComment({"大厅配置"})
     public static final class LOBBY_SITE extends ConfigurationRoot {
         @HeaderComment({"出生点"})
-        public static final ConfigValue<Location> LOCATION = ConfiguredValue.of(Location.class, new Location(Bukkit.getWorld("world"),-79.5,153,-78.5));
+        public static final ConfigValue<Location> LOCATION = ConfiguredValue.of(Location.class, new Location(Bukkit.getWorld("world"),-79.5,153,-78.5,0,0));
         @HeaderComment({"玩家的高度低于多少将他传送至出生点"})
         public static final ConfigValue<Integer> HEIGHT = ConfiguredValue.of(Integer.class, 0);
     }

@@ -1,25 +1,40 @@
 package cn.mcarl.miars.skypvp.utils;
 
+import cn.mcarl.miars.storage.utils.ItemBuilder;
+import cn.mcarl.miars.core.utils.MiarsUtil;
 import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.skypvp.conf.PluginConfig;
 import cn.mcarl.miars.skypvp.items.SpawnSlimeball;
 import cn.mcarl.miars.skypvp.manager.CombatManager;
-import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.storage.entity.skypvp.SPlayer;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
+import java.util.List;
+
 public class PlayerUtils {
+
     public static boolean isProtectedRegion(Player player){
         Location p = player.getLocation();
         Location min = PluginConfig.PROTECTED_REGION.MIN.get();
         Location max = PluginConfig.PROTECTED_REGION.MAX.get();
         if (p.getBlockX()<=max.getBlockX() && p.getBlockY()<=max.getBlockY() && p.getBlockZ()<=max.getBlockZ()){
+            if (p.getBlockX()>=min.getBlockX() && p.getBlockY()>=min.getBlockY() && p.getBlockZ()>=min.getBlockZ()){
+                return true;
+            }
+        }
 
+        return false;
+    }
+
+    public static boolean isAfkRegion(Player player){
+        Location p = player.getLocation();
+        Location min = PluginConfig.AFK_REGION.MIN.get();
+        Location max = PluginConfig.AFK_REGION.MAX.get();
+        if (p.getBlockX()<=max.getBlockX() && p.getBlockY()<=max.getBlockY() && p.getBlockZ()<=max.getBlockZ()){
             if (p.getBlockX()>=min.getBlockX() && p.getBlockY()>=min.getBlockY() && p.getBlockZ()>=min.getBlockZ()){
                 return true;
             }
@@ -43,14 +58,48 @@ public class PlayerUtils {
 
         CombatManager.getInstance().clear(player);
 
-        player.getInventory().setItem(0, new ItemStack(Material.STONE_SWORD));
-        player.getInventory().setItem(1, new ItemStack(Material.STONE_PICKAXE));
-        player.getInventory().setItem(2, new ItemStack(Material.COOKED_BEEF,16));
+        player.getInventory().setItem(0,
+                new ItemBuilder(Material.STONE_SWORD)
+                        .addEnchant(Enchantment.DAMAGE_ALL,1,true)
+                        .setNbtBoolean("no-drop",true)
+                        .toItemStack()
+                );
+        player.getInventory().setItem(1,
+                new ItemBuilder(Material.STONE_PICKAXE)
+                        .addEnchant(Enchantment.DIG_SPEED,1,true)
+                        .setNbtBoolean("no-drop",true)
+                        .toItemStack()
+                );
+        player.getInventory().setItem(2,
+                new ItemBuilder(Material.COOKED_BEEF)
+                        .setNbtBoolean("no-drop",true)
+                        .setAmount(16)
+                        .toItemStack()
+                );
 
-        player.getInventory().setItem(39, new ItemStack(Material.LEATHER_HELMET));
-        player.getInventory().setItem(38, new ItemStack(Material.GOLD_CHESTPLATE));
-        player.getInventory().setItem(37, new ItemStack(Material.CHAINMAIL_LEGGINGS));
-        player.getInventory().setItem(36, new ItemStack(Material.IRON_BOOTS));
+        List<Color> list = MiarsUtil.getColors();
+        int index = (int) (Math.random()* list.size());
+        player.getInventory().setItem(38,
+                new ItemBuilder(Material.LEATHER_CHESTPLATE)
+                        .setLeatherArmorColor(list.get(index))
+                        .addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL,4,true)
+                        .setNbtBoolean("no-drop",true)
+                        .toItemStack()
+        );
+        player.getInventory().setItem(37,
+                new ItemBuilder(Material.LEATHER_LEGGINGS)
+                        .setLeatherArmorColor(list.get(index))
+                        .addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL,4,true)
+                        .setNbtBoolean("no-drop",true)
+                        .toItemStack()
+                );
+        player.getInventory().setItem(36,
+                new ItemBuilder(Material.LEATHER_BOOTS)
+                        .setLeatherArmorColor(Color.GRAY)
+                        .addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL,4,true)
+                        .setNbtBoolean("no-drop",true)
+                        .toItemStack()
+                );
 
         new SpawnSlimeball().give(player,8);
     }
@@ -72,5 +121,17 @@ public class PlayerUtils {
         }
 
         return Double.parseDouble(ToolUtils.decimalFormat((double) sPlayer.getKillsCount() / (double) sPlayer.getDeathCount(),1));
+    }
+
+
+    public static boolean isNullInv(Player player){
+
+        for (ItemStack is:player.getInventory()) {
+            if (is!=null){
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -4,11 +4,9 @@ import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.storage.entity.practice.Duel;
 import cn.mcarl.miars.storage.entity.practice.QueueInfo;
-import cn.mcarl.miars.storage.enums.practice.FKitType;
-import cn.mcarl.miars.storage.enums.practice.QueueType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.QueueType;
 import com.alibaba.fastjson.JSONArray;
-import lombok.Data;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -21,14 +19,18 @@ public class PracticeQueueDataStorage {
     private final String REDIS_KEY = "PRACTICE_QUEUE";
 
     public PracticeQueueDataStorage(){
+        init();
+    }
+
+    private List<QueueInfo> queueInfos;
+    private final Map<String,Long> queueTime = new HashMap<>();
+
+    public void init(){
         queueInfos=getQueueInfoRedisList();
         if (queueInfos==null){
             queueInfos=new ArrayList<>();
         }
     }
-
-    private List<QueueInfo> queueInfos;
-    private final Map<String,Long> queueTime = new HashMap<>();
 
     /**
      * 将玩家添加进入队列

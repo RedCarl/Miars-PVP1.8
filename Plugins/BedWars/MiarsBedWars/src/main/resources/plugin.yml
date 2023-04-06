@@ -1,0 +1,6 @@
+name: BedWars1058
+main: com.andrei1058.bedwars.BedWars
+version: ${project.version}
+
+authors:
+  - Red_Carl

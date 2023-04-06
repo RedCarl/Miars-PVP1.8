@@ -9,7 +9,6 @@ import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -17,8 +16,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -73,7 +72,6 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void FoodLevelChangeEvent(FoodLevelChangeEvent e){
         if (e.getEntity() instanceof Player p){
-            // 判断玩家是否在安全区外面
             p.setFoodLevel(20);
             e.setCancelled(true);
         }
@@ -98,29 +96,15 @@ public class PlayerListener implements Listener {
 
     }
 
-
-
     @EventHandler
     public void PlayerDropItemEvent(PlayerDropItemEvent event) {
         // 禁止玩家丢弃物品
         event.setCancelled(true);
     }
 
-    /**
-     * 禁止玩家移动物品
-     */
     @EventHandler
-    public void InventoryClickEvent(InventoryClickEvent e) {
-        Player player = e.getWhoClicked().getKiller();
-        ItemStack itemStack = e.getCurrentItem();
-
-        if (itemStack!=null && itemStack.getType()!= Material.AIR){
-            NBTItem nbtItem = new NBTItem(itemStack);
-            if (nbtItem.getBoolean("stopClick")){
-                e.setCancelled(true);
-            }
-        }
-
+    public void EntityDamageEvent(EntityDamageEvent e){
+        e.setCancelled(true);
     }
 
 }

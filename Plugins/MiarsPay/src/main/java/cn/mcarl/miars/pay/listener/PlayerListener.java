@@ -1,8 +1,10 @@
 package cn.mcarl.miars.pay.listener;
 
+import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.pay.MiarsPay;
 import cn.mcarl.miars.pay.event.ClosePayEvent;
 import cn.mcarl.miars.pay.event.OpenPayEvent;
+import cn.mcarl.miars.pay.event.OrderShipEvent;
 import cn.mcarl.miars.pay.event.QrCodeCreateEvent;
 import cn.mcarl.miars.pay.manager.PayManager;
 import cn.mcarl.miars.pay.utils.Utils;
@@ -39,17 +41,12 @@ public class PlayerListener implements Listener {
         for (int i = 0; i < 9; i++) {
             player.getInventory().setItem(i,playerInv.get(player.getUniqueId()).get(i));
         }
+
+        playerInv.remove(player.getUniqueId());
     }
 
     @EventHandler
     public void onOpenPay(OpenPayEvent event) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("%order%", event.getOrder());
-        map.put("%money%", event.getMoney().toString());
-        map.put("%payway%", event.getPaywayType().getChineseName());
-        List<String> stringList = MiarsPay.getInstance().getConfig().getStringList("open-command");
-        List<String> parse = Utils.parse(stringList, map, event.getPlayer());
-        parse.forEach(e -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), e));
     }
 
     @EventHandler
@@ -75,27 +72,41 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onClickInv(InventoryClickEvent event) {
-        Player player = Bukkit.getPlayer(event.getWhoClicked().getUniqueId());
+    public void onOrderShip(OrderShipEvent event){
+        Player player = Bukkit.getPlayerExact(event.getOrderInfo().get("buyerName").getAsString());
         closePay(player);
+    }
+
+    @EventHandler
+    public void onClickInv(InventoryClickEvent e) {
+        Player player = (Player) e.getWhoClicked();
+        if (playerInv.containsKey(player.getUniqueId())){
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onPickupItem(PlayerPickupItemEvent event) {
         Player player = event.getPlayer();
-        closePay(player);
+        if (playerInv.containsKey(player.getUniqueId())){
+            closePay(player);
+        }
     }
 
     @EventHandler
     public void onDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        closePay(player);
+        if (playerInv.containsKey(player.getUniqueId())){
+            closePay(player);
+        }
     }
 
     @EventHandler
     public void onToggleHand(PlayerItemHeldEvent event) {
         Player player = event.getPlayer();
-        closePay(player);
+        if (playerInv.containsKey(player.getUniqueId())){
+            closePay(player);
+        }
     }
 
     public void closePay(Player player){
@@ -104,6 +115,7 @@ public class PlayerListener implements Listener {
                 Bukkit.getScheduler().runTask(this.plugin, () -> {
                     ClosePayEvent closePayEvent = new ClosePayEvent(this.plugin, player);
                     Bukkit.getPluginManager().callEvent(closePayEvent);
+                    player.sendMessage(ColorParser.parse("&6&l商城! &7二维码关闭，请查看是否充值成功。"));
                 });
             }
         }

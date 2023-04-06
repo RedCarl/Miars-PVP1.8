@@ -6,7 +6,7 @@ import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.core.utils.fastboard.FastBoard;
 import cn.mcarl.miars.practice.conf.PluginConfig;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
-import cn.mcarl.miars.storage.enums.practice.FKitType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaStateDataStorage;
 import cn.mcarl.miars.storage.storage.data.serverInfo.ServerInfoDataStorage;
 import org.bukkit.Bukkit;
@@ -45,7 +45,7 @@ public class ScoreBoardManager {
                     updateBoard(board);
                 }
             }
-        }.runTaskTimerAsynchronously(MiarsCore.getInstance(),0,20);
+        }.runTaskTimerAsynchronously(MiarsCore.getInstance(),0,5);
     }
 
     private void updateBoard(FastBoard board) {

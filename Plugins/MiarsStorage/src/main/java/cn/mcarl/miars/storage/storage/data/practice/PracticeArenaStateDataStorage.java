@@ -1,16 +1,14 @@
 package cn.mcarl.miars.storage.storage.data.practice;
 
 import cn.mcarl.miars.storage.MiarsStorage;
-import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
-import cn.mcarl.miars.storage.enums.practice.FKitType;
-import cn.mcarl.miars.storage.enums.practice.QueueType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.QueueType;
 import com.alibaba.fastjson.JSONArray;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -98,30 +96,31 @@ public class PracticeArenaStateDataStorage {
         data.setFKitType(FKitType.valueOf(key));
 
         // 更新Redis房间信息
-        PracticeArenaStateDataStorage.getInstance().setArenaStateRedisList(arenaState,key);
+        setArenaStateRedisList(arenaState,key);
     }
 
 
-    public List<ArenaState> getArenaStateByQueueAndFig(FKitType fKitType, QueueType queueType){
-        List<ArenaState> list = new ArrayList<>();
 
-        for (ArenaState a:arenaState){
-            if (a.getFKitType().equals(fKitType) && a.getQueueType().equals(queueType) && a.getState() == ArenaState.State.GAME){
-                list.add(a);
+    // FFA
+    public Integer getArenaStateByQueueAndFig(FKitType fKitType, QueueType queueType){
+        int i = 0;
+        for (ArenaState a:getArenaStateRedisList(fKitType.name())) {
+            if (a.getQueueType()==queueType && a.getState() != ArenaState.State.IDLE){
+                i+=2;
             }
         }
-
-        return list;
+        return i;
     }
 
     public Integer getGamePlayersByQueueType(QueueType type){
         int i = 0;
-        for (ArenaState a:arenaState) {
-            if (a.getQueueType()==type && a.getState() != ArenaState.State.IDLE){
-                i+=2;
+        for (FKitType t:FKitType.values()) {
+            for (ArenaState a:getArenaStateRedisList(t.name())) {
+                if (a.getQueueType()==type && a.getState() != ArenaState.State.IDLE){
+                    i+=2;
+                }
             }
         }
-
         return i;
     }
 }

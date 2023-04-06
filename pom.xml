@@ -21,6 +21,11 @@
         <module>Plugins/MiarsPay</module>
         <module>Plugins/MegaWalls/MiarsMegaWalls</module>
         <module>Plugins/MiarsSkyPVP</module>
+        <module>Plugins/BedWars/MiarsBedWars</module>
+        <module>Plugins/SkyWars/UltraSkyWars-Lobby</module>
+        <module>Plugins/SkyWars/UltraSkyWars-Setup</module>
+        <module>Plugins/SkyWars/UltraSkyWars-Game</module>
+        <module>Plugins/SkyWars/UltraSkyWars-WorldParser</module>
     </modules>
 
     <properties>
@@ -285,7 +290,64 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.7.0</version>
+            <version>5.9.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.papermc</groupId>
+            <artifactId>paperlib</artifactId>
+            <version>1.0.7</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>5.0.1</version>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.6</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>3.12.10</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.sk89q.worldedit/worldedit-core -->
+        <dependency>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-core</artifactId>
+            <version>6.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.sk89q.worldedit/worldedit-bukkit -->
+        <dependency>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-bukkit</artifactId>
+            <version>6.1.4</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fastasyncworldedit</groupId>
+            <artifactId>FastAsyncWorldEdit-Core</artifactId>
+            <version>1.0.0</version>
+            <systemPath>/Users/redcarl/IdeaProjects/Miars/libs/FastAsyncWorldEdit.jar</systemPath>
+            <scope>system</scope>
         </dependency>
     </dependencies>
 
@@ -366,6 +428,36 @@
                                     <fileset dir="Plugins/MiarsSkyPVP/target"
                                              erroronmissingdir="false">
                                         <include name="MiarsSkyPVP-*.jar" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="libs/" overwrite="true">
+                                    <fileset dir="Plugins/BedWars/MiarsBedWars/target"
+                                             erroronmissingdir="false">
+                                        <include name="MiarsBedWars-*.jar" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="libs/" overwrite="true">
+                                    <fileset dir="Plugins/SkyWars/UltraSkyWars-Game/target"
+                                             erroronmissingdir="false">
+                                        <include name="UltraSkyWars-Game-*.jar" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="libs/" overwrite="true">
+                                    <fileset dir="Plugins/SkyWars/UltraSkyWars-Lobby/target"
+                                             erroronmissingdir="false">
+                                        <include name="UltraSkyWars-Lobby-*.jar" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="libs/" overwrite="true">
+                                    <fileset dir="Plugins/SkyWars/UltraSkyWars-Setup/target"
+                                             erroronmissingdir="false">
+                                        <include name="UltraSkyWars-Setup-*.jar" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="libs/" overwrite="true">
+                                    <fileset dir="Plugins/SkyWars/UltraSkyWars-WorldParser/target"
+                                             erroronmissingdir="false">
+                                        <include name="UltraSkyWars-WorldParser-*.jar" />
                                     </fileset>
                                 </copy>
                             </target>

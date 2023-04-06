@@ -1,6 +1,6 @@
 package cn.mcarl.miars.skypvp.items;
 
-import cn.mcarl.miars.core.utils.ItemBuilder;
+import cn.mcarl.miars.storage.utils.ItemBuilder;
 import cn.mcarl.miars.core.utils.easyitem.AbstractItem;
 import cn.mcarl.miars.skypvp.manager.SpawnManager;
 import org.bukkit.Material;

@@ -6,23 +6,24 @@ import cn.mcarl.miars.practiceffa.entity.GamePlayer;
 import cn.mcarl.miars.practiceffa.manager.*;
 import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
+import cn.mcarl.miars.storage.entity.ffa.FKit;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
-import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.practiceffa.MiarsPracticeFFA;
 import cn.mcarl.miars.practiceffa.conf.PluginConfig;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
+import cn.mcarl.miars.storage.storage.data.practice.FKitDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.FPlayerDataStorage;
 import cn.mcarl.miars.practiceffa.ui.BlockGUI;
 import cn.mcarl.miars.practiceffa.utils.FFAUtil;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
+import cn.mcarl.miars.storage.storage.data.practice.RankScoreDataStorage;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -32,8 +33,6 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Date;
-import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * @Author: carl0
@@ -53,6 +52,7 @@ public class PlayerListener implements Listener {
 
         // 初始化数据
         GamePlayer gamePlayer = GamePlayer.get(player);
+        PracticeQueueDataStorage.getInstance().init();
 
         // 初始化玩家记分板
         ScoreBoardManager.getInstance().joinPlayer(player);
@@ -69,6 +69,23 @@ public class PlayerListener implements Listener {
         player.sendMessage(ColorParser.parse("&e┃ &7To quick play,right click your sword."));
         player.sendMessage(ColorParser.parse("&e┃ &7To edit a kit,right click with your book."));
         player.sendMessage(ColorParser.parse("&r"));
+
+
+        for (FKitType ft:FKitType.values()) {
+            // 初始化Kit
+            if (FKitDataStorage.getInstance().getFKitData(player.getUniqueId(),ft).size()==0) {
+                FKitDataStorage.getInstance().putFKitData(new FKit(
+                        null,
+                        player.getUniqueId().toString(),
+                        ft,
+                        "Default",
+                        FFAUtil.getFI(ft),
+                        0,
+                        null,
+                        new Date(System.currentTimeMillis())
+                ));
+            }
+        }
     }
 
     @EventHandler
@@ -84,6 +101,7 @@ public class PlayerListener implements Listener {
 
         // 移出玩家队列
         PracticeQueueDataStorage.getInstance().removeQueue(player.getName());
+        RankScoreDataStorage.getInstance().clearUserCacheData(player.getUniqueId(),1);
     }
 
     @EventHandler
@@ -183,16 +201,11 @@ public class PlayerListener implements Listener {
 
             deathPlayer.getInventory().clear();
             FPlayer deathFPlayer = FPlayerDataStorage.getInstance().getFPlayer(deathPlayer);
-            deathFPlayer.setDeathCount(deathFPlayer.getDeathCount()+1);
-            deathFPlayer.setUpdateTime(new Date(System.currentTimeMillis()));
-            FPlayerDataStorage.getInstance().putFPlayer(deathFPlayer);
+            deathFPlayer.addDeathCount();
 
             if (attackPlayer!=null){
                 FPlayer attackFPlayer = FPlayerDataStorage.getInstance().getFPlayer(attackPlayer);
-                attackFPlayer.setKillsCount(attackFPlayer.getKillsCount()+1);
-                attackFPlayer.setUpdateTime(new Date(System.currentTimeMillis()));
-                FPlayerDataStorage.getInstance().putFPlayer(attackFPlayer);
-                FFAUtil.initializePlayer(attackPlayer);
+                attackFPlayer.addKillsCount();
             }
         }
 

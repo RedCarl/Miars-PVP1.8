@@ -4,29 +4,22 @@ import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
 import cc.carm.lib.easyplugin.utils.ColorParser;
-import cn.mcarl.miars.core.utils.GUIUtils;
+import cn.mcarl.miars.core.publics.GUIUtils;
 import cn.mcarl.miars.core.utils.jsonmessage.JSONMessage;
 import cn.mcarl.miars.practiceffa.MiarsPracticeFFA;
 import cn.mcarl.miars.practiceffa.entity.GamePlayer;
-import cn.mcarl.miars.practiceffa.kits.BuildUHC;
-import cn.mcarl.miars.practiceffa.kits.FFAGame;
-import cn.mcarl.miars.practiceffa.kits.NoDeBuff;
-import cn.mcarl.miars.storage.entity.ffa.FInventory;
-import cn.mcarl.miars.storage.entity.ffa.FKit;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.entity.practice.Duel;
-import cn.mcarl.miars.storage.storage.data.practice.FKitDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.FPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeGameDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
-import cn.mcarl.miars.storage.enums.practice.FKitType;
-import cn.mcarl.miars.storage.enums.practice.QueueType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.QueueType;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.Date;
 import java.util.List;
 
 /**
@@ -53,7 +46,7 @@ public class SelectPracticeGUI extends GUI {
                     cancel();
                 }
 
-                setNODeBuffItem(queueType,duel);
+                setItem(queueType,duel);
 
                 updateView();
             }
@@ -69,33 +62,15 @@ public class SelectPracticeGUI extends GUI {
 
     }
 
-    public void setNODeBuffItem(QueueType queueType,Player duel){
+    public void setItem(QueueType queueType,Player duel){
         int i = 10;
         for (FKitType ft:FKitType.values()) {
-            if (ft==FKitType.PRACTICE || ft==FKitType.FFAGAME){
-                continue;
-            }
             setItem(i,new GUIItem(CommunityGUIItem.getPracticeTypeItem(player,ft, queueType)){
                 @Override
                 public void onClick(Player clicker, ClickType type) {
 
                     // 初始化背包
                     GamePlayer.get(player).initData();
-
-                    // 初始化Kit
-                    if (FKitDataStorage.getInstance().getFKitData(player.getUniqueId(),ft).size()==0) {
-                        FKitDataStorage.getInstance().putFKitData(new FKit(
-                                null,
-                                player.getUniqueId().toString(),
-                                ft,
-                                "Default",
-                                getFI(ft),
-                                0,
-                                null,
-                                new Date(System.currentTimeMillis())
-
-                        ));
-                    }
 
                     if (duel==null){
                         // 开始匹配
@@ -139,25 +114,6 @@ public class SelectPracticeGUI extends GUI {
             i++;
         }
     }
-
-
-    public FInventory getFI(FKitType ft){
-        switch (ft){
-            case FFAGAME -> {
-                return FFAGame.get();
-            }
-            case NO_DEBUFF -> {
-                return NoDeBuff.get();
-            }
-            case BUILD_UHC -> {
-                return BuildUHC.get();
-            }
-        }
-
-        return null;
-    }
-
-
 
     public static void open(Player player,QueueType queueType,Player duel) {
 

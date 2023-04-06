@@ -1,9 +1,9 @@
 package cn.mcarl.miars.practiceffa.kits;
 
 import cn.mcarl.miars.core.publics.items.GoldHead;
-import cn.mcarl.miars.core.utils.ItemBuilder;
+import cn.mcarl.miars.storage.utils.ItemBuilder;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
-import cn.mcarl.miars.storage.enums.practice.FKitType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;

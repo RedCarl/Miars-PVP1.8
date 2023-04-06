@@ -5,8 +5,8 @@ import cn.mcarl.miars.practice.conf.PluginConfig;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.entity.practice.Duel;
 import cn.mcarl.miars.storage.entity.practice.QueueInfo;
-import cn.mcarl.miars.storage.enums.practice.FKitType;
-import cn.mcarl.miars.storage.enums.practice.QueueType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.QueueType;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaStateDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -33,6 +33,7 @@ public class QueueManager {
         new BukkitRunnable() {
             @Override
             public void run() {
+                rankTick();
                 unRankTick();
                 duelTick();
             }
@@ -48,6 +49,27 @@ public class QueueManager {
                     players.add(s);
                     if (players.size()==2){
                         ArenaManager.getInstance().allotArena(players.get(0),players.get(1),state,QueueType.UNRANKED);
+
+                        PracticeQueueDataStorage.getInstance().removeQueue(players.get(0));
+                        PracticeQueueDataStorage.getInstance().removeQueue(players.get(1));
+
+                        players.clear();
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public void rankTick(){
+        for (QueueInfo q: PracticeQueueDataStorage.getInstance().getQueueInfos(FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()),QueueType.RANKED)) {
+            ArenaState state = PracticeArenaStateDataStorage.getInstance().isNullArena();
+            if (state!=null){
+                List<String> players = new ArrayList<>();
+                for (String s:q.getPlayers()) {
+                    players.add(s);
+                    if (players.size()==2){
+                        ArenaManager.getInstance().allotArena(players.get(0),players.get(1),state,QueueType.RANKED);
 
                         PracticeQueueDataStorage.getInstance().removeQueue(players.get(0));
                         PracticeQueueDataStorage.getInstance().removeQueue(players.get(1));

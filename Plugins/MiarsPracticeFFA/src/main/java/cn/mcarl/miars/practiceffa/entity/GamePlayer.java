@@ -12,12 +12,10 @@ import cn.mcarl.miars.practiceffa.manager.GamePlayerManager;
 import cn.mcarl.miars.practiceffa.utils.FFAUtil;
 import cn.mcarl.miars.storage.entity.ffa.FCombatInfo;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
-import cn.mcarl.miars.storage.entity.ffa.FKit;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.storage.entity.practice.QueueInfo;
-import cn.mcarl.miars.storage.enums.practice.FKitType;
-import cn.mcarl.miars.storage.enums.practice.QueueType;
-import cn.mcarl.miars.storage.storage.data.practice.FKitDataStorage;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.QueueType;
 import cn.mcarl.miars.storage.storage.data.practice.FPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
 import lombok.AllArgsConstructor;
@@ -25,8 +23,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -86,14 +82,7 @@ public class GamePlayer {
         }else {
             this.practiceBackpack = PracticeBackpack.FFA;
            if (this.fInventory==null){
-               List<FKit> fKitList = FKitDataStorage.getInstance().getFKitData(this.fPlayer.getUuid(),FKitType.FFAGAME);
-
-               // 如果数据库中没有，就选默认的
-               if (fKitList.size()!=0){
-                   this.fInventory = fKitList.get(0).getInventory();
-               }else {
-                   this.fInventory = FFAGame.get();
-               }
+               this.fInventory = FFAGame.get();
 
                FFAUtil.autoEquip(player,this.fInventory);
                FFAUtil.initializePlayer(player);

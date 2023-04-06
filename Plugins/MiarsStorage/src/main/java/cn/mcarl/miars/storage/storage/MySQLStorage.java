@@ -9,23 +9,23 @@ import cn.mcarl.miars.storage.entity.ffa.FInventoryByte;
 import cn.mcarl.miars.storage.entity.ffa.FKit;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.storage.entity.practice.PlayerState;
+import cn.mcarl.miars.storage.entity.practice.RankScore;
 import cn.mcarl.miars.storage.entity.serverInfo.ServerInfo;
 import cn.mcarl.miars.storage.entity.serverMenu.ServerMenuItem;
 import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.entity.serverNpc.ServerNPC;
 import cn.mcarl.miars.storage.entity.skypvp.SPlayer;
-import cn.mcarl.miars.storage.enums.practice.FKitType;
-import cn.mcarl.miars.storage.enums.practice.QueueType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.QueueType;
+import cn.mcarl.miars.storage.entity.vault.VaultStorage;
 import cn.mcarl.miars.storage.utils.BukkitUtils;
 import cn.mcarl.miars.storage.utils.DatabaseTable;
 import com.alibaba.fastjson.JSONArray;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,6 +45,7 @@ public class MySQLStorage {
 	DatabaseTable mRankDataTable;
 
 	DatabaseTable vaultDataTable;
+	DatabaseTable rankScoreDataTable;
 
 	DatabaseTable fPlayerDataTable;
 	DatabaseTable fKitDataTable;
@@ -59,7 +60,7 @@ public class MySQLStorage {
 
 	DatabaseTable skyPvpDataTable;
 
-	private Gson gson = new Gson();
+	private final Gson gson = new Gson();
 
 	public boolean initialize() {
 
@@ -101,6 +102,18 @@ public class MySQLStorage {
 					});
 			getVaultDataTable().createTable(sqlManager);
 
+			// 竞技场排位分数
+			this.rankScoreDataTable = new DatabaseTable(
+					PluginConfig.DATABASE.TABLE_NAME.get()+"_practice_rank_score",
+					new String[]{
+							"`id` int(11) NOT NULL AUTO_INCREMENT", // 编号
+							"`uuid` VARCHAR(36) NOT NULL", // 用户的UUID
+							"`season` int(255) DEFAULT '0'",
+							"`score` bigint(20) DEFAULT '0'",
+							"PRIMARY KEY (`id`)", // 主键
+					});
+			getRankScoreDataTable().createTable(sqlManager);
+
 			// 服务器头衔信息
 			this.mRankDataTable = new DatabaseTable(
 					PluginConfig.DATABASE.TABLE_NAME.get()+"_mRank",
@@ -127,9 +140,6 @@ public class MySQLStorage {
 							"`uuid` varchar(255) NOT NULL",
 							"`kills_count` bigint(20) DEFAULT '0'",
 							"`death_count` bigint(20) DEFAULT '0'",
-							"`rank_score` bigint(20) DEFAULT '0'",
-							"`update_time` DATE", // 更新时间
-							"`create_time` DATE", // 创建时间
 							"PRIMARY KEY (`uuid`) USING BTREE"
 					});
 			getFPlayerDataTable().createTable(sqlManager);
@@ -203,7 +213,7 @@ public class MySQLStorage {
 							"`slot` int(11) DEFAULT NULL",
 							"`click_type` varchar(255) DEFAULT NULL",
 							"`type` varchar(255) DEFAULT NULL",
-							"`value` varchar(255) DEFAULT NULL",
+							"`value` longtext",
 							"PRIMARY KEY (`id`)"
 					});
 			getServerMenuDataTable().createTable(sqlManager);
@@ -256,12 +266,12 @@ public class MySQLStorage {
 			this.skyPvpDataTable = new DatabaseTable(
 					PluginConfig.DATABASE.TABLE_NAME.get() + "_skypvp",
 					new String[]{
-							"`uuid` int(11) NOT NULL",
+							"`uuid` varchar(255) NOT NULL",
 							"`name` varchar(255) DEFAULT NULL",
 							"`killsCount` bigint(20) DEFAULT NULL",
 							"`deathCount` bigint(20) DEFAULT NULL",
 							"`exp` bigint(20) DEFAULT NULL",
-							"`coin` bigint(20) DEFAULT NULL",
+							"`lucky` bigint(20) DEFAULT NULL",
 							"PRIMARY KEY (`uuid`)"
 					});
 			getSkyPvpDataTable().createTable(sqlManager);
@@ -279,13 +289,6 @@ public class MySQLStorage {
 		MiarsStorage.getInstance().log("	关闭 MySQL 数据库连接...");
 		EasySQL.shutdownManager(getSQLManager());
 	}
-
-
-
-
-
-
-
 
 
 	public void replaceMPlayer(@NotNull MPlayer data) throws Exception {
@@ -387,8 +390,8 @@ public class MySQLStorage {
 
 	public void replaceFPlayerData(@NotNull FPlayer data) throws Exception {
 		getSQLManager().createReplace(getFPlayerDataTable().getTableName())
-				.setColumnNames("uuid", "kills_count", "death_count", "rank_score", "update_time", "create_time")
-				.setParams(data.getUuid(), data.getKillsCount(), data.getDeathCount(), data.getRankScore(), data.getUpdateTime(), data.getCreateTime())
+				.setColumnNames("uuid", "kills_count", "death_count")
+				.setParams(data.getUuid(), data.getKillsCount(), data.getDeathCount())
 				.execute();
 	}
 
@@ -405,9 +408,6 @@ public class MySQLStorage {
 								data.setUuid(UUID.fromString(result.getString("uuid")));
 								data.setKillsCount(result.getLong("kills_count"));
 								data.setDeathCount(result.getLong("death_count"));
-								data.setRankScore(result.getLong("rank_score"));
-								data.setUpdateTime(result.getDate("update_time"));
-								data.setCreateTime(result.getDate("create_time"));
 								return data;
 							}
 							return null;
@@ -877,7 +877,7 @@ public class MySQLStorage {
 								data.setKillsCount(result.getLong("killsCount"));
 								data.setDeathCount(result.getLong("deathCount"));
 								data.setExp(result.getLong("exp"));
-								data.setCoin(result.getLong("coin"));
+								data.setLucky(result.getLong("lucky"));
 								return data;
 							}
 							return null;
@@ -890,20 +890,21 @@ public class MySQLStorage {
 
 	public void replaceSkyPvp(@NotNull SPlayer data) throws Exception {
 		getSQLManager().createReplace(getSkyPvpDataTable().getTableName())
-				.setColumnNames("uuid", "name", "killsCount", "deathCount", "exp", "coin")
+				.setColumnNames("uuid", "name", "killsCount", "deathCount", "exp", "lucky")
 				.setParams(
 						data.getUuid().toString(),
 						data.getName(),
 						data.getKillsCount(),
 						data.getDeathCount(),
 						data.getExp(),
-						data.getCoin())
+						data.getLucky()
+				)
 				.execute();
 	}
 
 
 
-	public VaultStorage queryVault(@NotNull UUID uuid,String key) {
+	public VaultStorage queryVault(@NotNull UUID uuid, String key) {
 		return getSQLManager().createQuery()
 				.inTable(getVaultDataTable().getTableName())
 				.addCondition("uuid", uuid.toString())
@@ -935,6 +936,44 @@ public class MySQLStorage {
 						data.getUuid().toString(),
 						data.getKey(),
 						data.getValue()
+				)
+				.execute();
+	}
+
+
+
+	public RankScore queryRankScore(@NotNull UUID uuid, Integer season) {
+		return getSQLManager().createQuery()
+				.inTable(getRankScoreDataTable().getTableName())
+				.addCondition("uuid", uuid.toString())
+				.addCondition("season", season)
+				.build()
+				.execute(
+						(query) -> {
+							ResultSet result = query.getResultSet();
+
+							RankScore rankScore = new RankScore();
+							if (result != null && result.next()) {
+								rankScore.setId(result.getInt("id"));
+								rankScore.setUuid(UUID.fromString(result.getString("uuid")));
+								rankScore.setSeason(result.getInt("season"));
+								rankScore.setScore(result.getLong("score"));
+								return rankScore;
+							}
+							return null;
+						},
+						((exception, sqlAction) -> { /*SQL异常处理-SQLExceptionHandler*/ })
+				);
+	}
+
+	public void replaceRankScore(@NotNull RankScore data) throws Exception {
+		getSQLManager().createReplace(getRankScoreDataTable().getTableName())
+				.setColumnNames("id", "uuid", "season", "score")
+				.setParams(
+						data.getId(),
+						data.getUuid().toString(),
+						data.getSeason(),
+						data.getScore()
 				)
 				.execute();
 	}
@@ -981,6 +1020,9 @@ public class MySQLStorage {
 	}
 	public DatabaseTable getVaultDataTable() {
 		return vaultDataTable;
+	}
+	public DatabaseTable getRankScoreDataTable() {
+		return rankScoreDataTable;
 	}
 
 }

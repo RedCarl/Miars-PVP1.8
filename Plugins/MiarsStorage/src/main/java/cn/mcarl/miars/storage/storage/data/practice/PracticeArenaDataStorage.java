@@ -2,7 +2,7 @@ package cn.mcarl.miars.storage.storage.data.practice;
 
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.practice.Arena;
-import cn.mcarl.miars.storage.enums.practice.FKitType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
 
 import java.util.List;
 

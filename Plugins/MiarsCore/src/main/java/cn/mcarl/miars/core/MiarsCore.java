@@ -3,6 +3,7 @@ package cn.mcarl.miars.core;
 import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.command.MiarsCommand;
+import cn.mcarl.miars.core.command.MoneyCommand;
 import cn.mcarl.miars.core.hooker.MiarsEconomy;
 import cn.mcarl.miars.core.hooker.PAPIExpansion;
 import cn.mcarl.miars.core.listener.CitizensListener;
@@ -157,6 +158,7 @@ public class MiarsCore extends JavaPlugin {
 
         log("正在注册指令...");
         regCommand("Miars",new MiarsCommand());
+        regCommand("Money",new MoneyCommand());
 
         log("正在初始化 NPC 模块...");
         CitizensManager.getInstance().init();

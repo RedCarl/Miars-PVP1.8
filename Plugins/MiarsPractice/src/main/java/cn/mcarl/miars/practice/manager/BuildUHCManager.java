@@ -3,15 +3,11 @@ package cn.mcarl.miars.practice.manager;
 import cn.mcarl.miars.practice.conf.PluginConfig;
 import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
-import cn.mcarl.miars.storage.enums.practice.FKitType;
-import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaStateDataStorage;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerEvent;
 
 import java.util.*;
 

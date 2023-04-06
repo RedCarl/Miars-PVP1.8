@@ -9,22 +9,19 @@ import cn.mcarl.miars.practice.conf.PluginConfig;
 import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.entity.practice.PlayerState;
-import cn.mcarl.miars.storage.enums.practice.FKitType;
-import cn.mcarl.miars.storage.enums.practice.QueueType;
-import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaDataStorage;
-import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaStateDataStorage;
-import cn.mcarl.miars.storage.storage.data.practice.PracticeDailyStreakDataStorage;
-import cn.mcarl.miars.storage.storage.data.practice.PracticeGameDataStorage;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.QueueType;
+import cn.mcarl.miars.storage.storage.data.practice.*;
 import cn.mcarl.miars.storage.utils.BukkitUtils;
 import cn.mcarl.miars.utils.WorldUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class ArenaManager {
 
@@ -77,6 +74,23 @@ public class ArenaManager {
         ServerManager.getInstance().sendPlayerToServer(a,cn.mcarl.miars.core.conf.PluginConfig.SERVER_INFO.NAME.get());
         ServerManager.getInstance().sendPlayerToServer(b,cn.mcarl.miars.core.conf.PluginConfig.SERVER_INFO.NAME.get());
 
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                // 比赛开始提示
+                if (
+                        (Bukkit.getPlayer(state.getPlayerA()) !=null &&
+                                Bukkit.getPlayer(state.getPlayerA()).isOnline()) &&
+                                (Bukkit.getPlayer(state.getPlayerB()) != null &&
+                                        Bukkit.getPlayer(state.getPlayerB()).isOnline())
+                ){
+                    readyGame(state);
+                    cancel();
+                }
+            }
+        }.runTaskTimer(MiarsPractice.getInstance(),0,20);
+
         return getArenaById(state);
     }
 
@@ -89,6 +103,62 @@ public class ArenaManager {
         }
 
         return null;
+    }
+
+    /**
+     * 游戏准备
+     */
+    public void readyGame(ArenaState state){
+        PracticeArenaStateDataStorage.getInstance().getArenaStateById(state).setState(ArenaState.State.READY);
+        PracticeArenaStateDataStorage.getInstance().updateRedis(PluginConfig.PRACTICE_SITE.MODE.get());
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 5; i++) {
+                    try {
+                        Player a = Bukkit.getPlayer(state.getPlayerA());
+                        Player b = Bukkit.getPlayer(state.getPlayerB());
+
+                        if (a!=null && a.isOnline()){
+                            if (b!=null && b.isOnline()){
+                                JSONMessage.create(ColorParser.parse("&7比赛将在 &c"+(5-i)+" &7秒后正式开始..."))
+                                        .send(a,b);
+
+                                a.playSound(a.getLocation(), Sound.NOTE_PLING,1,1);
+                                b.playSound(b.getLocation(),Sound.NOTE_PLING,1,1);
+                                if (i == 4){
+                                    ArenaManager.getInstance().startGame(state);
+                                    JSONMessage.create(ColorParser.parse("&7比赛开始，祝你好运！"))
+                                            .send(a,b);
+                                    a.playSound(a.getLocation(),Sound.ORB_PICKUP,1,1);
+                                    b.playSound(b.getLocation(),Sound.ORB_PICKUP,1,1);
+                                    break;
+                                }
+                            }else {
+                                endGame(a,b);
+                            }
+                        }else {
+                            endGame(b,a);
+                        }
+
+
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+                cancel();
+            }
+        }.runTaskAsynchronously(MiarsPractice.getInstance());
+    }
+
+    /**
+     * 游戏开始
+     */
+    public void startGame(ArenaState state){
+        PracticeArenaStateDataStorage.getInstance().getArenaStateById(state).setState(ArenaState.State.GAME);
+        PracticeArenaStateDataStorage.getInstance().updateRedis(PluginConfig.PRACTICE_SITE.MODE.get());
     }
 
     /**
@@ -112,17 +182,17 @@ public class ArenaManager {
             state.setAFInventory(BukkitUtils.ItemStackConvertByte(ToolUtils.playerToFInv(fail, FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()))));
             state.setPlayerStateA(
                     new PlayerState(
-                            fail.getHealth(),
+                            Double.parseDouble(ToolUtils.decimalFormat(fail.getHealth(), 2)),
                             fail.getFoodLevel(),
                             cn.mcarl.miars.storage.utils.ToolUtils.potionEffectToString(
-                                    new ArrayList<>(win.getActivePotionEffects())
+                                    new ArrayList<>(fail.getActivePotionEffects())
                             )
                     )
             );
             state.setBFInventory(BukkitUtils.ItemStackConvertByte(ToolUtils.playerToFInv(win, FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()))));
             state.setPlayerStateB(
                     new PlayerState(
-                            win.getHealth(),
+                            Double.parseDouble(ToolUtils.decimalFormat(win.getHealth(), 2)),
                             win.getFoodLevel(),
                             cn.mcarl.miars.storage.utils.ToolUtils.potionEffectToString(
                                     new ArrayList<>(win.getActivePotionEffects())
@@ -133,7 +203,7 @@ public class ArenaManager {
             state.setAFInventory(BukkitUtils.ItemStackConvertByte(ToolUtils.playerToFInv(win, FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()))));
             state.setPlayerStateA(
                     new PlayerState(
-                            win.getHealth(),
+                            Double.parseDouble(ToolUtils.decimalFormat(win.getHealth(), 2)),
                             win.getFoodLevel(),
                             cn.mcarl.miars.storage.utils.ToolUtils.potionEffectToString(
                                     new ArrayList<>(win.getActivePotionEffects())
@@ -143,10 +213,10 @@ public class ArenaManager {
             state.setBFInventory(BukkitUtils.ItemStackConvertByte(ToolUtils.playerToFInv(fail, FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()))));
             state.setPlayerStateB(
                     new PlayerState(
-                            fail.getHealth(),
+                            Double.parseDouble(ToolUtils.decimalFormat(fail.getHealth(), 2)),
                             fail.getFoodLevel(),
                             cn.mcarl.miars.storage.utils.ToolUtils.potionEffectToString(
-                                    new ArrayList<>(win.getActivePotionEffects())
+                                    new ArrayList<>(fail.getActivePotionEffects())
                             )
                     )
             );
@@ -179,6 +249,10 @@ public class ArenaManager {
                 .then(ColorParser.parse("\n&r"))
                 .send(win,fail);
 
+        if (state.getQueueType()==QueueType.RANKED){
+            RankScoreDataStorage.getInstance().scoreOperation(win,fail);
+        }
+
         // 5秒过后将玩家送出竞技场
         new BukkitRunnable() {
             @Override
@@ -197,32 +271,22 @@ public class ArenaManager {
             }
         }.runTaskLaterAsynchronously(MiarsPractice.getInstance(),100);
 
-        // 清除失败者的背包
+
         fail.getInventory().clear();
         fail.getInventory().setItem(39,null);
         fail.getInventory().setItem(38,null);
         fail.getInventory().setItem(37,null);
         fail.getInventory().setItem(36,null);
 
+        win.getInventory().clear();
+        win.getInventory().setItem(39,null);
+        win.getInventory().setItem(38,null);
+        win.getInventory().setItem(37,null);
+        win.getInventory().setItem(36,null);
+
         // 更新房间信息为 游戏结束。
         PracticeArenaStateDataStorage.getInstance().getArenaStateById(state).setState(ArenaState.State.END);
     }
-
-    /**
-     * 游戏准备
-     */
-    public void readyGame(ArenaState state){
-        PracticeArenaStateDataStorage.getInstance().getArenaStateById(state).setState(ArenaState.State.READY);
-    }
-
-
-    /**
-     * 游戏开始
-     */
-    public void startGame(ArenaState state){
-        PracticeArenaStateDataStorage.getInstance().getArenaStateById(state).setState(ArenaState.State.GAME);
-    }
-
     public void clear(){
         PracticeArenaStateDataStorage.getInstance().setArenaStateRedisList(new ArrayList<>(),PluginConfig.PRACTICE_SITE.MODE.get());
     }

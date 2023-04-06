@@ -2,22 +2,22 @@ package cn.mcarl.miars.core.command;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.manager.CitizensManager;
-import cn.mcarl.miars.core.manager.ServerManager;
 import cn.mcarl.miars.core.ui.OpenInvGUI;
 import cn.mcarl.miars.core.ui.ServerMenuGUI;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
-import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeGameDataStorage;
 import cn.mcarl.miars.storage.storage.data.serverInfo.ServerInfoDataStorage;
 import cn.mcarl.miars.storage.storage.data.serverMenu.ServerMenuDataStorage;
 import cn.mcarl.miars.storage.storage.data.serverNpc.ServerNpcDataStorage;
-import cn.mcarl.miars.storage.utils.BukkitUtils;
-import org.bukkit.Bukkit;
+import cn.mcarl.miars.storage.utils.ItemBuilder;
+import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -113,7 +113,36 @@ public class MiarsCommand implements CommandExecutor, TabCompleter {
                     }
                 }
             }
+            case "tojson" -> {
+                if (sender instanceof Player player){
 
+                    if (!player.hasPermission("group.admin")){
+                        return false;
+                    }
+
+                    ItemStack itemStack = player.getItemInHand();
+
+                    Gson gson = new Gson();
+
+                    System.out.println(
+                            gson.toJson(ItemBuilder.write(itemStack))
+                    );
+                }
+            }
+            case "totype" -> {
+                if (sender instanceof Player player){
+
+                    if (!player.hasPermission("group.admin")){
+                        return false;
+                    }
+
+                    ItemStack itemStack = player.getItemInHand();
+
+                    System.out.println(
+                            itemStack.getType().name()
+                    );
+                }
+            }
             default -> {
                 return helpConsole(sender);
             }

@@ -9,6 +9,7 @@ import cn.mcarl.miars.storage.entity.MRank;
 import cn.mcarl.miars.storage.entity.MServerInfo;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -28,6 +29,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
 			"%MiarsCore_suffix_<player>%",
 			"%MiarsCore_nameColor%",
 			"%MiarsCore_nameColor_<player>%",
+			"%MiarsCore_name_<papi>%",
 			"%MiarsCore_server_code%",
 			"%MiarsCore_online_<server>%"
 	);
@@ -135,6 +137,17 @@ public class PAPIExpansion extends PlaceholderExpansion {
 				if (args.length==2) {
 					String server = args[1].toLowerCase();
 					return String.valueOf(ServerManager.getInstance().getServerOnline(server));
+				}
+				return "ERROR";
+			}
+			case "name" -> {
+				if (args.length==2) {
+					String papi = "%"+(args[1].toLowerCase().replace("-","_"))+"%";
+					String name = PlaceholderAPI.setPlaceholders(player,papi);
+					OfflinePlayer p = Bukkit.getOfflinePlayer(name);
+					MPlayer var = MPlayerDataStorage.getInstance().getMPlayer(p);
+					MRank var1 = MRankDataStorage.getInstance().getMRank(var.getRank());
+					return ColorParser.parse(var1.getNameColor()+name);
 				}
 				return "ERROR";
 			}

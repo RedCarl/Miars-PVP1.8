@@ -37,11 +37,11 @@ public class BlockListener implements Listener {
                 switch (block.getType()){
                     case IRON_ORE -> {
                         block.setType(Material.AIR);
-                        block.getLocation().getWorld().dropItem(block.getLocation(),new ItemStack(Material.IRON_INGOT));
+                        block.getLocation().getWorld().dropItemNaturally(block.getLocation(),new ItemStack(Material.IRON_INGOT));
                     }
                     case GOLD_ORE -> {
                         block.setType(Material.AIR);
-                        block.getLocation().getWorld().dropItem(block.getLocation(),new ItemStack(Material.GOLD_INGOT));
+                        block.getLocation().getWorld().dropItemNaturally(block.getLocation(),new ItemStack(Material.GOLD_INGOT));
                     }
                 }
             }

@@ -1,10 +1,12 @@
 package cn.mcarl.miars.skypvp.manager;
 
 import cn.mcarl.miars.skypvp.MiarsSkyPVP;
+import cn.mcarl.miars.skypvp.entitiy.GamePlayer;
 import cn.mcarl.miars.skypvp.entitiy.LuckyBlock;
 import cn.mcarl.miars.skypvp.enums.LuckBlockType;
 import cn.mcarl.miars.skypvp.utils.RotatingHead;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -82,7 +84,11 @@ public class LuckyManager {
         meta.setLore(new ArrayList<>());
         i.setItemMeta(meta);
         // 给予玩家物品
-        player.getWorld().dropItem(stand.getLocation(),i);
+        player.getWorld().dropItemNaturally(stand.getLocation(),i);
+
+        player.playSound(player.getLocation(), Sound.ORB_PICKUP,1,1);
+
+        GamePlayer.get(player).addLucky(1L);
     }
 
     public void spawnBlock(Location l,LuckBlockType type){

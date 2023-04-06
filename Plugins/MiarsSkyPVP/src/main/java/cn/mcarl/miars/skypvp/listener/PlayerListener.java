@@ -1,6 +1,9 @@
 package cn.mcarl.miars.skypvp.listener;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.core.MiarsCore;
+import cn.mcarl.miars.core.utils.MiarsUtil;
+import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.skypvp.MiarsSkyPVP;
 import cn.mcarl.miars.skypvp.conf.PluginConfig;
 import cn.mcarl.miars.skypvp.entitiy.GamePlayer;
@@ -17,9 +20,11 @@ import cn.mcarl.miars.storage.entity.ffa.FCombatInfo;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
 import cn.mcarl.miars.storage.storage.data.skypvp.SkyPVPDataStorage;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -28,22 +33,23 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.github.paperspigot.Title;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerListener implements Listener {
 
     @EventHandler
     public void PlayerInteractAtEntityEvent(PlayerInteractAtEntityEvent e){
+        Player player = e.getPlayer();
         if (e.getRightClicked() instanceof ArmorStand stand){
             if (stand.getCustomName().contains("miars_lucky")){
                 e.setCancelled(true);
+
+                LuckyManager.getInstance().useBlock(stand,player);
             }
         }
     }
@@ -59,6 +65,16 @@ public class PlayerListener implements Listener {
                     LuckyManager.getInstance().useBlock(stand,player);
                 }
             }
+        }
+
+        // 移除回城
+        if (e.getFrom().getZ() != e.getTo().getZ() && e.getFrom().getX() != e.getTo().getX()) {
+            SpawnManager.getInstance().remove(player);
+        }
+
+        // 掉入虚空秒死
+        if (player.getLocation().getY()<0){
+            player.damage(player.getMaxHealth()*9999,player.getKiller());
         }
 
         // 是否在安全区
@@ -77,24 +93,13 @@ public class PlayerListener implements Listener {
         }else {
             protectedRegion.put(player.getUniqueId(),PlayerUtils.isProtectedRegion(player));
         }
-
-
-        // 移除回城
-        if (e.getFrom().getZ() != e.getTo().getZ() && e.getFrom().getX() != e.getTo().getX()) {
-            SpawnManager.getInstance().remove(player);
-        }
-
-        // 掉入虚空秒死
-        if (player.getLocation().getY()<0){
-            player.damage(player.getMaxHealth(),player.getKiller());
-        }
     }
 
     @EventHandler
     public void PlayerJoinEvent(PlayerJoinEvent e){
         Player player = e.getPlayer();
 
-        if (!SkyPVPDataStorage.getInstance().checkSPlayer(player)){
+        if (!SkyPVPDataStorage.getInstance().checkSPlayer(player) || PlayerUtils.isNullInv(player)){
             PlayerUtils.initializePlayer(player);
         }else {
             new SpawnSlimeball().give(player,8);
@@ -111,7 +116,7 @@ public class PlayerListener implements Listener {
         Player player = e.getPlayer();
         ScoreBoardManager.getInstance().removePlayer(player);
         if (CombatManager.getInstance().isCombat(player)){
-            player.damage(player.getMaxHealth(),player.getKiller());
+            player.damage(player.getMaxHealth()*9999,player.getKiller());
         }
     }
 
@@ -129,7 +134,9 @@ public class PlayerListener implements Listener {
         if (e.getEntity() instanceof Player entity){ // 被攻击者
             if (CitizensAPI.getNPCRegistry().isNPC(entity)){e.setCancelled(true);return;};
             if (e.getDamager() instanceof Player player){// 攻击者
+
                 if (CitizensAPI.getNPCRegistry().isNPC(player)){e.setCancelled(true);return;};
+
                 if (PlayerUtils.isProtectedRegion(player) || PlayerUtils.isProtectedRegion(entity)){
                     e.setCancelled(true);
                     e.setDamage(0);
@@ -137,13 +144,26 @@ public class PlayerListener implements Listener {
                     CombatManager.getInstance().start(entity,player.getUniqueId().toString(),30);
                     CombatManager.getInstance().start(player,entity.getUniqueId().toString(),30);
                 }
+
+
+                if (entity instanceof ArmorStand stand){// 幸运方块
+                    LuckyManager.getInstance().useBlock(stand,player);
+                }
             }
-            if (e.getDamager() instanceof Arrow arrow){// 攻击者
+            if (e.getDamager() instanceof Arrow arrow){// 箭
                 ProjectileSource shooter = arrow.getShooter();
                 checkDamager(shooter,entity,e);
             }
-            if (e.getDamager() instanceof Snowball snowball){// 攻击者
+            if (e.getDamager() instanceof Snowball snowball){// 雪球
                 ProjectileSource shooter = snowball.getShooter();
+                checkDamager(shooter,entity,e);
+            }
+            if (e.getDamager() instanceof Egg egg){// 鸡蛋
+                ProjectileSource shooter = egg.getShooter();
+                checkDamager(shooter,entity,e);
+            }
+            if (e.getDamager() instanceof FishHook fishHook){// 鱼竿
+                ProjectileSource shooter = fishHook.getShooter();
                 checkDamager(shooter,entity,e);
             }
         }
@@ -177,8 +197,9 @@ public class PlayerListener implements Listener {
                 // 结算
                 GamePlayer.get(deathPlayer).addDeathCount();
                 GamePlayer.get(attackPlayer).addKillsCount();
-                Long coin = new Random().nextLong(4)+1;
-                GamePlayer.get(attackPlayer).addCoin(coin);
+                long coin = new Random().nextLong(4)+1;
+                MiarsCore.getEcon().depositPlayer(attackPlayer,coin);
+                MiarsCore.getEcon().withdrawPlayer(deathPlayer,coin);
                 attackPlayer.sendMessage(ColorParser.parse("&6&l奖励! &7从敌人身上缴获了 &6"+coin+" &7硬币。"));
                 Long exp = new Random().nextLong(80)+20;
                 GamePlayer.get(attackPlayer).addExp(exp);
@@ -192,9 +213,19 @@ public class PlayerListener implements Listener {
             e.setDeathMessage(null);
         }
 
-        if (e.getEntity().getLocation().getY()<=0){
-            e.getDrops().clear();
+        List<ItemStack> drops = new ArrayList<>(e.getDrops());
+        Location location = e.getEntity().getLocation();
+
+        if (e.getEntity().getLocation().getY()>0){
+            for (ItemStack i:drops) {
+                NBTItem nbt = new NBTItem(i);
+                if (!nbt.getBoolean("no-drop")){
+                    location.getWorld().dropItemNaturally(location,i);
+                }
+            }
         }
+
+        e.getDrops().clear();
         e.getEntity().spigot().respawn();
     }
 

@@ -1,10 +1,13 @@
 package cn.mcarl.miars.storage.entity.ffa;
 
+import cn.mcarl.miars.storage.storage.data.practice.FPlayerDataStorage;
+import cn.mcarl.miars.storage.storage.data.practice.RankScoreDataStorage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
-import java.sql.Date;
 import java.util.UUID;
 
 @Data
@@ -24,15 +27,23 @@ public class FPlayer {
     // 死亡数量
     private Long deathCount;
 
-    // 排位分
-    private Long rankScore;
+    public Long getRankScore(Integer season){
+        return RankScoreDataStorage.getInstance().getRankScore(
+                this.uuid,
+                season
+        ).getScore();
+    }
 
-    // 更新时间
-    private Date updateTime;
+    public void addKillsCount(){
+        this.killsCount++;
+        FPlayerDataStorage.getInstance().putFPlayer(this);
+    }
+    public void addDeathCount(){
+        this.deathCount++;
+        FPlayerDataStorage.getInstance().putFPlayer(this);
+    }
 
-    // 创建时间
-    private Date createTime;
-
-
-
+    public Player getPlayer(){
+        return Bukkit.getPlayer(uuid);
+    }
 }

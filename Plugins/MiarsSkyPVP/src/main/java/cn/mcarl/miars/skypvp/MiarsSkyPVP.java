@@ -2,7 +2,7 @@ package cn.mcarl.miars.skypvp;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.skypvp.command.SkyPVPCommand;
-import cn.mcarl.miars.skypvp.entitiy.LuckyBlock;
+import cn.mcarl.miars.skypvp.hooker.PAPIExpansion;
 import cn.mcarl.miars.skypvp.listener.BlockListener;
 import cn.mcarl.miars.skypvp.listener.PlayerListener;
 import cn.mcarl.miars.skypvp.manager.*;
@@ -38,6 +38,11 @@ public class MiarsSkyPVP extends JavaPlugin {
         regListener(new PlayerListener());
         regListener(new BlockListener());
 
+        /* PlaceholderAPI Support */
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PAPIExpansion(this).register();
+        }
+
         log("正在注册指令...");
         regCommand("SkyPVP",new SkyPVPCommand());
 
@@ -52,6 +57,9 @@ public class MiarsSkyPVP extends JavaPlugin {
 
         log("正在加载幸运方块...");
         LuckyManager.getInstance().init();
+
+        log("正在加载挂机池...");
+        AfkManager.getInstance().init();
 
         log("加载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 
@@ -105,6 +113,6 @@ public class MiarsSkyPVP extends JavaPlugin {
      */
     private void showAD() {
         log("&7感谢您使用 &c&l"+getDescription().getName()+" v" + getDescription().getVersion());
-        log("&7本插件由 &c&lMCarl Studios &7提供长期支持与维护。");
+        log("&7本插件由 &c&lMiars Studios &7提供长期支持与维护。");
     }
 }

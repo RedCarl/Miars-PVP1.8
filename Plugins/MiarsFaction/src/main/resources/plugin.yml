@@ -1,0 +1,11 @@
+name: MiarsFaction
+main: cn.mcarl.miars.faction.MiarsFaction
+version: ${project.version}
+
+authors:
+  - Red_Carl
+
+api-version: 1.8
+
+depend:
+  - MiarsCore

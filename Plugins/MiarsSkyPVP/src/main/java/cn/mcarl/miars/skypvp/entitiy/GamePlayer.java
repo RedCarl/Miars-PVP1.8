@@ -24,7 +24,7 @@ public class GamePlayer {
     public static GamePlayer get(Player player){
         return new GamePlayer(player);
     }
-    public double getKb(){
+    public double getKd(){
         return PlayerUtils.getPlayerKD(this.sPlayer);
     }
     public void addKillsCount(){
@@ -39,8 +39,8 @@ public class GamePlayer {
         this.sPlayer.setExp(this.getSPlayer().getExp()+i);
         SkyPVPDataStorage.getInstance().putSPlayer(sPlayer);
     }
-    public void addCoin(Long i){
-        this.sPlayer.setCoin(this.getSPlayer().getCoin()+i);
+    public void addLucky(Long i){
+        this.sPlayer.setLucky(this.getSPlayer().getLucky()+i);
         SkyPVPDataStorage.getInstance().putSPlayer(sPlayer);
     }
     public Integer getLevel(){

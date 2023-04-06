@@ -4,9 +4,8 @@ import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
 import cc.carm.lib.easyplugin.utils.ColorParser;
-import cn.mcarl.miars.core.MiarsCore;
-import cn.mcarl.miars.core.utils.GUIUtils;
-import cn.mcarl.miars.core.utils.ItemBuilder;
+import cn.mcarl.miars.core.publics.GUIUtils;
+import cn.mcarl.miars.storage.utils.ItemBuilder;
 import cn.mcarl.miars.core.utils.MiarsUtil;
 import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
@@ -20,9 +19,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemFlag;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class RanksGUI extends GUI {
     final Player player;
@@ -112,6 +109,8 @@ public class RanksGUI extends GUI {
                 mPlayer.setRank("default");
                 MPlayerDataStorage.getInstance().putMPlayer(mPlayer);
                 clicker.sendMessage(ColorParser.parse("&7您的头衔已经更换为默认头衔请注意查看。"));
+
+                MiarsUtil.initPlayerNametag(player,true);
 
                 load();
                 updateView();

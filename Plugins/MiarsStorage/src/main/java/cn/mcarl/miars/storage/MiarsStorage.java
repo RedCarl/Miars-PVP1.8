@@ -2,6 +2,8 @@ package cn.mcarl.miars.storage;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.storage.command.StorageCommand;
+import cn.mcarl.miars.storage.entity.serverMenu.ShopItem;
+import cn.mcarl.miars.storage.listener.PlayerListener;
 import cn.mcarl.miars.storage.manager.ConfigManager;
 import cn.mcarl.miars.storage.storage.MySQLStorage;
 import cn.mcarl.miars.storage.storage.RedisStorage;
@@ -10,6 +12,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.List;
 
 public class MiarsStorage extends JavaPlugin {
 
@@ -44,6 +48,9 @@ public class MiarsStorage extends JavaPlugin {
         log("初始化存储方式...");
         getMySQLStorage().initialize();
         getRedisStorage().initialize();
+
+        log("注册监听器...");
+        regListener(new PlayerListener());
 
         log("注册指令...");
         regCommand("Storage", new StorageCommand());

@@ -53,7 +53,7 @@ public class FPlayerDataStorage {
         if (data==null){
             try {
                 // 初始化玩家数据
-                putFPlayer(new FPlayer(player.getUniqueId(),player.getName(),0L,0L,0L,null,new Date(System.currentTimeMillis())));
+                putFPlayer(new FPlayer(player.getUniqueId(),player.getName(),0L,0L));
                 data = MiarsStorage.getMySQLStorage().queryFPlayerDataByUUID(player.getUniqueId().toString());
             } catch (Exception e) {
                 throw new RuntimeException(e);

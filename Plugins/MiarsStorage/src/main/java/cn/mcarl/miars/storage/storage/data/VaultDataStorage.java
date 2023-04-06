@@ -1,9 +1,8 @@
 package cn.mcarl.miars.storage.storage.data;
 
 import cn.mcarl.miars.storage.MiarsStorage;
-import cn.mcarl.miars.storage.entity.VaultKey;
-import cn.mcarl.miars.storage.entity.VaultStorage;
-import org.bukkit.entity.Player;
+import cn.mcarl.miars.storage.entity.vault.VaultKey;
+import cn.mcarl.miars.storage.entity.vault.VaultStorage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +62,7 @@ public class VaultDataStorage {
         return MiarsStorage.getMySQLStorage().queryVault(uuid,key)!=null;
     }
 
-    public void clearUserCacheData(UUID uuid,String key){
+    public void clearCacheData(UUID uuid,String key){
         dataMap.remove(new VaultKey(uuid, key));
     }
 

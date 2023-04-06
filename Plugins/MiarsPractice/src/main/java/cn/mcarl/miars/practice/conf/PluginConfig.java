@@ -4,7 +4,7 @@ import cc.carm.lib.configuration.core.ConfigurationRoot;
 import cc.carm.lib.configuration.core.annotation.HeaderComment;
 import cc.carm.lib.configuration.core.value.ConfigValue;
 import cc.carm.lib.configuration.core.value.type.ConfiguredValue;
-import cn.mcarl.miars.storage.enums.practice.FKitType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
 
 public class PluginConfig extends ConfigurationRoot {
 

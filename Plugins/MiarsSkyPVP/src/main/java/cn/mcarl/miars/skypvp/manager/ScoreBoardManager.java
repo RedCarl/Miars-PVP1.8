@@ -59,7 +59,7 @@ public class ScoreBoardManager {
         lines.add("&6&l┃ &f等级: "+GamePlayer.get(p).getLevelString());
         lines.add(GamePlayer.get(p).getNextLevel());
         lines.add("");
-        lines.add("&6&l┃ &f硬币: &6" + GamePlayer.get(p).getSPlayer().getCoin());
+        lines.add("&6&l┃ &f硬币: &6" + MiarsCore.getEcon().getBalance(p));
         lines.add("&6&l┃ &f金子: &e" + MiarsCore.getPpAPi().look(p.getUniqueId()));
         lines.add("");
 
@@ -80,7 +80,7 @@ public class ScoreBoardManager {
         }else {
             lines.add("&6&l┃ &f击杀: &a" + GamePlayer.get(p).getSPlayer().getKillsCount());
             lines.add("&6&l┃ &f死亡: &c" + GamePlayer.get(p).getSPlayer().getDeathCount());
-            lines.add("&6&l┃ &fK/D: &d" + GamePlayer.get(p).getKb());
+            lines.add("&6&l┃ &fK/D: &d" + GamePlayer.get(p).getKd());
         }
         lines.add("");
         lines.add("&7&o"+ ServerInfoDataStorage.getInstance().getServerInfo().getIp());

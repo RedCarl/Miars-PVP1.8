@@ -2,13 +2,13 @@ package cn.mcarl.miars.practiceffa.utils;
 
 import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.practiceffa.conf.PluginConfig;
-import cn.mcarl.miars.practiceffa.kits.FFAGame;
+import cn.mcarl.miars.practiceffa.kits.BuildUHC;
 import cn.mcarl.miars.practiceffa.kits.NoDeBuff;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.practiceffa.listener.ProtocolListener;
 import cn.mcarl.miars.practiceffa.manager.CombatManager;
-import cn.mcarl.miars.storage.enums.practice.FKitType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -369,9 +369,6 @@ public class FFAUtil {
      */
     public static FInventory getByFKitType(FKitType fKitType){
         switch (fKitType){
-            case FFAGAME -> {
-                return FFAGame.get();
-            }
             case NO_DEBUFF -> {
                 return NoDeBuff.get();
             }
@@ -387,5 +384,21 @@ public class FFAUtil {
         p.getInventory().setItem(38,null);
         p.getInventory().setItem(37,null);
         p.getInventory().setItem(36,null);
+    }
+
+
+
+
+    public static FInventory getFI(FKitType ft){
+        switch (ft){
+            case NO_DEBUFF -> {
+                return NoDeBuff.get();
+            }
+            case BUILD_UHC -> {
+                return BuildUHC.get();
+            }
+        }
+
+        return null;
     }
 }

@@ -2,8 +2,8 @@ package cn.mcarl.miars.storage.storage.data.practice;
 
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
-import cn.mcarl.miars.storage.enums.practice.FKitType;
-import cn.mcarl.miars.storage.enums.practice.QueueType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.QueueType;
 
 import java.util.List;
 

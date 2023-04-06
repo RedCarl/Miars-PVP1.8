@@ -27,6 +27,6 @@ public class SPlayer {
     // 经验
     private Long exp;
 
-    // 硬币
-    private Long coin;
+    // 开启幸运方块
+    private Long lucky;
 }

@@ -23,3 +23,7 @@ commands:
     description: "主指令"
     aliases:
       - miars
+  "Money":
+    description: "硬币"
+    aliases:
+      - money

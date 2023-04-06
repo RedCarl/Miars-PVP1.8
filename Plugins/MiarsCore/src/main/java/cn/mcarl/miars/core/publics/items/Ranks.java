@@ -1,15 +1,13 @@
 package cn.mcarl.miars.core.publics.items;
 
 import cn.mcarl.miars.core.ui.RanksGUI;
-import cn.mcarl.miars.core.ui.ServerMenuGUI;
-import cn.mcarl.miars.core.utils.ItemBuilder;
+import cn.mcarl.miars.storage.utils.ItemBuilder;
 import cn.mcarl.miars.core.utils.easyitem.AbstractItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemFlag;
 
 public class Ranks extends AbstractItem {
     public Ranks(){

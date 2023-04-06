@@ -1,11 +1,10 @@
 package cn.mcarl.miars.practiceffa.ui;
 
-import cn.mcarl.miars.core.utils.ItemBuilder;
-import cn.mcarl.miars.storage.entity.practice.ArenaState;
+import cn.mcarl.miars.storage.utils.ItemBuilder;
 import cn.mcarl.miars.storage.entity.practice.DailyStreak;
 import cn.mcarl.miars.storage.entity.practice.QueueInfo;
-import cn.mcarl.miars.storage.enums.practice.FKitType;
-import cn.mcarl.miars.storage.enums.practice.QueueType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.QueueType;
 import cn.mcarl.miars.storage.storage.data.practice.*;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -32,28 +31,27 @@ public class CommunityGUIItem {
         String[] lore = new String[0];
 
         List<QueueInfo> queueInfos = new ArrayList<>();
-        List<ArenaState> arenaStates = new ArrayList<>();
         List<DailyStreak> dailyStreaks = new ArrayList<>();
         DailyStreak dailyStreak = null;
+        int fights = 0;
 
         if (queueType != null){
             lore = new String[]{
                     "",
-                    "&7在战斗中: &c{in_fights}",
-                    "&7在匹配中: &c{in_queue}",
+                    "&7In Fight: &6{in_fights}",
+                    "&7In Queue: &e{in_queue}",
                     "",
-                    "&7每日连胜: &c{daily_streak}",
-                    "&c1. &7{daily_streak_1_name} &7(&c{daily_streak_1_value}&7)",
-                    "&c2. &7{daily_streak_2_name} &7(&c{daily_streak_2_value}&7)",
-                    "&c3. &7{daily_streak_3_name} &7(&c{daily_streak_3_value}&7)",
+                    "&7Daily Streak: &f{daily_streak}",
+                    "&61. &7{daily_streak_1_name} &7(&c{daily_streak_1_value}&7)",
+                    "&62. &7{daily_streak_2_name} &7(&c{daily_streak_2_value}&7)",
+                    "&63. &7{daily_streak_3_name} &7(&c{daily_streak_3_value}&7)",
                     "",
-                    "&c点击加入匹配队列"
+                    "&eClick join queue."
             };
             queueInfos = PracticeQueueDataStorage.getInstance().getQueueInfos(fKitType,queueType);
-            arenaStates = PracticeArenaStateDataStorage.getInstance().getArenaStateByQueueAndFig(fKitType,queueType);
             dailyStreaks = PracticeDailyStreakDataStorage.getInstance().getDailyStreaksTop(queueType,fKitType);
             dailyStreak = PracticeDailyStreakDataStorage.getInstance().getDailyStreaksByPlayer(player,queueType,fKitType);
-
+            fights = PracticeArenaStateDataStorage.getInstance().getArenaStateByQueueAndFig(fKitType,queueType);
         }
 
 
@@ -65,7 +63,7 @@ public class CommunityGUIItem {
                         .setLore(getLoreInfo(
                                 String.valueOf(dailyStreak!=null ? dailyStreak.getStreak() : 0),
                                 String.valueOf(queueInfos.size()!=0 ? queueInfos.get(0).getPlayers().size() : 0),
-                                String.valueOf(arenaStates.size()),
+                                String.valueOf(fights),
                                 dailyStreaks,
                                 lore
                         ))
@@ -74,25 +72,13 @@ public class CommunityGUIItem {
                         .addFlag(ItemFlag.HIDE_DESTROYS)
                         .toItemStack();
             }
-            case FFAGAME -> {
-                return new ItemBuilder(Material.FISHING_ROD)
-                        .setName("&a&lFFAGAME")
-                        .setLore(getLoreInfo(
-                                String.valueOf(dailyStreak!=null ? dailyStreak.getStreak() : 0),
-                                String.valueOf(queueInfos.size()!=0 ? queueInfos.get(0).getPlayers().size() : 0),
-                                String.valueOf(arenaStates.size()),
-                                dailyStreaks,
-                                lore
-                        ))
-                        .toItemStack();
-            }
             case BUILD_UHC -> {
                 return new ItemBuilder(Material.LAVA_BUCKET)
                         .setName("&a&lBuild UHC")
                         .setLore(getLoreInfo(
                                 String.valueOf(dailyStreak!=null ? dailyStreak.getStreak() : 0),
                                 String.valueOf(queueInfos.size()!=0 ? queueInfos.get(0).getPlayers().size() : 0),
-                                String.valueOf(arenaStates.size()),
+                                String.valueOf(fights),
                                 dailyStreaks,
                                 lore
                         ))

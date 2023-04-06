@@ -1,22 +1,14 @@
 package cn.mcarl.miars.skypvp.utils;
 
-import cn.mcarl.miars.core.utils.ItemBuilder;
+import cn.mcarl.miars.storage.utils.ItemBuilder;
 import cn.mcarl.miars.core.utils.MiarsUtil;
 import cn.mcarl.miars.skypvp.MiarsSkyPVP;
 import cn.mcarl.miars.skypvp.enums.LuckBlockType;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.SkullType;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.EulerAngle;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class RotatingHead {
 
@@ -56,7 +48,6 @@ public class RotatingHead {
             @Override
             public void run() {
                 if (stand.isDead()){
-                    MiarsSkyPVP.getInstance().log("dead!");
                     cancel();
                 }
 

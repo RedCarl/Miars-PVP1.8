@@ -30,25 +30,31 @@ public class SpawnManager {
             @Override
             public void run() {
                 for (UUID uuid:data.keySet()) {
-                    if (System.currentTimeMillis() - data.get(uuid) >= 5000){
-                        data.remove(uuid);
-                        Bukkit.getPlayer(uuid).teleport(PluginConfig.PROTECTED_REGION.SPAWN.get());
-                        Bukkit.getPlayer(uuid).sendTitle(new Title(
-                                ColorParser.parse("&a&l已回城!"),
-                                ColorParser.parse("&7您可以在这里稍做调整。"),
-                                0,
-                                20,
-                                5
-                        ));
-                        break;
+                    Player player = Bukkit.getPlayer(uuid);
+
+                    if (player!=null && player.isOnline()){
+                        if (System.currentTimeMillis() - data.get(uuid) >= 5000){
+                            data.remove(uuid);
+                            player.teleport(PluginConfig.PROTECTED_REGION.SPAWN.get());
+                            player.sendTitle(new Title(
+                                    ColorParser.parse("&a&l已回城!"),
+                                    ColorParser.parse("&7您可以在这里稍做调整。"),
+                                    0,
+                                    20,
+                                    5
+                            ));
+                            break;
+                        }else {
+                            player.sendTitle(new Title(
+                                    ColorParser.parse("&e&l等待回城..."),
+                                    ColorParser.parse("&7剩余 &e"+(((5000-(System.currentTimeMillis() - data.get(uuid)))/1000)+1)+" &7秒"),
+                                    0,
+                                    20,
+                                    5
+                            ));
+                        }
                     }else {
-                        Bukkit.getPlayer(uuid).sendTitle(new Title(
-                                ColorParser.parse("&e&l等待回城..."),
-                                ColorParser.parse("&7剩余 &e"+(((5000-(System.currentTimeMillis() - data.get(uuid)))/1000)+1)+" &7秒"),
-                                0,
-                                20,
-                                5
-                        ));
+                        data.remove(uuid);
                     }
                 }
             }

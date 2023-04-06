@@ -52,15 +52,11 @@ public class ScoreBoardManager {
         board.updateTitle("&eLOBBY &8| &e"+ ServerInfoDataStorage.getInstance().getServerInfo().getNameCn());
         lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis())+" &8"+ ToolUtils.getServerCode());
         lines.add("");
-        lines.add("&f 等级 &7[1✩]");
-        lines.add("&f 进度 &a0&7/&b1k");
-        lines.add("&f &7■■■■■■■■■■");
+        lines.add("&6&l┃ &f玩家: "+mRank.getNameColor()+p.getName());
+        lines.add("&6&l┃ &f头衔: "+(!"&7".equals(mRank.getPrefix()) ? mRank.getPrefix() : "&7默认"));
         lines.add("");
-        lines.add("&f 玩家 &6"+p.getName());
-        lines.add("&f 头衔 &6"+mRank.getPrefix());
-        lines.add("");
-        lines.add("&f 硬币 &6"+MiarsCore.getEcon().getBalance(p));
-        lines.add("&f 金子 &6"+MiarsCore.getPpAPi().look(p.getUniqueId()));
+        lines.add("&6&l┃ &f硬币: &e"+MiarsCore.getEcon().getBalance(p));
+        lines.add("&6&l┃ &f金子: &6"+MiarsCore.getPpAPi().look(p.getUniqueId()));
         lines.add("");
         lines.add("&7&o"+ ServerInfoDataStorage.getInstance().getServerInfo().getIp());
 

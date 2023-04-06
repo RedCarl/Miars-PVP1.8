@@ -1,0 +1,16 @@
+main: cn.mcarl.miars.pay.MiarsPay
+name: MiarsPay
+version: ${project.version}
+
+authors:
+  - Red_Carl
+
+depend:
+  - ProtocolLib
+  - PlaceholderAPI
+
+commands:
+  "Pay":
+    description: pay.
+    aliases:
+      - pay

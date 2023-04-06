@@ -1,6 +1,7 @@
 package cn.mcarl.miars.skypvp.entitiy;
 
 import cn.mcarl.miars.core.utils.Award;
+import cn.mcarl.miars.skypvp.conf.LuckyConfig;
 import cn.mcarl.miars.skypvp.conf.PluginConfig;
 import cn.mcarl.miars.skypvp.enums.LuckBlockType;
 import lombok.AllArgsConstructor;
@@ -26,27 +27,27 @@ public class LuckyBlock {
         switch (type){
             case NORMAL -> {
                 this.type = type;
-                this.refresh = PluginConfig.LUCKY.NORMAL.REFRESH.get();
-                this.rewardItems = PluginConfig.LUCKY.NORMAL.REWARD.get();
-                this.locationList = PluginConfig.LUCKY.NORMAL.LOCATION.get();
+                this.refresh = LuckyConfig.LUCKY.NORMAL.REFRESH.get();
+                this.rewardItems = LuckyConfig.LUCKY.NORMAL.REWARD.get();
+                this.locationList = LuckyConfig.LUCKY.NORMAL.LOCATION.get();
             }
             case RARE -> {
                 this.type = type;
-                this.refresh = PluginConfig.LUCKY.RARE.REFRESH.get();
-                this.rewardItems = PluginConfig.LUCKY.RARE.REWARD.get();
-                this.locationList = PluginConfig.LUCKY.RARE.LOCATION.get();
+                this.refresh = LuckyConfig.LUCKY.RARE.REFRESH.get();
+                this.rewardItems = LuckyConfig.LUCKY.RARE.REWARD.get();
+                this.locationList = LuckyConfig.LUCKY.RARE.LOCATION.get();
             }
             case EPIC -> {
                 this.type = type;
-                this.refresh = PluginConfig.LUCKY.EPIC.REFRESH.get();
-                this.rewardItems = PluginConfig.LUCKY.EPIC.REWARD.get();
-                this.locationList = PluginConfig.LUCKY.EPIC.LOCATION.get();
+                this.refresh = LuckyConfig.LUCKY.EPIC.REFRESH.get();
+                this.rewardItems = LuckyConfig.LUCKY.EPIC.REWARD.get();
+                this.locationList = LuckyConfig.LUCKY.EPIC.LOCATION.get();
             }
             case LEGENDARY -> {
                 this.type = type;
-                this.refresh = PluginConfig.LUCKY.LEGENDARY.REFRESH.get();
-                this.rewardItems = PluginConfig.LUCKY.LEGENDARY.REWARD.get();
-                this.locationList = PluginConfig.LUCKY.LEGENDARY.LOCATION.get();
+                this.refresh = LuckyConfig.LUCKY.LEGENDARY.REFRESH.get();
+                this.rewardItems = LuckyConfig.LUCKY.LEGENDARY.REWARD.get();
+                this.locationList = LuckyConfig.LUCKY.LEGENDARY.LOCATION.get();
             }
         }
     }

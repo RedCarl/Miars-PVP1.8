@@ -17,9 +17,9 @@ import java.util.List;
 public class PAPIExpansion extends PlaceholderExpansion {
 
 	private static final List<String> PLACEHOLDERS = Arrays.asList(
-			"%practice_ffa_kills%",
-			"%practice_ffa_death%",
-			"%practice_ffa_level%"
+			"%MiarsPracticeFFA_ffa_kills%",
+			"%MiarsPracticeFFA_ffa_death%",
+			"%MiarsPracticeFFA_practice_rankScore%"
 	);
 
 	private final JavaPlugin plugin;
@@ -68,22 +68,27 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
 		switch (args[0].toLowerCase()) {
 			case "ffa" -> {
-				String prefix = data.getPrefix();
-				if (prefix == null) {
-					return "Depository or Item not exists";
-				} else {
-					if (args.length==2){
-						switch (args[1].toLowerCase()){
-							case "kills" -> {
-								return String.valueOf(fPlayer.getKillsCount());
-							}
-							case "death" -> {
-								return String.valueOf(fPlayer.getDeathCount());
-							}
+				if (args.length==2){
+					switch (args[1].toLowerCase()){
+						case "kills" -> {
+							return String.valueOf(fPlayer.getKillsCount());
+						}
+						case "death" -> {
+							return String.valueOf(fPlayer.getDeathCount());
 						}
 					}
-					return "参数错误";
 				}
+				return "参数错误";
+			}
+			case "practice" -> {
+				if (args.length==2){
+					switch (args[1].toLowerCase()){
+						case "rankscore" -> {
+							return String.valueOf(fPlayer.getRankScore(1));
+						}
+					}
+				}
+				return "参数错误";
 			}
 			default -> {
 				return "参数错误";

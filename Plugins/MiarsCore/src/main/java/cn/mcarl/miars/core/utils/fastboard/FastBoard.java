@@ -360,8 +360,7 @@ public class FastBoard {
                     sendTeamPacket(i, TeamMode.UPDATE);
                 }
             }
-        } catch (Throwable t) {
-            throw new RuntimeException("Unable to update scoreboard lines", t);
+        } catch (Throwable ignored) {
         }
     }
 

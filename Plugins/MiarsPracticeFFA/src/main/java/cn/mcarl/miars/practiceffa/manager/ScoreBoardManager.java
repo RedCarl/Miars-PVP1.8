@@ -7,9 +7,11 @@ import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.core.utils.fastboard.FastBoard;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.storage.entity.practice.QueueInfo;
+import cn.mcarl.miars.storage.entity.practice.RankScore;
 import cn.mcarl.miars.storage.storage.data.practice.FPlayerDataStorage;
 import cn.mcarl.miars.practiceffa.utils.FFAUtil;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
+import cn.mcarl.miars.storage.storage.data.practice.RankScoreDataStorage;
 import cn.mcarl.miars.storage.storage.data.serverInfo.ServerInfoDataStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -49,15 +51,18 @@ public class ScoreBoardManager {
     private void updateBoard(FastBoard board) {
         Player p = board.getPlayer();
         FPlayer fPlayer = FPlayerDataStorage.getInstance().getFPlayer(p);
+        RankScore score = RankScoreDataStorage.getInstance().getRankScore(p.getUniqueId(),1);
 
         List<String> lines = new ArrayList<>();
         board.updateTitle("&ePractice &8| &c"+ ServerInfoDataStorage.getInstance().getServerInfo().getNameCn());
         lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis())+" &8"+ ToolUtils.getServerCode());
         lines.add("");
-        lines.add("&6&l┃ &7Level: &f"+0);
-        lines.add("");
         lines.add("&6&l┃ &7Online: &6"+ ServerManager.getInstance().getServerOnline("practice"));
         lines.add("");
+        if (score!=null){
+            lines.add("&6&l┃ &7Rank: &e"+score.getScore());
+            lines.add("");
+        }
 
         // 战斗模式的计分板
         if (CombatManager.getInstance().isCombat(p)){
@@ -85,7 +90,7 @@ public class ScoreBoardManager {
         if (queueInfo!=null){
 
             lines.add("");
-            lines.add("&e"+queueInfo.getQueueType().name() + " " + queueInfo.getFKitType().name());
+            lines.add(queueInfo.getQueueType().getColor()+queueInfo.getQueueType().getName() + " " + queueInfo.getFKitType().getName());
             lines.add("&7正在匹配... ("+ PracticeQueueDataStorage.getInstance().getQueueTime(fPlayer)+"s)");
         }
 

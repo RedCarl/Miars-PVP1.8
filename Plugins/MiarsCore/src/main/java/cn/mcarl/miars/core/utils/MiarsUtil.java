@@ -8,11 +8,11 @@ import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import net.minecraft.server.v1_8_R3.ChatComponentText;
+import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
+import org.bukkit.*;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -203,5 +203,32 @@ public class MiarsUtil {
         df.setRoundingMode(RoundingMode.HALF_UP);
         double accuracy_num = num / total * 100;
         return Integer.parseInt(df.format(accuracy_num));
+    }
+
+    public static void sendActionText(Player player, String message){
+        PacketPlayOutChat packet = new PacketPlayOutChat(new ChatComponentText(message), (byte)2);
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+    }
+
+
+    public static List<Color> getColors(){
+        List<Color> colors = new ArrayList<>();
+        colors.add(Color.AQUA);
+        colors.add(Color.WHITE);
+        colors.add(Color.TEAL);
+        colors.add(Color.BLUE);
+        colors.add(Color.LIME);
+        colors.add(Color.OLIVE);
+        colors.add(Color.ORANGE);
+        colors.add(Color.PURPLE);
+        colors.add(Color.YELLOW);
+        colors.add(Color.RED);
+        colors.add(Color.BLACK);
+        colors.add(Color.FUCHSIA);
+        colors.add(Color.NAVY);
+        colors.add(Color.MAROON);
+        colors.add(Color.GREEN);
+        colors.add(Color.GRAY);
+        return colors;
     }
 }

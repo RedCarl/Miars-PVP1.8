@@ -1,6 +1,6 @@
 package cn.mcarl.miars.practiceffa.items;
 
-import cn.mcarl.miars.core.utils.ItemBuilder;
+import cn.mcarl.miars.storage.utils.ItemBuilder;
 import cn.mcarl.miars.core.utils.easyitem.AbstractItem;
 import cn.mcarl.miars.practiceffa.ui.SoloMenuGUI;
 import org.bukkit.Material;
@@ -37,6 +37,7 @@ public class PracticeSelect extends AbstractItem {
         if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK){
             SoloMenuGUI.open(player);
         }
+        e.setCancelled(true);
     }
 
     @Override

@@ -3,7 +3,7 @@ package cn.mcarl.miars.megawalls.game.ui;
 import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
-import cn.mcarl.miars.core.utils.ItemBuilder;
+import cn.mcarl.miars.storage.utils.ItemBuilder;
 import cn.mcarl.miars.megawalls.MiarsMegaWalls;
 import cn.mcarl.miars.megawalls.classes.Classes;
 import cn.mcarl.miars.megawalls.classes.ClassesInfo;

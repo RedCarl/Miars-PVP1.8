@@ -1,0 +1,171 @@
+debugMode: false
+teamOneCage: true
+specials:
+  disableAllScoreboards: false
+  showBowDamage: true
+  enderPearlsCountdown:
+    enabled: false
+    seconds: 8
+  rankedJoin:
+    enabled: false
+    parties: false
+    levels: 5
+bungee:
+  enabled: false
+  lobby: false
+  game: true
+  gameType: SOLO
+  lobbyServer: Lobby
+  gameServer: SW01
+  gamesToRestart: 10
+chat:
+  games: true
+  mainLobby: true
+  spectator: true
+  spectatorGlobal: false
+  broadcastLevelUp: true
+  broadcastGame: true
+soulWellPrice: 10
+disableKitLevels: false
+disableVotesRanked: true
+mainLobbyWorld: LobbyWorld
+savingDataSync: false
+signsRotation: false
+lobbyScoreboard: true
+preLobbySystem: true
+progressBarAmount: 10
+updatePlayersPlaceholder: 5
+maxCollectHeads: 21
+whitelistedCMD:
+  - /sw leave
+  - /sw forcestart
+addons:
+  AnimatedNames: false
+  vault: false
+  playerpoints: false
+  coins: false
+  trholograms: false
+  holograms: false
+  holographicdisplays: true
+  nametagedit: false
+  parties: false
+  tabapi: false
+  placeholdersAPI: true
+  MVdWPlaceholderAPI: false
+  partyandfriends: false
+  leaderheads: false
+  slimeworldmanager:
+    enabled: false
+    loader: file
+mysql:
+  enabled: false
+  host: 127.0.0.1
+  port: 3306
+  database: Leonardo
+  username: Spigot
+  password: Plugin
+mongodb:
+  enabled: false
+  host: 127.0.0.1
+  port: 27017
+  database: Leonardo
+  username: Spigot
+  password: Plugin
+redis:
+  enabled: false
+  host: 127.0.0.1
+  port: 6379
+  password: ""
+  ssl: false
+  reconnect:
+    enabled: false
+    delay: 20
+redPanelInLocked: true
+kitLevelsOrder: false
+redPanel:
+  material: STAINED_GLASS_PANE
+  data: 14
+schemaToClearLobby: ClearLobby.schematic
+leaveCMD: false
+mainLobby: null
+topKills: null
+topWins: null
+topDeaths: null
+topElo: null
+items:
+  lobby:
+    enabled: true
+    slot: 2
+    cmd: /sw lobby
+rewards:
+  soulwell: true
+signs:
+  right: true
+  left: true
+gameDefaults:
+  timeBorderReduction: 120
+  minBorderReduction: 20
+  maxMultiplier: 5
+  starting: 30
+  pregame: 5
+  winTime: 5
+  maxItemsChest: 15
+  naturalSpawnEggs: false
+  coins:
+    kill: 5
+    win: 20
+    assists: 2
+  xp:
+    kill: 5
+    win: 10
+    assists: 2
+  souls:
+    kill: 1
+    win: 5
+    assists: 0
+materials:
+  challenges: BLAZE_POWDER
+  lobby: DIAMOND
+  team: NETHER_STAR
+  spectate: COMPASS
+  options: REDSTONE_COMPARATOR
+  play: PAPER
+  leave: BED
+  kits: BOW
+  votes: EMPTY_MAP
+  setup: DIAMOND
+  center: BLAZE_ROD
+  island: BLAZE_POWDER
+  soulwell: STAINED_GLASS
+  closeitem: BOOK
+  deselect: BARRIER
+  next: ARROW
+  last: ARROW
+  back: ARROW
+rowsInventories:
+  glasses: 6
+  winEffects: 6
+  balloons: 6
+  killEffects: 6
+  kits: 6
+  killSounds: 6
+  trails: 6
+  winDances: 6
+  taunts: 6
+  parting: 6
+states:
+  waiting: 5
+  starting: 4
+  empty: 0
+win-commands:
+  enabled: false
+  cmds:
+    - "say <player> is a pro!"
+death-commands:
+  enabled: false
+  cmds:
+    - "say <player> is a noob!"
+kill-commands:
+  enabled: false
+  cmds:
+    - "say <player> is a killer!"

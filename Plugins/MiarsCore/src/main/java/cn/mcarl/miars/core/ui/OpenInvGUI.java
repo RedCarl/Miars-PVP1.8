@@ -3,24 +3,14 @@ package cn.mcarl.miars.core.ui;
 import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
-import cc.carm.lib.easyplugin.utils.ColorParser;
-import cn.mcarl.miars.core.utils.ItemBuilder;
+import cn.mcarl.miars.storage.utils.ItemBuilder;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
-import cn.mcarl.miars.storage.entity.ffa.FKit;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.entity.practice.PlayerState;
-import cn.mcarl.miars.storage.storage.data.practice.FKitDataStorage;
 import cn.mcarl.miars.storage.utils.BukkitUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @Author: carl0

@@ -1,25 +1,19 @@
 package cn.mcarl.miars.practice.listener;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
-import cn.mcarl.miars.core.manager.ServerManager;
 import cn.mcarl.miars.core.utils.MiarsUtil;
 import cn.mcarl.miars.core.utils.ToolUtils;
-import cn.mcarl.miars.core.utils.jsonmessage.JSONMessage;
 import cn.mcarl.miars.practice.MiarsPractice;
-import cn.mcarl.miars.practice.conf.PluginConfig;
 import cn.mcarl.miars.practice.manager.*;
 import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
+import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
-import cn.mcarl.miars.storage.entity.practice.PlayerState;
-import cn.mcarl.miars.storage.enums.practice.FKitType;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
+import cn.mcarl.miars.storage.storage.data.practice.FPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaStateDataStorage;
-import cn.mcarl.miars.storage.storage.data.practice.PracticeDailyStreakDataStorage;
-import cn.mcarl.miars.storage.storage.data.practice.PracticeGameDataStorage;
-import cn.mcarl.miars.storage.utils.BukkitUtils;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -71,35 +65,6 @@ public class PlayerListener implements Listener {
             // 初始背包
             PlayerInventoryManager.getInstance().init(player);
 
-            // 游戏准备
-            ArenaManager.getInstance().readyGame(state);
-
-            // 比赛开始提示
-            if ((Bukkit.getPlayer(state.getPlayerA()) !=null && Bukkit.getPlayer(state.getPlayerA()).isOnline()) && (Bukkit.getPlayer(state.getPlayerB()) != null && Bukkit.getPlayer(state.getPlayerB()).isOnline())){
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        for (int i = 0; i < 5; i++) {
-                            try {
-                                JSONMessage.create(ColorParser.parse("&7比赛将在 &c"+(5-i)+" &7秒后正式开始..."))
-                                        .send(Bukkit.getPlayer(state.getPlayerA()),Bukkit.getPlayer(state.getPlayerB()));
-                                if (i == 4){
-                                    ArenaManager.getInstance().startGame(state);
-
-                                    JSONMessage.create(ColorParser.parse("&7比赛开始，祝你好运！"))
-                                            .send(Bukkit.getPlayer(state.getPlayerA()),Bukkit.getPlayer(state.getPlayerB()));
-                                    break;
-                                }
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                throw new RuntimeException(ex);
-                            }
-                        }
-                        cancel();
-                    }
-                }.runTaskAsynchronously(MiarsPractice.getInstance());
-            }
-
         }
     }
 
@@ -116,7 +81,7 @@ public class PlayerListener implements Listener {
 
         if (state!=null){
             // 战斗中途退出
-            if (state.getState() == ArenaState.State.GAME){
+            if (state.getState() != ArenaState.State.END){
                 Player deathPlayer = e.getPlayer();
                 Player attackPlayer = state.getPlayerA().equals(deathPlayer.getName()) ? Bukkit.getPlayer(state.getPlayerB()) : Bukkit.getPlayer(state.getPlayerA());
 
@@ -152,13 +117,19 @@ public class PlayerListener implements Listener {
         Player deathPlayer = e.getEntity(); // 死亡的玩家
         ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(deathPlayer);
         deathPlayer.spigot().respawn();
+        FPlayer deathFPlayer = FPlayerDataStorage.getInstance().getFPlayer(deathPlayer);
+        deathFPlayer.addDeathCount();
 
         Player attackPlayer;
         if (e.getEntity().getKiller() != null) {
             attackPlayer = e.getEntity().getKiller(); // 击杀的玩家
+
         }else {
             attackPlayer = deathPlayer.getName().equals(state.getPlayerA()) ? Bukkit.getPlayer(state.getPlayerB()):Bukkit.getPlayer(state.getPlayerA());
         }
+        FPlayer attackFPlayer = FPlayerDataStorage.getInstance().getFPlayer(attackPlayer);
+        attackFPlayer.addKillsCount();
+
 
         ArenaManager.getInstance().endGame(attackPlayer,deathPlayer);
 
