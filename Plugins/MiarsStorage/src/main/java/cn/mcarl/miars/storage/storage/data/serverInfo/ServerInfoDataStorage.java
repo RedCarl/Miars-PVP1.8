@@ -19,20 +19,18 @@ public class ServerInfoDataStorage {
         return instance;
     }
 
-    private final List<ServerInfo> serverInfo = new ArrayList<>();
+    private ServerInfo serverInfo = new ServerInfo();
 
     public ServerInfo getServerInfo(){
-        if (serverInfo.size()!=0){
-            return serverInfo.get(0);
+        if (serverInfo.getIp() == null){
+            serverInfo = MiarsStorage.getMySQLStorage().queryServerInfo();
         }
 
-        serverInfo.add(MiarsStorage.getMySQLStorage().queryServerInfo());
-
-        return serverInfo.get(0);
+        return serverInfo;
     }
 
     public void clear(){
-        serverInfo.clear();
+        serverInfo = new ServerInfo();
     }
 
 }

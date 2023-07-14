@@ -1,7 +1,7 @@
 package cn.mcarl.miars.practiceffa.items;
 
 import cn.mcarl.miars.storage.utils.ItemBuilder;
-import cn.mcarl.miars.core.utils.easyitem.AbstractItem;
+import cn.mcarl.miars.storage.utils.easyitem.AbstractItem;
 import cn.mcarl.miars.practiceffa.ui.SoloMenuGUI;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -21,11 +21,8 @@ public class PracticeSelect extends AbstractItem {
     public void init() {
 
         id = "practice_select";
-        item = new ItemBuilder(Material.DIAMOND_SWORD)
-                .setName("&6SoloMenu &7(Right Click)")
-                .addEnchant(Enchantment.ARROW_DAMAGE,1,true)
-                .addFlag(ItemFlag.HIDE_ENCHANTS)
-                .addFlag(ItemFlag.HIDE_UNBREAKABLE)
+        item = new ItemBuilder(Material.COMPASS)
+                .setName("&bGame Menu &7(Right Click)")
                 .setUnbreakable()
                 .toItemStack();
     }

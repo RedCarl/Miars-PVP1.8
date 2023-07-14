@@ -3,7 +3,7 @@ package cn.mcarl.miars.core.manager;
 import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.core.conf.PluginConfig;
 import cn.mcarl.miars.storage.entity.MServerInfo;
-import cn.mcarl.miars.core.utils.HttpClientHelper;
+import cn.mcarl.miars.storage.utils.HttpClientHelper;
 import com.alibaba.fastjson.JSON;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;

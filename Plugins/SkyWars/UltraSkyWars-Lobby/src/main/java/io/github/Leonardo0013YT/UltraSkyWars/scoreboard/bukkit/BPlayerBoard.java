@@ -39,8 +39,9 @@ public class BPlayerBoard implements PlayerBoard<String, Integer, String> {
         if (this.scoreboard == null) {
             Scoreboard sb = player.getScoreboard();
 
-            if (sb == null || sb == Bukkit.getScoreboardManager().getMainScoreboard())
+            if (sb == null || sb == Bukkit.getScoreboardManager().getMainScoreboard()) {
                 sb = Bukkit.getScoreboardManager().getNewScoreboard();
+            }
 
             this.scoreboard = sb;
         }
@@ -54,10 +55,12 @@ public class BPlayerBoard implements PlayerBoard<String, Integer, String> {
         this.objective = this.scoreboard.getObjective("sb" + subName);
         this.buffer = this.scoreboard.getObjective("bf" + subName);
 
-        if (this.objective == null)
+        if (this.objective == null) {
             this.objective = this.scoreboard.registerNewObjective("sb" + subName, "dummy");
-        if (this.buffer == null)
+        }
+        if (this.buffer == null) {
             this.buffer = this.scoreboard.registerNewObjective("bf" + subName, "dummy");
+        }
 
         this.objective.setDisplayName(name);
         sendObjective(this.objective, ObjectiveMode.CREATE);
@@ -71,22 +74,25 @@ public class BPlayerBoard implements PlayerBoard<String, Integer, String> {
 
     @Override
     public String get(Integer score) {
-        if (this.deleted)
+        if (this.deleted) {
             throw new IllegalStateException("The PlayerBoard is deleted!");
+        }
 
         return this.lines.get(score);
     }
 
     @Override
     public void set(String show, Integer score) {
-        if (this.deleted)
+        if (this.deleted) {
             throw new IllegalStateException("The PlayerBoard is deleted!");
+        }
 
         String name = getNoDup(score) + show;
         String oldName = this.lines.get(score);
 
-        if (name.equals(oldName))
+        if (name.equals(oldName)) {
             return;
+        }
 
         this.lines.entrySet().removeIf(entry -> entry.getValue().equals(name));
 
@@ -110,8 +116,9 @@ public class BPlayerBoard implements PlayerBoard<String, Integer, String> {
 
     @Override
     public void setAll(String... lines) {
-        if (this.deleted)
+        if (this.deleted) {
             throw new IllegalStateException("The PlayerBoard is deleted!");
+        }
 
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
@@ -172,11 +179,13 @@ public class BPlayerBoard implements PlayerBoard<String, Integer, String> {
             Map scores = (Map) NMS.PLAYER_SCORES.get(sbHandle);
 
             if (remove) {
-                if (scores.containsKey(name))
+                if (scores.containsKey(name)) {
                     ((Map) scores.get(name)).remove(objHandle);
+                }
             } else {
-                if (!scores.containsKey(name))
+                if (!scores.containsKey(name)) {
                     scores.put(name, new HashMap());
+                }
                 ((Map) scores.get(name)).put(objHandle, sbScore);
             }
 
@@ -213,19 +222,22 @@ public class BPlayerBoard implements PlayerBoard<String, Integer, String> {
 
     @Override
     public void remove(Integer score) {
-        if (this.deleted)
+        if (this.deleted) {
             throw new IllegalStateException("The PlayerBoard is deleted!");
+        }
         String name = this.lines.get(score);
-        if (name == null)
+        if (name == null) {
             return;
+        }
         this.scoreboard.resetScores(name);
         this.lines.remove(score);
     }
 
     @Override
     public void delete() {
-        if (this.deleted)
+        if (this.deleted) {
             return;
+        }
         Netherboard.instance().removeBoard(player);
         sendObjective(this.objective, ObjectiveMode.REMOVE);
         sendObjective(this.buffer, ObjectiveMode.REMOVE);
@@ -239,8 +251,9 @@ public class BPlayerBoard implements PlayerBoard<String, Integer, String> {
 
     @Override
     public Map<Integer, String> getLines() {
-        if (this.deleted)
+        if (this.deleted) {
             throw new IllegalStateException("The PlayerBoard is deleted!");
+        }
 
         return new HashMap<>(lines);
     }
@@ -252,8 +265,9 @@ public class BPlayerBoard implements PlayerBoard<String, Integer, String> {
 
     @Override
     public void setName(String name) {
-        if (this.deleted)
+        if (this.deleted) {
             throw new IllegalStateException("The PlayerBoard is deleted!");
+        }
 
         this.name = name;
         this.objective.setDisplayName(name);

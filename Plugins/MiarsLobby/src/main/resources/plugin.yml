@@ -15,3 +15,7 @@ commands:
     description: "主指令"
     aliases:
       - lobby
+  "Recharge":
+    description: "充值系统"
+    aliases:
+      - recharge

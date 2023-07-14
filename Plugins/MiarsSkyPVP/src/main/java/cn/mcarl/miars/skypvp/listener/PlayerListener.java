@@ -2,12 +2,9 @@ package cn.mcarl.miars.skypvp.listener;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
-import cn.mcarl.miars.core.utils.MiarsUtil;
-import cn.mcarl.miars.core.utils.ToolUtils;
 import cn.mcarl.miars.skypvp.MiarsSkyPVP;
 import cn.mcarl.miars.skypvp.conf.PluginConfig;
 import cn.mcarl.miars.skypvp.entitiy.GamePlayer;
-import cn.mcarl.miars.skypvp.enums.LuckBlockType;
 import cn.mcarl.miars.skypvp.items.SpawnSlimeball;
 import cn.mcarl.miars.skypvp.manager.CombatManager;
 import cn.mcarl.miars.skypvp.manager.LuckyManager;
@@ -25,14 +22,17 @@ import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -52,6 +52,24 @@ public class PlayerListener implements Listener {
                 LuckyManager.getInstance().useBlock(stand,player);
             }
         }
+    }
+
+    @EventHandler
+    public void PlayerInteractEvent(PlayerInteractEvent e){
+        Player player = e.getPlayer();
+        ItemStack itemStack = e.getItem();
+        if (itemStack!=null &&
+                (
+                        itemStack.getType().equals(Material.LAVA_BUCKET) ||
+                                itemStack.getType().equals(Material.BUCKET) ||
+                                itemStack.getType().equals(Material.WATER_BUCKET)
+                )
+        ){
+            if (!player.hasPermission("miars.admin")){
+                e.setCancelled(true);
+            }
+        }
+
     }
 
     Map<UUID,Boolean> protectedRegion = new HashMap<>();
@@ -113,6 +131,15 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void PlayerQuitEvent(PlayerQuitEvent e){
+        Player player = e.getPlayer();
+        ScoreBoardManager.getInstance().removePlayer(player);
+        if (CombatManager.getInstance().isCombat(player)){
+            player.damage(player.getMaxHealth()*9999,player.getKiller());
+        }
+    }
+
+    @EventHandler
+    public void PlayerKickEvent(PlayerKickEvent e){
         Player player = e.getPlayer();
         ScoreBoardManager.getInstance().removePlayer(player);
         if (CombatManager.getInstance().isCombat(player)){
@@ -275,5 +302,34 @@ public class PlayerListener implements Listener {
         MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(e.getPlayer());
         MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
         e.setFormat(ColorParser.parse(GamePlayer.get(e.getPlayer()).getLevelString()+" "+mRank.getPrefix()+mRank.getNameColor()+"%1$s&f: %2$s"));
+    }
+
+    @EventHandler
+    public void EntityChangeBlockEvent(EntityChangeBlockEvent e) {
+        if (e.getBlock().getType().equals(Material.ANVIL)) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void PlayerBucketFillEvent(PlayerBucketFillEvent e){
+        Player player = e.getPlayer();
+        if (!player.hasPermission("miars.admin")){
+            e.setCancelled(true);
+        }
+    }
+    @EventHandler
+    public void PlayerBucketEmptyEvent(PlayerBucketEmptyEvent e){
+        Player player = e.getPlayer();
+        if (!player.hasPermission("miars.admin")){
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void ChunkUnloadEvent(ChunkUnloadEvent e) {
+        if(LuckyManager.getInstance().getChunks().contains(e.getChunk())){
+            e.setCancelled(true);
+        }
     }
 }

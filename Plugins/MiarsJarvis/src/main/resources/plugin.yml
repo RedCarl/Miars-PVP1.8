@@ -1,0 +1,35 @@
+main: gg.noob.plunder.Plunder
+name: MiarsJarvis
+version: ${project.version}
+
+authors:
+  - Red_Carl
+
+api-version: 1.8
+
+depend:
+  - MiarsCore
+
+commands:
+  alerts:
+  verbose:
+  debug:
+  maxCPS:
+  bot:
+  logs:
+  plunder:
+  playerInfo:
+    aliases: [pi]
+
+permissions:
+  plunder.*:
+    children:
+      plunder.alerts: true
+      plunder.bot: true
+      plunder.bypass: true
+  plunder.alerts:
+    default: op
+  plunder.bot:
+    default: op
+  plunder.bypass:
+    default: op

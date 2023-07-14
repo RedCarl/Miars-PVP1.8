@@ -3,6 +3,7 @@ package cn.mcarl.miars.core.command;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.manager.CitizensManager;
 import cn.mcarl.miars.core.ui.OpenInvGUI;
+import cn.mcarl.miars.core.ui.RanksGUI;
 import cn.mcarl.miars.core.ui.ServerMenuGUI;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeGameDataStorage;
@@ -12,6 +13,8 @@ import cn.mcarl.miars.storage.storage.data.serverNpc.ServerNpcDataStorage;
 import cn.mcarl.miars.storage.utils.ItemBuilder;
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -143,6 +146,54 @@ public class MiarsCommand implements CommandExecutor, TabCompleter {
                     );
                 }
             }
+            case "todata" -> {
+                if (sender instanceof Player player){
+
+                    if (!player.hasPermission("group.admin")){
+                        return false;
+                    }
+
+                    ItemStack itemStack = player.getItemInHand();
+
+                    System.out.println(
+                            itemStack.getDurability()
+                    );
+                }
+            }
+            case "world" -> {
+                if (sender instanceof Player player){
+
+                    if (!player.hasPermission("group.admin")){
+                        return false;
+                    }
+
+                    if (args.length==2){
+                        Location location = player.getLocation();
+                        location.setWorld(Bukkit.getWorld(args[1]));
+                        player.teleport(location);
+                    }else {
+                        System.out.println(
+                                player.getWorld().getName()
+                        );
+                    }
+
+
+                }
+            }
+            case "title" -> {
+                if (sender instanceof Player player){
+                    player.sendTitle("222","22");
+                }
+            }
+            case "nametag" -> {
+                if (sender instanceof Player player){
+                    if (args.length==3){
+                        boolean prefix = Boolean.parseBoolean(args[1]);
+                        boolean ascFlag = Boolean.parseBoolean(args[2]);
+                        RanksGUI.open(player,prefix,ascFlag);
+                    }
+                }
+            }
             default -> {
                 return helpConsole(sender);
             }
@@ -161,16 +212,18 @@ public class MiarsCommand implements CommandExecutor, TabCompleter {
             @NotNull String[] args
     ) {
         List<String> allCompletes = new ArrayList<>();
-//        if (sender instanceof Player) {
-//            // 玩家指令部分
-//            Player player = (Player) sender;
-//            if (player.hasPermission("UltraDepository.use")) {
-//                allCompletes.add("reload");
-//            }
-//        } else {
-//            //后台指令部分
-//            allCompletes.add("reload");
-//        }
+        if (sender instanceof Player) {
+            // 玩家指令部分
+            Player player = (Player) sender;
+            if (player.hasPermission("miars.admin")) {
+                allCompletes.add("practice");
+                allCompletes.add("menu");
+                allCompletes.add("serverinfo");
+                allCompletes.add("npc");
+                allCompletes.add("tojson");
+                allCompletes.add("totype");
+            }
+        }
 
         return allCompletes.stream()
                 .filter(s -> StringUtil.startsWithIgnoreCase(s, args[args.length - 1]))

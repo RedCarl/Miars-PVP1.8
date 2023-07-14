@@ -2,15 +2,14 @@ package cn.mcarl.miars.skypvp.manager;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
-import cn.mcarl.miars.core.utils.ToolUtils;
-import cn.mcarl.miars.core.utils.fastboard.FastBoard;
+import cn.mcarl.miars.core.utils.MiarsUtils;
+import cn.mcarl.miars.storage.utils.ToolUtils;
+import cn.mcarl.miars.storage.utils.fastboard.FastBoard;
 import cn.mcarl.miars.skypvp.entitiy.GamePlayer;
-import cn.mcarl.miars.skypvp.utils.PlayerUtils;
 import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
-import cn.mcarl.miars.storage.storage.data.practice.FPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.serverInfo.ServerInfoDataStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -54,13 +53,13 @@ public class ScoreBoardManager {
 
         List<String> lines = new ArrayList<>();
         board.updateTitle("&eSKYPVP &8┃ &e"+ ServerInfoDataStorage.getInstance().getServerInfo().getNameCn());
-        lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis())+" &8"+ ToolUtils.getServerCode());
+        lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis())+" &8"+ MiarsUtils.getServerCode());
         lines.add("");
         lines.add("&6&l┃ &f等级: "+GamePlayer.get(p).getLevelString());
         lines.add(GamePlayer.get(p).getNextLevel());
         lines.add("");
         lines.add("&6&l┃ &f硬币: &6" + MiarsCore.getEcon().getBalance(p));
-        lines.add("&6&l┃ &f金子: &e" + MiarsCore.getPpAPi().look(p.getUniqueId()));
+        lines.add("&6&l┃ &f金子: &e" + MiarsCore.getPpAPI().look(p.getUniqueId()));
         lines.add("");
 
         // 战斗模式的计分板

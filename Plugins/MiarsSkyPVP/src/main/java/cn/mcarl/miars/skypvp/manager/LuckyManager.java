@@ -5,10 +5,9 @@ import cn.mcarl.miars.skypvp.entitiy.GamePlayer;
 import cn.mcarl.miars.skypvp.entitiy.LuckyBlock;
 import cn.mcarl.miars.skypvp.enums.LuckBlockType;
 import cn.mcarl.miars.skypvp.utils.RotatingHead;
-import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -16,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LuckyManager {
@@ -27,22 +27,23 @@ public class LuckyManager {
     Map<Location, Long> timeMap = new HashMap<>();
     Map<Location, LuckBlockType> typeMap = new HashMap<>();
     Map<Location, ArmorStand> standMap = new HashMap<>();
+    List<Chunk> chunks = new ArrayList<>();
     public void init(){
 
         for (Location l:LuckyBlock.get(LuckBlockType.NORMAL).getLocationList()) {
-            spawnBlock(l,LuckBlockType.NORMAL);
+            spawnLucky(l,LuckBlockType.NORMAL);
         }
 
         for (Location l:LuckyBlock.get(LuckBlockType.RARE).getLocationList()) {
-            spawnBlock(l,LuckBlockType.RARE);
+            spawnLucky(l,LuckBlockType.RARE);
         }
 
         for (Location l:LuckyBlock.get(LuckBlockType.EPIC).getLocationList()) {
-            spawnBlock(l,LuckBlockType.EPIC);
+            spawnLucky(l,LuckBlockType.EPIC);
         }
 
         for (Location l:LuckyBlock.get(LuckBlockType.LEGENDARY).getLocationList()) {
-            spawnBlock(l,LuckBlockType.LEGENDARY);
+            spawnLucky(l,LuckBlockType.LEGENDARY);
         }
 
         tick();
@@ -61,7 +62,7 @@ public class LuckyManager {
                             String name = stand.getCustomName().substring(stand.getCustomName().indexOf(".")+1);
                             LuckyBlock luckyBlock = new LuckyBlock(LuckBlockType.valueOf(name));
                             if (s>=luckyBlock.getRefresh()){
-                                spawnBlock(l,luckyBlock.getType());
+                                spawnLucky(l,luckyBlock.getType());
                                 break;
                             }
                         }
@@ -70,7 +71,6 @@ public class LuckyManager {
             }
         }.runTaskTimer(MiarsSkyPVP.getInstance(),0,20);
     }
-
 
     public void useBlock(ArmorStand stand, Player player){
         timeMap.put(stand.getLocation(),System.currentTimeMillis());
@@ -84,15 +84,21 @@ public class LuckyManager {
         meta.setLore(new ArrayList<>());
         i.setItemMeta(meta);
         // 给予玩家物品
-        player.getWorld().dropItemNaturally(stand.getLocation(),i);
+        Location location = stand.getLocation();
+        location.add(0,1,0);
+        player.getWorld().dropItemNaturally(location,i);
 
         player.playSound(player.getLocation(), Sound.ORB_PICKUP,1,1);
 
         GamePlayer.get(player).addLucky(1L);
     }
 
-    public void spawnBlock(Location l,LuckBlockType type){
-        ArmorStand stand = RotatingHead.getInstance().spawnOrb(l,type);
+    public void spawnLucky(Location l,LuckBlockType type){
+        if (!chunks.contains(l.getChunk())){
+            chunks.add(l.getChunk());
+        }
+        l.getWorld().loadChunk(l.getChunk());
+        ArmorStand stand = RotatingHead.getInstance().spawnLucky(l,type);
         timeMap.remove(l);
         standMap.put(l,stand);
     }
@@ -104,5 +110,15 @@ public class LuckyManager {
         typeMap.clear();
         timeMap.clear();
         standMap.clear();
+
+        for (Entity entity:Bukkit.getWorld("world").getEntities()) {
+            if (entity instanceof ArmorStand stand){
+                stand.remove();
+            }
+        }
+    }
+
+    public List<Chunk> getChunks(){
+        return chunks;
     }
 }

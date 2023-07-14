@@ -3,7 +3,8 @@ package cn.mcarl.miars.practiceffa.ui;
 import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
-import cn.mcarl.miars.core.utils.ItemFacAPI;
+import cn.mcarl.miars.storage.utils.ItemBuilder;
+import cn.mcarl.miars.storage.utils.ItemFacAPI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -52,6 +53,12 @@ public class BlockGUI extends GUI {
                 }
             });
         }
+        setItem(47,new GUIItem(new ItemBuilder(Material.SAPLING).toItemStack()){
+            @Override
+            public void rawClickAction(InventoryClickEvent event) {
+                event.setCancelled(false);
+            }
+        });
     }
 
 

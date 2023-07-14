@@ -13,7 +13,8 @@ public class HubCommands extends Command {
     @Override
     public void execute(CommandSender cs, String[] args) {
         if (cs instanceof ProxiedPlayer player){
-            ServerHelper.sendLobbyServer(player);
+            // ServerHelper.sendLobbyServer(player); // 动态传送大厅
+            player.connect(ServerHelper.getServerInfo("Practice-ffa"));
         }
     }
 }

@@ -1,8 +1,8 @@
 package cn.mcarl.miars.storage.entity.practice.enums.practice;
 
 public enum QueueType {
-    UNRANKED("UnRank","&e"),
-    RANKED("Rank","&6");
+    UNRANKED("Unranked","&a"),
+    RANKED("Ranked","&b");
 
 
     String name;

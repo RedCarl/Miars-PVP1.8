@@ -34,14 +34,10 @@ public class FFAGame {
         );
         itemCote.put(2,
                 new ItemBuilder(Material.GOLDEN_APPLE, 6)
-                        .addFlag(ItemFlag.HIDE_UNBREAKABLE)
-                        .addFlag(ItemFlag.HIDE_ENCHANTS)
                         .toItemStack()
         );
         itemCote.put(3,
                 new ItemBuilder(Material.COOKED_BEEF, 64)
-                        .addFlag(ItemFlag.HIDE_UNBREAKABLE)
-                        .addFlag(ItemFlag.HIDE_ENCHANTS)
                         .toItemStack()
         );
 

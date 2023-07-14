@@ -5,6 +5,7 @@ import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
 import cn.mcarl.miars.storage.entity.practice.enums.practice.QueueType;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson2.JSONException;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -42,9 +43,12 @@ public class PracticeArenaStateDataStorage {
         });
         return data.get();
     }
-    public ArenaState getArenaStateByPlayer(Player player){
+    public ArenaState getArenaStateByPlayer(String player){
         for (ArenaState a:arenaState) {
-            if ((a.getPlayerA()!=null && a.getPlayerA().equals(player.getName())) || (a.getPlayerB()!=null && a.getPlayerB().equals(player.getName()))){
+            if (
+                    (a.getPlayerA()!=null && a.getPlayerA().equals(player)) ||
+                    (a.getPlayerB()!=null && a.getPlayerB().equals(player))
+            ){
                 return a;
             }
         }
@@ -73,8 +77,15 @@ public class PracticeArenaStateDataStorage {
     }
 
     public List<ArenaState> getArenaStateRedisList(String key){
-        return JSONArray.parseArray(
-                MiarsStorage.getRedisStorage().getJedis(key)).toJavaList(ArenaState.class);
+        List<ArenaState> list = new ArrayList<>();
+        try {
+            list = JSONArray.parseArray(
+                    MiarsStorage.getRedisStorage().getJedis(key)).toJavaList(ArenaState.class);
+        }catch (JSONException e){
+            MiarsStorage.getInstance().log(e.getMessage()+" / "+key);
+        }
+
+        return list;
     }
 
     public void setArenaStateRedisList(List<ArenaState> list,String key){
@@ -91,7 +102,6 @@ public class PracticeArenaStateDataStorage {
         ArenaState data = PracticeArenaStateDataStorage.getInstance().getArenaStateById(state);
         data.setPlayerA(a);
         data.setPlayerB(b);
-        data.setStartTime(System.currentTimeMillis());
         data.setQueueType(queueType);
         data.setFKitType(FKitType.valueOf(key));
 

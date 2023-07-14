@@ -1,31 +1,40 @@
 package cn.mcarl.miars.practice.listener;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
-import cn.mcarl.miars.core.utils.MiarsUtil;
-import cn.mcarl.miars.core.utils.ToolUtils;
+import cn.mcarl.miars.core.manager.EnderPearlManager;
+import cn.mcarl.miars.core.utils.MiarsUtils;
+import cn.mcarl.miars.core.utils.MiarsUtils;
 import cn.mcarl.miars.practice.MiarsPractice;
+import cn.mcarl.miars.practice.conf.PluginConfig;
+import cn.mcarl.miars.practice.entity.GamePlayer;
 import cn.mcarl.miars.practice.manager.*;
 import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.FPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaStateDataStorage;
+import cn.mcarl.miars.storage.utils.ToolUtils;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -42,9 +51,11 @@ public class PlayerListener implements Listener {
         player.getInventory().clear();
         player.setLevel(0);
 
-        MiarsUtil.initPlayerNametag(player,false);
+        MiarsUtils.initPlayerNametag(player,false);
 
-        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player);
+        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player.getName());
+
+
 
         if (state==null){
             if (!player.hasPermission("miars.admin")){
@@ -55,16 +66,25 @@ public class PlayerListener implements Listener {
             Arena arena = ArenaManager.getInstance().getArenaById(state);
 
             if (state.getPlayerA().equals(player.getName())){
-                player.teleport(arena.getLoc1());
+                Location location = arena.getLoc1();
+                location.setWorld(Bukkit.getWorld(arena.getWorld()));
+                player.teleport(location);
             }else {
-                player.teleport(arena.getLoc2());
+                Location location = arena.getLoc2();
+                location.setWorld(Bukkit.getWorld(arena.getWorld()));
+                player.teleport(location);
             }
 
             // 初始化玩家记分板
             ScoreBoardManager.getInstance().joinPlayer(player);
             // 初始背包
             PlayerInventoryManager.getInstance().init(player);
+            ToolUtils.playerInitialize(player);
 
+        }
+
+        if (MiarsPractice.getModeType()==FKitType.BOXING){
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED,Integer.MAX_VALUE,1));
         }
     }
 
@@ -77,15 +97,82 @@ public class PlayerListener implements Listener {
         // 卸载玩家记分板
         ScoreBoardManager.getInstance().removePlayer(player);
 
-        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player);
+        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player.getName());
 
         if (state!=null){
             // 战斗中途退出
             if (state.getState() != ArenaState.State.END){
-                Player deathPlayer = e.getPlayer();
-                Player attackPlayer = state.getPlayerA().equals(deathPlayer.getName()) ? Bukkit.getPlayer(state.getPlayerB()) : Bukkit.getPlayer(state.getPlayerA());
+                Player deathPlayer = player;
+                String attackName = deathPlayer.getName().equals(state.getPlayerA()) ? state.getPlayerB() : state.getPlayerA();
 
-                ArenaManager.getInstance().endGame(attackPlayer,deathPlayer);
+                Player attackPlayer = Bukkit.getPlayer(attackName);
+
+                if (attackPlayer==null){
+                    ArenaManager.getInstance().endGame(state);
+                }else {
+                    ArenaManager.getInstance().endGame(
+                            new GamePlayer(
+                                    attackPlayer.getUniqueId(),
+                                    attackPlayer.getName(),
+                                    attackPlayer.getHealth(),
+                                    attackPlayer.getFoodLevel(),
+                                    attackPlayer.getActivePotionEffects()
+                            ),
+                            new GamePlayer(
+                                    deathPlayer.getUniqueId(),
+                                    deathPlayer.getName(),
+                                    deathPlayer.getHealth(),
+                                    deathPlayer.getFoodLevel(),
+                                    deathPlayer.getActivePotionEffects()
+                            )
+                    );
+                }
+
+
+            }
+        }
+
+    }
+
+    @EventHandler
+    public void PlayerKickEvent(PlayerKickEvent e){
+        Player player = e.getPlayer();
+
+        if (player.getGameMode()==GameMode.CREATIVE){return;}
+
+        // 卸载玩家记分板
+        ScoreBoardManager.getInstance().removePlayer(player);
+
+        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player.getName());
+
+        if (state!=null){
+            // 战斗中途退出
+            if (state.getState() != ArenaState.State.END){
+                Player deathPlayer = player;
+                String attackName = deathPlayer.getName().equals(state.getPlayerA()) ? state.getPlayerB() : state.getPlayerA();
+
+                Player attackPlayer = Bukkit.getPlayer(attackName);
+
+                if (attackPlayer == null){
+                    ArenaManager.getInstance().endGame(state);
+                }else {
+                    ArenaManager.getInstance().endGame(
+                            new GamePlayer(
+                                    attackPlayer.getUniqueId(),
+                                    attackPlayer.getName(),
+                                    attackPlayer.getHealth(),
+                                    attackPlayer.getFoodLevel(),
+                                    attackPlayer.getActivePotionEffects()
+                            ),
+                            new GamePlayer(
+                                    deathPlayer.getUniqueId(),
+                                    deathPlayer.getName(),
+                                    deathPlayer.getHealth(),
+                                    deathPlayer.getFoodLevel(),
+                                    deathPlayer.getActivePotionEffects()
+                            )
+                    );
+                }
             }
         }
 
@@ -95,7 +182,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void PlayerMoveEvent(PlayerMoveEvent e){
         Player player = e.getPlayer();
-        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player);
+        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player.getName());
 
         // 判断玩家是否跌落出竞技场
         if (!player.hasPermission("miars.admin") && player.getLocation().getY()<0){
@@ -106,6 +193,48 @@ public class PlayerListener implements Listener {
                 player.teleport(arena.getLoc2());
             }
         }
+
+        // SUMO
+        if (MiarsPractice.getModeType()==FKitType.SUMO){
+            if (state!=null){
+
+                switch (state.getState()){
+                    case IDLE,READY -> {
+                        if (e.getFrom().getZ() != e.getTo().getZ() && e.getFrom().getX() != e.getTo().getX()) {
+                            e.setTo(e.getFrom());
+                        }
+                    }
+                    case GAME -> {
+                        if(e.getPlayer().getLocation().add(0, -1, 0).getBlock().getType().equals(Material.STATIONARY_WATER) || e.getPlayer().getLocation().add(0, -1, 0).getBlock().getType().equals(Material.WATER)){
+                            ArenaManager.getInstance().endGame(
+                                    GamePlayer.get(Bukkit.getPlayerExact(
+                                            state.getPlayerA().equals(player.getName())?state.getPlayerB():state.getPlayerA()
+                                    )),
+                                    GamePlayer.get(player));
+                        }else if(e.getPlayer().getLocation().add(0, 0, 0).getBlock().getType().equals(Material.STATIONARY_WATER) || e.getPlayer().getLocation().add(0, 0, 0).getBlock().getType().equals(Material.WATER)){
+                            ArenaManager.getInstance().endGame(
+                                    GamePlayer.get(Bukkit.getPlayerExact(
+                                            state.getPlayerA().equals(player.getName())?state.getPlayerB():state.getPlayerA()
+                                    )),
+                                    GamePlayer.get(player));
+                        }else if(e.getPlayer().getLocation().add(0, 1, 0).getBlock().getType().equals(Material.STATIONARY_WATER) || e.getPlayer().getLocation().add(0, 1, 0).getBlock().getType().equals(Material.WATER)){
+                            ArenaManager.getInstance().endGame(
+                                    GamePlayer.get(Bukkit.getPlayerExact(
+                                            state.getPlayerA().equals(player.getName())?state.getPlayerB():state.getPlayerA()
+                                    )),
+                                    GamePlayer.get(player));
+                        }else if(e.getPlayer().getLocation().add(0, -2, 0).getBlock().getType().equals(Material.STATIONARY_WATER) || e.getPlayer().getLocation().add(0, -2, 0).getBlock().getType().equals(Material.WATER)){
+                            ArenaManager.getInstance().endGame(
+                                    GamePlayer.get(Bukkit.getPlayerExact(
+                                            state.getPlayerA().equals(player.getName())?state.getPlayerB():state.getPlayerA()
+                                    )),
+                                    GamePlayer.get(player));
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     @EventHandler
@@ -115,7 +244,7 @@ public class PlayerListener implements Listener {
         e.setKeepInventory(true);
 
         Player deathPlayer = e.getEntity(); // 死亡的玩家
-        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(deathPlayer);
+        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(deathPlayer.getName());
         deathPlayer.spigot().respawn();
         FPlayer deathFPlayer = FPlayerDataStorage.getInstance().getFPlayer(deathPlayer);
         deathFPlayer.addDeathCount();
@@ -131,7 +260,22 @@ public class PlayerListener implements Listener {
         attackFPlayer.addKillsCount();
 
 
-        ArenaManager.getInstance().endGame(attackPlayer,deathPlayer);
+        ArenaManager.getInstance().endGame(
+                new GamePlayer(
+                        attackPlayer.getUniqueId(),
+                        attackFPlayer.getName(),
+                        attackPlayer.getHealth(),
+                        attackPlayer.getFoodLevel(),
+                        attackPlayer.getActivePotionEffects()
+                ),
+                new GamePlayer(
+                        deathPlayer.getUniqueId(),
+                        deathPlayer.getName(),
+                        deathPlayer.getHealth(),
+                        deathPlayer.getFoodLevel(),
+                        deathPlayer.getActivePotionEffects()
+                )
+                );
 
     }
 
@@ -169,55 +313,18 @@ public class PlayerListener implements Listener {
         e.setFormat(ColorParser.parse(mRank.getPrefix()+mRank.getNameColor()+"%1$s&f: %2$s"));
     }
 
-    HashMap<UUID,Long> hashMap = new HashMap<>();
+
     @EventHandler
     public void PlayerInteractEvent(PlayerInteractEvent e){
         Player player = e.getPlayer();
         ItemStack itemStack = e.getItem();
         Block block = e.getClickedBlock();
         Action action = e.getAction();
-        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player);
+        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player.getName());
 
         if (itemStack!=null && state!=null){
             // 物品的交互
             ItemInteractManager.getInstance().init(itemStack,player);
-
-//            if (state.getState()!= ArenaState.State.GAME){
-//                e.setCancelled(true);
-//                return;
-//            }
-
-            // 末影珍珠的使用 Todo 写成manager
-            if (action.equals(Action.RIGHT_CLICK_AIR)||action.equals(Action.RIGHT_CLICK_BLOCK)){
-                if (itemStack.getType().equals(Material.ENDER_PEARL)){
-                    if (player.getGameMode().equals(GameMode.SURVIVAL)){
-                        if (hashMap.containsKey(player.getUniqueId())){
-                            if (!((System.currentTimeMillis()-hashMap.get(player.getUniqueId()))>=12000)){
-                                //player.sendMessage(ColorParser.parse("&7您暂时无法使用 &c末影珍珠 &7还需要等待 " + ToolUtils.getDate((15000-(System.currentTimeMillis()-hashMap.get(player.getUniqueId())))/1000) + " &7才能使用。"));
-                                player.playSound(player.getLocation(), Sound.VILLAGER_NO,1,1);
-                                e.setCancelled(true);
-                            }
-                        }else {
-                            hashMap.put(player.getUniqueId(),System.currentTimeMillis());
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    if (hashMap.containsKey(player.getUniqueId())){
-                                        if (!((System.currentTimeMillis()-hashMap.get(player.getUniqueId()))>=12000)){
-                                            player.setLevel((int) ((12000-(System.currentTimeMillis()-hashMap.get(player.getUniqueId())))/1000));
-                                        }else {
-                                            hashMap.remove(player.getUniqueId());
-                                            cancel();
-                                        }
-
-                                    }
-                                }
-                            }.runTaskTimerAsynchronously(MiarsPractice.getInstance(),0,2);
-                            ToolUtils.reduceXpBar(player,12*20);
-                        }
-                    }
-                }
-            }
         }
 
     }
@@ -236,7 +343,7 @@ public class PlayerListener implements Listener {
 
         if (player.getGameMode()==GameMode.CREATIVE){return;}
 
-        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player);
+        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player.getName());
         Arena arena = ArenaManager.getInstance().getArenaById(state);
 
 
@@ -250,7 +357,7 @@ public class PlayerListener implements Listener {
 
         if (player.getGameMode()==GameMode.CREATIVE){return;}
 
-        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player);
+        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player.getName());
         Arena arena = ArenaManager.getInstance().getArenaById(state);
 
         e.setCancelled(BuildUHCManager.getInstance().breakBlock(arena,state,e.getBlock()));
@@ -264,7 +371,7 @@ public class PlayerListener implements Listener {
 
         if (player.getGameMode()==GameMode.CREATIVE){return;}
 
-        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player);
+        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player.getName());
         Arena arena = ArenaManager.getInstance().getArenaById(state);
 
         e.setCancelled(BuildUHCManager.getInstance().placeBlock(arena,state,block));
@@ -277,7 +384,7 @@ public class PlayerListener implements Listener {
 
         if (player.getGameMode()==GameMode.CREATIVE){return;}
 
-        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player);
+        ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player.getName());
         Arena arena = ArenaManager.getInstance().getArenaById(state);
 
         e.setCancelled(BuildUHCManager.getInstance().breakBlock(arena, state, block));
@@ -285,7 +392,6 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void BlockFromToEvent(BlockFormEvent e){
-        System.out.println(e.getBlock().getType().name());
         e.setCancelled(true);
     }
 
@@ -307,7 +413,7 @@ public class PlayerListener implements Listener {
         if (entities.size()!=0){
             for (Entity entity:entities) {
                 if (entity instanceof Player player){
-                    ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player);
+                    ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player.getName());
                     if (state==null){
                         continue;
                     }
@@ -324,5 +430,87 @@ public class PlayerListener implements Listener {
 
     }
 
+    // Boxing
+    @EventHandler
+    public void EntityDamageEvent(EntityDamageEvent e) {
+        if(e.getEntity() instanceof Player player) {
+            if (e.getCause() == EntityDamageEvent.DamageCause.FALL){
+                e.setCancelled(true);
+            }
 
+            // 判断战斗是否已经结束
+            ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(player.getName());
+            if (state != null && state.getState()!= ArenaState.State.GAME){
+                e.setCancelled(true);
+            }
+        }
+
+        // 特定模式关闭掉落伤害
+        switch (FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.getNotNull())){
+            case NO_DEBUFF -> {
+                //  关闭掉落伤害
+                if (e.getCause().equals(EntityDamageEvent.DamageCause.FALL)){
+                    e.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void FoodLevelChangeEvent(FoodLevelChangeEvent e){
+        if (e.getEntity() instanceof Player player){
+            switch (MiarsPractice.getModeType()) {
+                case SUMO,BOXING,COMBO -> {
+                    e.setFoodLevel(20);
+                }
+            }
+        }
+
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void EntityDamageByEntityEvent(EntityDamageByEntityEvent e){
+        if (e.getEntity() instanceof Player player){
+            if (e.getDamager() instanceof Player damager){
+                damagePlayer(player,damager,e);
+            }
+        }
+    }
+
+    public void damagePlayer(Player player,Player damager,EntityDamageByEntityEvent e){
+
+        switch (MiarsPractice.getModeType()){
+            case SUMO -> {
+                e.setDamage(0);
+            }
+            case BOXING -> {
+                e.setDamage(0);
+                if (e.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK){
+                    ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(damager.getName());
+
+                    if (state.getState() == ArenaState.State.GAME){
+                        BoxingManager.getInstance().addBoxingData(damager.getUniqueId());
+                        if (BoxingManager.getInstance().getBoxingData(damager.getUniqueId())>=100){
+                            ArenaManager.getInstance().endGame(
+                                    new GamePlayer(
+                                            damager.getUniqueId(),
+                                            damager.getName(),
+                                            damager.getHealth(),
+                                            damager.getFoodLevel(),
+                                            damager.getActivePotionEffects()
+                                    ),
+                                    new GamePlayer(
+                                            player.getUniqueId(),
+                                            player.getName(),
+                                            player.getHealth(),
+                                            player.getFoodLevel(),
+                                            player.getActivePotionEffects()
+                                    )
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

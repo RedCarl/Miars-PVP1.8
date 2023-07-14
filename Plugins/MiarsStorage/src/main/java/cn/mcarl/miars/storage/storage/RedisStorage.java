@@ -38,7 +38,7 @@ public class RedisStorage {
 
     public String getJedis(String key){
         try(Jedis jedis = JedisConnectionFactory.getJedis()){
-            return jedis.get(key);
+            return jedis.get(key)!=null ? jedis.get(key) : "[]";
         }
     }
 

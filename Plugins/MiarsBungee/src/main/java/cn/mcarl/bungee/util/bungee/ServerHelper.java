@@ -130,4 +130,32 @@ public class ServerHelper {
         private Integer players;
     }
 
+
+
+    public static String getServerDisplayName(String input){
+        // 找到第一个 "-" 的位置
+        int dashIndex = input.indexOf("-");
+
+        if (dashIndex != -1) {
+            // 提取 "-" 前面的内容
+            input = input.substring(0, dashIndex);
+        }
+
+        switch (input){
+            case "practice" -> {
+                return "Practice";
+            }
+            case "skywars" -> {
+                return "SkyWars";
+            }
+            case "bedwars" -> {
+                return "BedWars";
+            }
+            case "uhc" -> {
+                return "UHCGame";
+            }
+        }
+
+        return input;
+    }
 }

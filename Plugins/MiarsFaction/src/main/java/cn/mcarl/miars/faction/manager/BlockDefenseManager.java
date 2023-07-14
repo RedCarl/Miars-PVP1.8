@@ -26,17 +26,20 @@ public class BlockDefenseManager {
         if (getBlockDefaultValue(block.getType()) == 0) {
             return null;
         }
+        FLocation fLocation = new FLocation(block.getLocation());
 
-        if (!values.containsKey(FLocation.toFLocation(block.getLocation()))) {
-            values.put(FLocation.toFLocation(block.getLocation()), new BlockDefenseEntity(System.currentTimeMillis(),getBlockDefaultValue(block.getType())));
+        if (!values.containsKey(fLocation)) {
+            values.put(fLocation, new BlockDefenseEntity(System.currentTimeMillis(),getBlockDefaultValue(block.getType())));
         }
-        BlockDefenseEntity blockDefenseEntity = values.get(FLocation.toFLocation(block.getLocation()));
+        
+        BlockDefenseEntity blockDefenseEntity = values.get(fLocation);
+
         double max = getBlockDefaultValue(block.getType());
         double left = max - blockDefenseEntity.getHealthy();
         long now = System.currentTimeMillis();
         double health = blockDefenseEntity.getHealthy() + (left * (((now - (double) blockDefenseEntity.getLastAttack()) / 1000) / 3600));
-        values.get(FLocation.toFLocation(block.getLocation())).setHealthy(health);
-        return values.get(FLocation.toFLocation(block.getLocation()));
+        values.get(fLocation).setHealthy(health);
+        return values.get(fLocation);
     }
 
     /**
@@ -51,14 +54,16 @@ public class BlockDefenseManager {
         if (source != null && source.getBlock().isLiquid()) {
             value = value * 0.35; //液体减伤
         }
+        FLocation fLocation = new FLocation(block.getLocation());
+
         if (makeBlowable(block)){
             if (getBlockValue(block)!=null && (getBlockValue(block).getHealthy() - value) <= 0) {
-                values.remove(FLocation.toFLocation(block.getLocation()));
+                values.remove(fLocation);
                 block.setType(Material.AIR);
                 return null;
             }
-            values.get(FLocation.toFLocation(block.getLocation())).setHealthy(getBlockValue(block).getHealthy() - value);
-            values.get(FLocation.toFLocation(block.getLocation())).setLastAttack(System.currentTimeMillis());
+            values.get(fLocation).setHealthy(getBlockValue(block).getHealthy() - value);
+            values.get(fLocation).setLastAttack(System.currentTimeMillis());
             return null;
         }
         return block;
@@ -83,7 +88,9 @@ public class BlockDefenseManager {
                     Location loc = new Location(source.getWorld(), x + source.getX(), y + source.getY(), z + source.getZ());
                     if (source.distance(loc) <= dmgRadius) {
                         Block block = reduceBlockValue(source,loc.getBlock(), damage);
-                        if (block != null) blocks.add(block);
+                        if (block != null) {
+                            blocks.add(block);
+                        }
 
                     }
                 }

@@ -1,6 +1,7 @@
 package cn.mcarl.miars.practice.command;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.practice.MiarsPractice;
 import cn.mcarl.miars.practice.conf.PluginConfig;
 import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
@@ -33,10 +34,10 @@ public class ArenaCreateCommand implements CommandExecutor, TabCompleter {
                 Arena arena = new Arena();
 
                 arena.setName(args[0]);
-                arena.setMode(FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()));
+                arena.setMode(MiarsPractice.getModeType());
 
                 if (data.keySet().size()==0){
-                    List<Arena> arenas = PracticeArenaDataStorage.getInstance().getArenaData(FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()));
+                    List<Arena> arenas = PracticeArenaDataStorage.getInstance().getArenaData(MiarsPractice.getModeType());
                     for (Arena a:arenas) {
                         data.put(a.getName(),a);
                     }

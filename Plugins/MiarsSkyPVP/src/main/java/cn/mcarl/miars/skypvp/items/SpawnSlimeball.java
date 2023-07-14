@@ -1,14 +1,12 @@
 package cn.mcarl.miars.skypvp.items;
 
 import cn.mcarl.miars.storage.utils.ItemBuilder;
-import cn.mcarl.miars.core.utils.easyitem.AbstractItem;
+import cn.mcarl.miars.storage.utils.easyitem.AbstractItem;
 import cn.mcarl.miars.skypvp.manager.SpawnManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -35,16 +33,6 @@ public class SpawnSlimeball extends AbstractItem {
         if (e.getAction().equals(Action.RIGHT_CLICK_AIR)||e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
             SpawnManager.getInstance().put(player);
         }
-    }
-
-    @Override
-    public void onInventoryClick(InventoryClickEvent e) {
-        e.setCancelled(true);
-    }
-
-    @Override
-    public void onDropItem(PlayerDropItemEvent e) {
-        e.setCancelled(true);
     }
 
     @Override

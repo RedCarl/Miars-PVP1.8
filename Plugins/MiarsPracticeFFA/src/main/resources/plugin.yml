@@ -12,6 +12,10 @@ depend:
 
 commands:
   "Duel":
-    description: "发起决斗"
+    description: "duel"
     aliases:
       - duel
+  "Leaderboard":
+    description: "Leaderboard"
+    aliases:
+      - leaderboard

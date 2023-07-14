@@ -20,7 +20,6 @@
 
 package com.andrei1058.bedwars.arena.team;
 
-import com.andrei1058.bedwars.BedWars;
 import com.andrei1058.bedwars.api.arena.IArena;
 import com.andrei1058.bedwars.api.arena.team.ITeam;
 import com.andrei1058.bedwars.api.arena.team.ITeamAssigner;
@@ -28,33 +27,34 @@ import com.andrei1058.bedwars.api.events.gameplay.TeamAssignEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class TeamAssigner implements ITeamAssigner {
 
     private final LinkedList<Player> skip = new LinkedList<>();
 
+    @Override
     public void assignTeams(IArena arena) {
 
+        List<Player> ps = new ArrayList<>(arena.getPlayers());
+        Iterator<Player> players = ps.listIterator();
 
-        for (Player remaining : arena.getPlayers()) {
-            if (skip.contains(remaining)) {
-                continue;
-            }
+        // 队伍分配
+        while (players.hasNext()){
             for (ITeam team : arena.getTeams()) {
                 if (team.getMembers().size() < arena.getMaxInTeam()) {
-                    TeamAssignEvent e = new TeamAssignEvent(remaining, team, arena);
-                    Bukkit.getPluginManager().callEvent(e);
-                    if (!e.isCancelled()) {
-                        remaining.closeInventory();
-                        team.addPlayers(remaining);
+                    if (players.hasNext()){
+                        Player remaining = players.next();
+                        TeamAssignEvent e = new TeamAssignEvent(remaining, team, arena);
+                        Bukkit.getPluginManager().callEvent(e);
+                        if (!e.isCancelled()) {
+                            remaining.closeInventory();
+                            team.addPlayers(remaining);
+                        }
                     }
-                    break;
                 }
             }
         }
+
     }
 }

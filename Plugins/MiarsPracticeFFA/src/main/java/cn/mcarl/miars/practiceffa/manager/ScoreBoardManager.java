@@ -3,8 +3,16 @@ package cn.mcarl.miars.practiceffa.manager;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.core.manager.ServerManager;
-import cn.mcarl.miars.core.utils.ToolUtils;
-import cn.mcarl.miars.core.utils.fastboard.FastBoard;
+import cn.mcarl.miars.core.utils.MiarsUtils;
+import cn.mcarl.miars.practiceffa.conf.PluginConfig;
+import cn.mcarl.miars.storage.entity.MPlayer;
+import cn.mcarl.miars.storage.entity.MRank;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.QueueType;
+import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
+import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
+import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaStateDataStorage;
+import cn.mcarl.miars.storage.utils.ToolUtils;
+import cn.mcarl.miars.storage.utils.fastboard.FastBoard;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.storage.entity.practice.QueueInfo;
 import cn.mcarl.miars.storage.entity.practice.RankScore;
@@ -13,11 +21,19 @@ import cn.mcarl.miars.practiceffa.utils.FFAUtil;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.RankScoreDataStorage;
 import cn.mcarl.miars.storage.storage.data.serverInfo.ServerInfoDataStorage;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.*;
 
 /**
@@ -35,67 +51,105 @@ public class ScoreBoardManager {
     public void init(){
         tick();
     }
-    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy");
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy");
+    DecimalFormat decimalFormat = new DecimalFormat("00");
+    DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("yyyy/M/d");
+    ZoneId zoneId = ZoneId.of("America/New_York");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss a", Locale.US);
 
     public void tick(){
         new BukkitRunnable() {
             @Override
             public void run() {
-                for (FastBoard board : boards.values()) {
-                    updateBoard(board);
+                for (FastBoard board : new ArrayList<>(boards.values())) {
+                    if (boards.containsValue(board)){
+                        updateBoard(board);
+                    }
                 }
+
+                LocalDate currentDate = LocalDate.now();
+                String formattedDate = currentDate.format(formatterDate);
+                LocalTime currentTime = LocalTime.now();
+                String formattedTime = currentTime.format(formatter) + " " + zoneId.getDisplayName(TextStyle.SHORT, Locale.US);
+
+                MiarsCore.getInstance().getTabHeaderAndFooter().getHeader().setLines(
+                        "&f"+formattedDate+" &7| &bKazer Network &7| &f"+formattedTime,
+                        "&r");
+                MiarsCore.getInstance().getTabHeaderAndFooter().getFooter().setLines(
+                        "&r",
+                        "&fYou are playing &bPractice &fon &bkazer.gg");
             }
-        }.runTaskTimerAsynchronously(MiarsCore.getInstance(),0,20);
+        }.runTaskTimerAsynchronously(MiarsCore.getInstance(),0,2);
     }
 
     private void updateBoard(FastBoard board) {
+
         Player p = board.getPlayer();
         FPlayer fPlayer = FPlayerDataStorage.getInstance().getFPlayer(p);
-        RankScore score = RankScoreDataStorage.getInstance().getRankScore(p.getUniqueId(),1);
+        // RankScore score = RankScoreDataStorage.getInstance().getRankScore(p.getUniqueId(),1);
 
         List<String> lines = new ArrayList<>();
-        board.updateTitle("&ePractice &8| &c"+ ServerInfoDataStorage.getInstance().getServerInfo().getNameCn());
-        lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis())+" &8"+ ToolUtils.getServerCode());
-        lines.add("");
-        lines.add("&6&l┃ &7Online: &6"+ ServerManager.getInstance().getServerOnline("practice"));
-        lines.add("");
-        if (score!=null){
-            lines.add("&6&l┃ &7Rank: &e"+score.getScore());
+        board.updateTitle("&b&lPractice");
+        lines.add("&f&7&m---------------------");
+        lines.add("&fOnline: &b"+ ServerManager.getInstance().getServerOnline("practice"));
+        int playing = PracticeArenaStateDataStorage.getInstance().getGamePlayersByQueueType(QueueType.UNRANKED)+PracticeArenaStateDataStorage.getInstance().getGamePlayersByQueueType(QueueType.RANKED);
+        lines.add("&fPlaying: &b"+ playing);
+        lines.add("&fPoints: &b"+ MiarsCore.getPpAPI().look(p.getUniqueId()));
+
+        // FFA竞技场后开启
+        if (!FFAUtil.isItemRange(
+                p.getLocation(),
+                PluginConfig.FFA_SITE.LOCATION.get(),
+                PluginConfig.FFA_SITE.RADIUS.get()
+        )){
             lines.add("");
-        }
+            // 战斗模式的计分板
+            if (CombatManager.getInstance().isCombat(p)){
 
-        // 战斗模式的计分板
-        if (CombatManager.getInstance().isCombat(p)){
+                Player opponent = Bukkit.getPlayer(CombatManager.getInstance().getCombatInfo(p).getOpponent());
+                if (opponent==null) {
+                    CombatManager.getInstance().clear(p);
+                }else {
+//                    MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(opponent);
+//                    MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
+//                    lines.add("&fOpponent");
+//                    lines.add(mRank.getNameColor() + opponent.getName());
+//                    lines.add("");
 
-            Player opponent = Bukkit.getPlayer(CombatManager.getInstance().getCombatInfo(p).getOpponent());
-            if (opponent==null){
-                CombatManager.getInstance().clear(p);
+                    int milliseconds = CombatManager.getInstance().getLastMilliSeconds(p);
+                    double seconds = milliseconds / 1000.0;
+
+                    DecimalFormat decimalFormat = new DecimalFormat("0.0");
+                    String time = decimalFormat.format(seconds) + "s";
+                    lines.add("&fStats: &c"+time);
+                }
+
             }else {
-                lines.add("&7Opponent");
-                lines.add("&7   Health: &c" + ToolUtils.decimalFormat(opponent.getHealth(), 2));
-                lines.add("&e");
-                lines.add("&7   Fighting... (&c" + CombatManager.getInstance().getLastSecond(p)+"&7)");
+                lines.add("&fKills: &b" + fPlayer.getKillsCount());
+                lines.add("&fDeath: &b" + fPlayer.getDeathCount());
+                lines.add("&fK/D: &b" + FFAUtil.getPlayerKD(fPlayer));
             }
-
-        }else {
-            lines.add("&6&l┃ &7Kills: &a" + fPlayer.getKillsCount());
-            lines.add("&6&l┃ &7Death: &c" + fPlayer.getDeathCount());
-            lines.add("&6&l┃ &7K/D: &6" + FFAUtil.getPlayerKD(fPlayer));
         }
-
-
 
         // 匹配
         QueueInfo queueInfo = PracticeQueueDataStorage.getInstance().getQueue(fPlayer);
         if (queueInfo!=null){
-
             lines.add("");
             lines.add(queueInfo.getQueueType().getColor()+queueInfo.getQueueType().getName() + " " + queueInfo.getFKitType().getName());
-            lines.add("&7正在匹配... ("+ PracticeQueueDataStorage.getInstance().getQueueTime(fPlayer)+"s)");
+
+            int seconds = (int) PracticeQueueDataStorage.getInstance().getQueueTime(fPlayer);
+            int minutes = seconds / 60;
+            int remainingSeconds = seconds % 60;
+            String time = decimalFormat.format(minutes) + ":" + decimalFormat.format(remainingSeconds);
+            lines.add("&fTime: &b"+time);
+            if (queueInfo.getQueueType()==QueueType.RANKED){
+                lines.add("&fElo Range: &b"+999+" &7- &b"+1000);
+            }
         }
 
         lines.add("");
-        lines.add("&7&o"+ ServerInfoDataStorage.getInstance().getServerInfo().getIp());
+        lines.add("&b"+ ServerInfoDataStorage.getInstance().getServerInfo().getIp());
+        lines.add("&f&7&m---------------------");
 
         board.updateLines(ColorParser.parse(lines));
     }

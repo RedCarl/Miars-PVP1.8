@@ -34,7 +34,9 @@ public class StorageCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(
             @NotNull CommandSender sender, @NotNull Command command,
             @NotNull String alias, @NotNull String[] args) {
-        if (args.length < 1) return helpConsole(sender);
+        if (args.length < 1) {
+            return helpConsole(sender);
+        }
         switch (args[0].toLowerCase()) {
             case "reload": {
                 if (sender instanceof Player player){

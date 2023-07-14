@@ -13,9 +13,7 @@ import java.util.Objects;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
+@Data
 public class FLocation {
     private String world;
     private int x, y, z;
@@ -24,7 +22,10 @@ public class FLocation {
         return new Location(Bukkit.getWorld(fLocation.world), fLocation.getX(), fLocation.getY(), fLocation.getZ());
     }
 
-    public static FLocation toFLocation(Location location) {
-        return new FLocation(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+    public FLocation(Location location) {
+        this.world = location.getWorld().getName();
+        this.x = location.getBlockX();
+        this.y = location.getBlockY();
+        this.z = location.getBlockZ();
     }
 }

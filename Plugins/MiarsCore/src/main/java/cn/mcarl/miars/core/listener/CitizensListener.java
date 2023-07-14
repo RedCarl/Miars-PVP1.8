@@ -29,19 +29,21 @@ public class CitizensListener implements Listener {
 
     public void ClickNPCEvent(NPC npc, Player player, int type){
         ServerNPC serverNPC = CitizensManager.getInstance().getServerNPC(npc.data().get(PluginConfig.SERVER_INFO.NAME.get()));
-        switch (serverNPC.getType()) {
-            case "server" -> {
-                if (ServerManager.getInstance().getServerInfo(serverNPC.getValue()) == null) {
-                    player.sendMessage(ColorParser.parse("&7很抱歉,该服务器暂时无法进入,请耐心等待..."));
-                    return;
+        if (serverNPC!=null){
+            switch (serverNPC.getType()) {
+                case "server" -> {
+                    if (ServerManager.getInstance().getServerInfo(serverNPC.getValue()) == null) {
+                        player.sendMessage(ColorParser.parse("&7很抱歉,该服务器暂时无法进入,请耐心等待..."));
+                        return;
+                    }
+                    MiarsCore.getBungeeApi().connect(player, serverNPC.getValue());
                 }
-                MiarsCore.getBungeeApi().connect(player, serverNPC.getValue());
-            }
-            case "menu" -> {
-                ServerMenuGUI.open(player,serverNPC.getValue());
-            }
-            case "command" -> {
-                Bukkit.dispatchCommand(player,serverNPC.getValue());
+                case "menu" -> {
+                    ServerMenuGUI.open(player,serverNPC.getValue());
+                }
+                case "command" -> {
+                    Bukkit.dispatchCommand(player,serverNPC.getValue());
+                }
             }
         }
     }

@@ -17,7 +17,7 @@ public class MRankDataStorage {
         return instance;
     }
     public MRankDataStorage(){
-        for (MRank m:MiarsStorage.getMySQLStorage().queryRankDataList()){
+        for (MRank m:MiarsStorage.getMySQLStorage().queryMRankDataList()){
             dataMap.put(m.getName(),m);
         }
     }
@@ -32,7 +32,7 @@ public class MRankDataStorage {
 
             MiarsStorage.getMySQLStorage().replaceMRankData(mRank);
 
-            List<MRank> data = MiarsStorage.getMySQLStorage().queryRankDataList();
+            List<MRank> data = MiarsStorage.getMySQLStorage().queryMRankDataList();
 
             for (MRank m:data){
                 dataMap.put(m.getName(),m);
@@ -56,7 +56,17 @@ public class MRankDataStorage {
 
         // 如果没有数据，就初始化玩家数据
         if (data==null){
-            return null;
+            return new MRank(
+                    -1,
+                    "&7",
+                    "&7",
+                    "&7",
+                    "&7",
+                    "group.default",
+                    "default",
+                    "",
+                    1
+            );
         }
 
         dataMap.put(rank,data);
@@ -81,7 +91,7 @@ public class MRankDataStorage {
     }
 
     public void reload(){
-        for (MRank m:MiarsStorage.getMySQLStorage().queryRankDataList()){
+        for (MRank m:MiarsStorage.getMySQLStorage().queryMRankDataList()){
             dataMap.put(m.getName(),m);
         }
     }

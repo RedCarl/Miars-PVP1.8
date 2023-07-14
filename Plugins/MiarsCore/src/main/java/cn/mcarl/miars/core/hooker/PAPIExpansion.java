@@ -2,11 +2,9 @@ package cn.mcarl.miars.core.hooker;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.manager.ServerManager;
-import cn.mcarl.miars.core.utils.MiarsUtil;
-import cn.mcarl.miars.core.utils.ToolUtils;
+import cn.mcarl.miars.core.utils.MiarsUtils;
 import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
-import cn.mcarl.miars.storage.entity.MServerInfo;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -128,7 +126,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
 			case "server" -> {
 				switch (args[1].toLowerCase()){
 					case "code" -> {
-						return ToolUtils.getServerCode();
+						return MiarsUtils.getServerCode();
 					}
 				}
 				return getVersion();

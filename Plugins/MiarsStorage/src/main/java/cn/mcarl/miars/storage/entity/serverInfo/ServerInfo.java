@@ -20,8 +20,6 @@ public class ServerInfo {
     private String banSite;
     private String kook;
     private String discord;
-    private String tabHead;
-    private String tabFoot;
 
 
 }

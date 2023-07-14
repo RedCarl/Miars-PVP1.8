@@ -1,15 +1,18 @@
 package cn.mcarl.miars.practice;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.core.MiarsCore;
+import cn.mcarl.miars.core.listener.EnderPearlListener;
 import cn.mcarl.miars.practice.command.ArenaCreateCommand;
 import cn.mcarl.miars.practice.conf.PluginConfig;
-import cn.mcarl.miars.practice.listener.EntityListener;
 import cn.mcarl.miars.practice.listener.PlayerListener;
 import cn.mcarl.miars.practice.manager.ArenaManager;
 import cn.mcarl.miars.practice.manager.ConfigManager;
 import cn.mcarl.miars.practice.manager.QueueManager;
 import cn.mcarl.miars.practice.manager.ScoreBoardManager;
-import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaStateDataStorage;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
+import gg.noob.lib.hologram.HologramManager;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -18,12 +21,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class MiarsPractice extends JavaPlugin {
 
+    @Getter
     private static MiarsPractice instance;
-    public static MiarsPractice getInstance() {
-        return instance;
-    }
+    @Getter
     protected ConfigManager configManager;
-
+    @Getter
+    private static FKitType modeType;
     @SneakyThrows
     @Override
     public void onEnable() {
@@ -35,10 +38,11 @@ public class MiarsPractice extends JavaPlugin {
 
         log("正在初始化配置文件...");
         this.configManager = new ConfigManager(getDataFolder());
+        modeType = FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get());
 
         log("正在注册监听器...");
         regListener(new PlayerListener());
-        regListener(new EntityListener());
+        regListener(new EnderPearlListener());
 
         log("正在注册指令...");
         regCommand("Arena", new ArenaCreateCommand());

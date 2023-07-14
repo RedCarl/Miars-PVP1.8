@@ -12,9 +12,7 @@ import java.util.*;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
+@Data
 public class FactionsEntity {
     private UUID uuid;
     private String name;

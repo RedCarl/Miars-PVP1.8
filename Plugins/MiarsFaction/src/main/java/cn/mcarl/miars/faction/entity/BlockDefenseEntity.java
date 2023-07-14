@@ -8,9 +8,7 @@ import lombok.*;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
+@Data
 public class BlockDefenseEntity {
     long lastAttack;
     double healthy;

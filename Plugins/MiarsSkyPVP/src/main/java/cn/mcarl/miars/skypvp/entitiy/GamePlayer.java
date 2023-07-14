@@ -1,6 +1,6 @@
 package cn.mcarl.miars.skypvp.entitiy;
 
-import cn.mcarl.miars.core.utils.MiarsUtil;
+import cn.mcarl.miars.core.utils.MiarsUtils;
 import cn.mcarl.miars.skypvp.utils.PlayerUtils;
 import cn.mcarl.miars.storage.entity.skypvp.SPlayer;
 import cn.mcarl.miars.storage.storage.data.skypvp.SkyPVPDataStorage;
@@ -69,7 +69,7 @@ public class GamePlayer {
             next = level*200;
         }
 
-        int o = MiarsUtil.accuracy(exp,next,0)/10;
+        int o = MiarsUtils.accuracy(exp,next,0)/10;
 
         StringBuilder s = new StringBuilder("&8[");
 

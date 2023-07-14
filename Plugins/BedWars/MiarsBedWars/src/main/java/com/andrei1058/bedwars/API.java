@@ -420,7 +420,7 @@ public class API implements com.andrei1058.bedwars.api.BedWars {
 
             switch (arena.getStatus()){
                 case waiting,starting -> {
-                    MiarsCore.getApi().setNametag(
+                    MiarsCore.getNametagAPI().setNametag(
                             player,
                             mRank.getNameColor(),
                             mRank.getSuffix(),
@@ -428,14 +428,14 @@ public class API implements com.andrei1058.bedwars.api.BedWars {
                     );
                 }
                 case playing -> {
-                    MiarsCore.getApi().setNametag(
+                    MiarsCore.getNametagAPI().setNametag(
                             player,
                             "&"+team.getColor().chat().getChar()+"["+team.getDisplayName(language)+"] &r"+"&"+team.getColor().chat().getChar(),
                             ""
                     );
                 }
                 case restarting -> {
-                    MiarsCore.getApi().setNametag(
+                    MiarsCore.getNametagAPI().setNametag(
                             player,
                             "",
                             ""
@@ -443,7 +443,7 @@ public class API implements com.andrei1058.bedwars.api.BedWars {
                 }
             }
         }else {
-            MiarsCore.getApi().setNametag(
+            MiarsCore.getNametagAPI().setNametag(
                     player,
                     mRank.getNameColor(),
                     mRank.getSuffix(),

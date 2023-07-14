@@ -21,7 +21,8 @@ public class PlayerListener implements Listener {
   public void onServerKickEvent(ServerKickEvent ev) {
     var player = ev.getPlayer();
     var kickedFrom = originOfKick(player).getName();
-    var kickTo = ServerHelper.getLobbyServer();
+//    var kickTo = ServerHelper.getLobbyServer();
+    var kickTo = ServerHelper.getServerInfo("Practice-ffa");
 
     if (kickedFrom != null && kickedFrom.equals(kickTo)) {
       return;
@@ -30,7 +31,7 @@ public class PlayerListener implements Listener {
     ev.setCancelled(true);
     ev.setCancelServer(plugin.getProxy().getServers().get(kickTo));
 
-    player.sendMessage(ColorParser.parse("&7因为您所在服务器重启维护，已经将您移动至大厅。"));
+    player.sendMessage(ColorParser.parse("&cDue to the restart and maintenance of your server, you have been transferred to the lobby."));
   }
 
   private ServerInfo originOfKick(ProxiedPlayer player) {

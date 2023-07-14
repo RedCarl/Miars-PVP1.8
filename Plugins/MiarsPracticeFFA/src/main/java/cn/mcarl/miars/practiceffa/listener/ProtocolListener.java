@@ -1,7 +1,7 @@
 package cn.mcarl.miars.practiceffa.listener;
 
-import cn.mcarl.miars.core.utils.packet.WrapperPlayClientBlockDig;
-import cn.mcarl.miars.core.utils.packet.WrapperPlayServerBlockChange;
+import cn.mcarl.miars.storage.utils.packet.WrapperPlayClientBlockDig;
+import cn.mcarl.miars.storage.utils.packet.WrapperPlayServerBlockChange;
 import cn.mcarl.miars.practiceffa.MiarsPracticeFFA;
 import cn.mcarl.miars.practiceffa.conf.PluginConfig;
 import cn.mcarl.miars.practiceffa.manager.CombatManager;

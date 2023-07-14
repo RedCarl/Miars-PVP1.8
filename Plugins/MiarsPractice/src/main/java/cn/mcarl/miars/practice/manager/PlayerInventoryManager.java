@@ -1,5 +1,6 @@
 package cn.mcarl.miars.practice.manager;
 
+import cn.mcarl.miars.practice.MiarsPractice;
 import cn.mcarl.miars.storage.utils.CustomSort;
 import cn.mcarl.miars.storage.utils.ItemBuilder;
 import cn.mcarl.miars.practice.conf.PluginConfig;
@@ -23,7 +24,7 @@ public class PlayerInventoryManager {
     }
 
     public void init(Player p){
-        List<FKit> list = new ArrayList<>(FKitDataStorage.getInstance().getFKitData(p.getUniqueId(), FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get())));
+        List<FKit> list = new ArrayList<>(FKitDataStorage.getInstance().getFKitData(p.getUniqueId(), MiarsPractice.getModeType()));
         CustomSort.sort(list,"power",false);
 
         p.getInventory().setItem(39,null);

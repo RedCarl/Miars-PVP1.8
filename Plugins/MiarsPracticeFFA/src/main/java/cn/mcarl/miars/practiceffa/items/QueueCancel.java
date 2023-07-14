@@ -1,7 +1,7 @@
 package cn.mcarl.miars.practiceffa.items;
 
 import cn.mcarl.miars.storage.utils.ItemBuilder;
-import cn.mcarl.miars.core.utils.easyitem.AbstractItem;
+import cn.mcarl.miars.storage.utils.easyitem.AbstractItem;
 import cn.mcarl.miars.practiceffa.entity.GamePlayer;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
 import org.bukkit.Material;

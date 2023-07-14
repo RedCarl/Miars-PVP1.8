@@ -1,7 +1,7 @@
 package cn.mcarl.miars.core.publics.items;
 
 import cn.mcarl.miars.storage.utils.ItemBuilder;
-import cn.mcarl.miars.core.utils.easyitem.AbstractItem;
+import cn.mcarl.miars.storage.utils.easyitem.AbstractItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -19,7 +19,7 @@ public class GoldHead extends AbstractItem {
 
         id = "gold_head";
         item = new ItemBuilder(Material.GOLDEN_APPLE)
-                .setName("&6&l金头")
+                .setName("&6&lGold Head")
                 .toItemStack();
     }
 

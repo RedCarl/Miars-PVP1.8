@@ -2,30 +2,46 @@ package cn.mcarl.miars.core;
 
 import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.core.command.GamemodeCommand;
 import cn.mcarl.miars.core.command.MiarsCommand;
 import cn.mcarl.miars.core.command.MoneyCommand;
 import cn.mcarl.miars.core.hooker.MiarsEconomy;
 import cn.mcarl.miars.core.hooker.PAPIExpansion;
+import cn.mcarl.miars.core.impl.lunarclient.LunarClientAPI;
+import cn.mcarl.miars.core.impl.lunarclient.cooldown.LCCooldown;
+import cn.mcarl.miars.core.impl.lunarclient.cooldown.LunarClientAPICooldown;
 import cn.mcarl.miars.core.listener.CitizensListener;
 import cn.mcarl.miars.core.listener.PlayerListener;
+import cn.mcarl.miars.core.listener.WorldListener;
 import cn.mcarl.miars.core.manager.CitizensManager;
 import cn.mcarl.miars.core.manager.ConfigManager;
 import cn.mcarl.miars.core.manager.ItemsManager;
 import cn.mcarl.miars.core.manager.ServerManager;
-import cn.mcarl.miars.core.utils.BungeeApi;
-import cn.mcarl.miars.core.utils.easyitem.ItemManager;
+import cn.mcarl.miars.core.tab.TabProvider_1_7;
+import cn.mcarl.miars.core.tab.TabTask;
+import cn.mcarl.miars.storage.utils.BungeeApi;
+import cn.mcarl.miars.storage.utils.easyitem.ItemManager;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.nametagedit.plugin.NametagHandler;
 import com.nametagedit.plugin.NametagManager;
 import com.nametagedit.plugin.api.NametagAPI;
 import com.nametagedit.plugin.invisibility.InvisibilityTask;
+import dev.fls.tablist.TabHeaderAndFooter;
+import gg.noob.lib.hologram.HologramManager;
+import gg.noob.lib.hologram.click.listener.HologramClickListener;
+import gg.noob.lib.hologram.listener.HologramListener;
+import gg.noob.lib.tab.TabHandler;
+import gg.noob.lib.tab.TabManager;
+import gg.noob.lib.tab.impl.TabAPI;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import net.luckperms.api.LuckPerms;
 import net.milkbowl.vault.economy.Economy;
 import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -37,45 +53,44 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @DATE: 2022/11/6 17:42
  */
 public class MiarsCore extends JavaPlugin {
+    @Getter
     private static MiarsCore instance;
-    public static MiarsCore getInstance() {
-        return instance;
-    }
+    @Getter
     private static BungeeApi bungeeApi;
-    public static BungeeApi getBungeeApi() {
-        return bungeeApi;
-    }
+    @Getter
     private static LuckPerms luckPerms;
-    public static LuckPerms getLuckPerms() {
-        return luckPerms;
-    }
-    public static ProtocolManager getProtocolManager() {
-        return protocolManager;
-    }
+    @Getter
     private static ProtocolManager protocolManager;
     protected ConfigManager configManager;
-
+    @Getter
     private static PlayerPointsAPI ppAPI;
-    public static PlayerPointsAPI getPpAPi(){
-        return ppAPI;
-    }
-
+    @Getter
     private static Economy econ;
-    public static Economy getEcon(){
-        return econ;
-    }
-    private static NametagAPI api;
-
-    public static NametagAPI getApi() {
-        return api;
-    }
     private NametagHandler handler;
     private NametagManager manager;
+    @Getter
+    private static NametagAPI nametagAPI;
+    @Getter
+    private HologramManager hologramManager;
+    @Getter
+    private TabHeaderAndFooter tabHeaderAndFooter;
+
+    @Override
+    public void onLoad() {
+        instance = this;
+
+        // register vault
+        Bukkit.getServicesManager().register(
+                Economy.class,
+                new MiarsEconomy(),
+                getInstance(),
+                ServicePriority.Normal
+        );
+    }
 
     @SneakyThrows
     @Override
     public void onEnable() {
-        instance = this;
 
         log(getName() + " " + getDescription().getVersion() + " &7开始加载...");
 
@@ -124,14 +139,6 @@ public class MiarsCore extends JavaPlugin {
             log("若您想使用全部功能，请安装ProtocolLib！");
         }
 
-        // register vault
-        Bukkit.getServicesManager().register(
-                Economy.class,
-                new MiarsEconomy(),
-                getInstance(),
-                ServicePriority.Normal
-        );
-
         //Vault
         if (!setupEconomy() ) {
             log("未安装 Vault 不进行经济管理...");
@@ -149,6 +156,8 @@ public class MiarsCore extends JavaPlugin {
         regListener(new PlayerListener());
         regListener(new CitizensListener());
         regListener(new ItemManager());
+        regListener(new HologramListener());
+        regListener(new WorldListener());
 
         log("正在初始化 Bungee 代理...");
         ServerManager.getInstance().onStartServer();
@@ -159,6 +168,8 @@ public class MiarsCore extends JavaPlugin {
         log("正在注册指令...");
         regCommand("Miars",new MiarsCommand());
         regCommand("Money",new MoneyCommand());
+        regCommand("gamemode",new GamemodeCommand());
+//       regCommand("spawner",new SpawnerCommand());
 
         log("正在初始化 NPC 模块...");
         CitizensManager.getInstance().init();
@@ -167,8 +178,26 @@ public class MiarsCore extends JavaPlugin {
         log("正在初始化 NameTag 模块...");
         manager = new NametagManager();
         handler = new NametagHandler(this,manager);
-        api = new NametagAPI(manager);
+        nametagAPI = new NametagAPI(manager);
+
+        log("彻底隐身系统初始化...");
         new InvisibilityTask().runTaskTimerAsynchronously(this, 100L, 20L);
+
+        log("正在初始化 Tab 模块...");
+        tabHeaderAndFooter = new TabHeaderAndFooter(this);
+        new TabTask().runTaskTimer(this,0,20);
+//        tabManager = new TabManager();
+//        getTabManager().setTabHandler(new TabHandler(new TabAPI(), new TabProvider_1_7(), this, 250L));
+
+        log("正在初始化 LunarClientAPi 模块...");
+        new LunarClientAPI().onEnable();
+        registerLunarClientCoolDownAPI("EnderPearl", 12 * 1000L, Material.ENDER_PEARL);
+
+        log("正在初始化 HologramManager 模块...");
+        hologramManager = new HologramManager();
+
+        log("初始化数据包...");
+        MiarsCore.getProtocolManager().addPacketListener(new HologramClickListener());
 
         log("当前服务端版本 "+Bukkit.getServer().getVersion());
 
@@ -241,4 +270,11 @@ public class MiarsCore extends JavaPlugin {
         econ = rsp.getProvider();
         return econ != null;
     }
+
+    public void registerLunarClientCoolDownAPI(String name, long ms, Material itemId) {
+        LunarClientAPICooldown.registerCooldown(new LCCooldown(name, ms, itemId));
+
+       log("Registered lunar client coolDown API: " + name);
+    }
+
 }

@@ -9,3 +9,9 @@ api-version: 1.8
 
 depend:
   - MiarsCore
+
+commands:
+  "faction":
+    description: 派系主指令。
+    aliases:
+      - f

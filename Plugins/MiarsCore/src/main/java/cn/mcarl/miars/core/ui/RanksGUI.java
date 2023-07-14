@@ -6,7 +6,7 @@ import cc.carm.lib.easyplugin.gui.GUIType;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.publics.GUIUtils;
 import cn.mcarl.miars.storage.utils.ItemBuilder;
-import cn.mcarl.miars.core.utils.MiarsUtil;
+import cn.mcarl.miars.core.utils.MiarsUtils;
 import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
@@ -23,10 +23,14 @@ import java.util.List;
 
 public class RanksGUI extends GUI {
     final Player player;
+    final boolean ascFlag;
+    final boolean prefix;
 
-    public RanksGUI(Player player) {
-        super(GUIType.SIX_BY_NINE, "&0头衔管理");
+    public RanksGUI(Player player,boolean prefix,boolean ascFlag) {
+        super(GUIType.SIX_BY_NINE, "&0Name Tag");
         this.player = player;
+        this.ascFlag = ascFlag;
+        this.prefix = prefix;
         load();
     }
 
@@ -37,7 +41,7 @@ public class RanksGUI extends GUI {
         mRanks = new ArrayList<>(MRankDataStorage.getInstance().getMRankList().values().stream().toList());
         mPlayer = MPlayerDataStorage.getInstance().getMPlayer(player);
 
-        CustomSort.sort(mRanks,"power",true);
+        CustomSort.sort(mRanks,"power",ascFlag);
 
         int i=0;
         for (MRank m:mRanks){
@@ -64,7 +68,7 @@ public class RanksGUI extends GUI {
 
     public GUIItem setSelectRankItem(MRank mRank){
         return new GUIItem(new ItemBuilder(Material.NAME_TAG)
-                .setName(mRank.getPrefix()+"&a[已佩戴]")
+                .setName(mRank.getPrefix()+"&a[On]")
                 .setLore(mRank.getDescribe().split("/n"))
                 .addEnchant(Enchantment.KNOCKBACK,1,true)
                 .addFlag(ItemFlag.HIDE_ENCHANTS)
@@ -73,7 +77,7 @@ public class RanksGUI extends GUI {
 
     public GUIItem setRankItem(MRank mRank){
         return new GUIItem(new ItemBuilder(Material.NAME_TAG)
-                .setName(mRank.getPrefix()+"&7[未佩戴]")
+                .setName(mRank.getPrefix()+"&7[Off]")
                 .setLore(mRank.getDescribe().split("/n"))
                 .addFlag(ItemFlag.HIDE_ENCHANTS)
                 .toItemStack()){
@@ -83,7 +87,7 @@ public class RanksGUI extends GUI {
                 MPlayerDataStorage.getInstance().putMPlayer(mPlayer);
                 clicker.sendMessage(ColorParser.parse("&7您的头衔已经更换为 "+mRank.getPrefix()+" &7请注意查看。"));
 
-                MiarsUtil.initPlayerNametag(player,true);
+                MiarsUtils.initPlayerNametag(player,prefix);
 
                 load();
                 updateView();
@@ -110,7 +114,7 @@ public class RanksGUI extends GUI {
                 MPlayerDataStorage.getInstance().putMPlayer(mPlayer);
                 clicker.sendMessage(ColorParser.parse("&7您的头衔已经更换为默认头衔请注意查看。"));
 
-                MiarsUtil.initPlayerNametag(player,true);
+                MiarsUtils.initPlayerNametag(player,prefix);
 
                 load();
                 updateView();
@@ -119,9 +123,9 @@ public class RanksGUI extends GUI {
     }
 
 
-    public static void open(Player player) {
+    public static void open(Player player,boolean prefix,boolean ascFlag) {
         player.closeInventory();
-        RanksGUI gui = new RanksGUI(player);
+        RanksGUI gui = new RanksGUI(player,prefix,ascFlag);
         gui.openGUI(player);
     }
 

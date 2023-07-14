@@ -5,7 +5,7 @@ import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.core.conf.PluginConfig;
 import cn.mcarl.miars.core.entity.MHolograms;
 import cn.mcarl.miars.core.entity.MNPCs;
-import cn.mcarl.miars.core.utils.ToolUtils;
+import cn.mcarl.miars.core.utils.MiarsUtils;
 import cn.mcarl.miars.storage.entity.serverNpc.ServerNPC;
 import cn.mcarl.miars.storage.storage.data.serverNpc.ServerNpcDataStorage;
 import me.filoghost.holographicdisplays.api.hologram.Hologram;
@@ -55,7 +55,7 @@ public class CitizensManager {
                 MNPCs.createNPCString(
                         EntityType.PLAYER,
                         new Location(Bukkit.getWorld(npc.getWorld()), npc.getX(), npc.getY(), npc.getZ(), npc.getYaw(), npc.getPitch()),
-                        ColorParser.parse(ToolUtils.initLorePapi(npc.getTitle(), true, "npc")),
+                        ColorParser.parse(MiarsUtils.initLorePapi(npc.getTitle(), true, "npc")),
                         n -> {
                             n.data().set(PluginConfig.SERVER_INFO.NAME.get(), npc.getName());
                             if (npc.getItem()!=null){
@@ -89,7 +89,6 @@ public class CitizensManager {
 
     }
 
-
     public void tick(){
         new BukkitRunnable() {
             @Override
@@ -98,7 +97,7 @@ public class CitizensManager {
                 for (String npc:npcList.keySet()) {
 
                     ServerNPC serverNPC = npcMap.get(npc);
-                    List<String> stringList = ColorParser.parse(ToolUtils.initLorePapi(serverNPC.getTitle(),true,"npc"));
+                    List<String> stringList = ColorParser.parse(MiarsUtils.initLorePapi(serverNPC.getTitle(),true,"npc"));
                     Hologram hologram = MHolograms.getHologramByName(npcList.get(npc).getName());
 
                     for (int i = 0; i < MHolograms.getHologramByName(npcList.get(npc).getName()).getLines().size(); i++) {

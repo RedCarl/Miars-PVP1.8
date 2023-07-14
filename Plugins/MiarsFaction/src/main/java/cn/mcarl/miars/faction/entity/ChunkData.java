@@ -19,9 +19,7 @@ import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
+@Data
 public class ChunkData {
     private int x, z;
     private long value;

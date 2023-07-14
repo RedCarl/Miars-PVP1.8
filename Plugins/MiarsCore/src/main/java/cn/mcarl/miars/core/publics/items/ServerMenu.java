@@ -2,7 +2,7 @@ package cn.mcarl.miars.core.publics.items;
 
 import cn.mcarl.miars.core.ui.ServerMenuGUI;
 import cn.mcarl.miars.storage.utils.ItemBuilder;
-import cn.mcarl.miars.core.utils.easyitem.AbstractItem;
+import cn.mcarl.miars.storage.utils.easyitem.AbstractItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;

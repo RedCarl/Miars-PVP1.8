@@ -2,7 +2,7 @@ package cn.mcarl.miars.megawalls.game.manager;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
-import cn.mcarl.miars.core.utils.ToolUtils;
+import cn.mcarl.miars.core.utils.MiarsUtils;
 import cn.mcarl.miars.megawalls.MiarsMegaWalls;
 import cn.mcarl.miars.megawalls.classes.Classes;
 import cn.mcarl.miars.megawalls.classes.ClassesManager;
@@ -14,6 +14,7 @@ import cn.mcarl.miars.megawalls.game.entitiy.GameWall;
 import cn.mcarl.miars.megawalls.game.entitiy.enums.GameState;
 import cn.mcarl.miars.megawalls.game.entitiy.enums.TeamType;
 import cn.mcarl.miars.megawalls.stats.ClassesStats;
+import cn.mcarl.miars.storage.utils.ToolUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -305,7 +306,6 @@ public class GameManager {
         if (gt!=null){
             gt.getGamePlayers().remove(gamePlayer);
         }
-
     }
 
     /**

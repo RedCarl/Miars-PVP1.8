@@ -15,7 +15,7 @@ public class SoloMenuGUI extends GUI {
     final Player player;
 
     public SoloMenuGUI(Player player) {
-        super(GUIType.THREE_BY_NINE, "&0Solo Menu");
+        super(GUIType.THREE_BY_NINE, "&0Game Menu");
         this.player = player;
         load();
     }
@@ -33,12 +33,15 @@ public class SoloMenuGUI extends GUI {
     }
 
     public GUIItem setUnRankItem(){
-        return new GUIItem(new ItemBuilder(Material.GLASS_BOTTLE)
-                .setName("&6&k|&r &eUnRanked &k|")
+        return new GUIItem(new ItemBuilder(Material.IRON_SWORD)
+                .setName("&a&lUnranked")
                 .setLore(
+                        "&7Casual 1v1s with",
+                        "&7no loss penalty.",
                         "",
-                        "&7Playing: &e"+ PracticeArenaStateDataStorage.getInstance().getGamePlayersByQueueType(QueueType.UNRANKED),
-                        "&7Click to Join Ranked Model."
+                        "&fPlaying: &a"+ PracticeArenaStateDataStorage.getInstance().getGamePlayersByQueueType(QueueType.UNRANKED),
+                        "",
+                        "&aClick to play!"
                 )
                 .toItemStack()){
             @Override
@@ -51,12 +54,15 @@ public class SoloMenuGUI extends GUI {
 
 
     public GUIItem setRankItem(){
-        return new GUIItem(new ItemBuilder(Material.EXP_BOTTLE)
-                .setName("&e&k|&r &6Ranked &k|")
+        return new GUIItem(new ItemBuilder(Material.DIAMOND_SWORD)
+                .setName("&b&lRanked")
                 .setLore(
+                        "&7Ranked 1v1s with",
+                        "&7no loss penalty.",
                         "",
-                        "&7Playing: &6"+ PracticeArenaStateDataStorage.getInstance().getGamePlayersByQueueType(QueueType.RANKED),
-                        "&7Click to Join Ranked Model."
+                        "&fPlaying: &b"+ PracticeArenaStateDataStorage.getInstance().getGamePlayersByQueueType(QueueType.RANKED),
+                        "",
+                        "&bClick to play!"
                 )
                 .toItemStack()){
             @Override
@@ -68,7 +74,7 @@ public class SoloMenuGUI extends GUI {
 
 
     public static void open(Player player) {
-        player.closeInventory();
+        //player.closeInventory();
         SoloMenuGUI gui = new SoloMenuGUI(player);
         gui.openGUI(player);
     }

@@ -40,7 +40,7 @@ public class PlayerListener implements Listener {
         player.teleport(PluginConfig.LOBBY_SITE.LOCATION.get());
 
         new ServerMenu().give(player,0);
-        new Ranks().give(player,1);
+        new Ranks(true,false).give(player,1);
 
         ScoreBoardManager.getInstance().joinPlayer(player);
 

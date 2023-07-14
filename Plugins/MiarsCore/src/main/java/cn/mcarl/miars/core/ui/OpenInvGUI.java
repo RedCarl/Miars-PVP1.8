@@ -3,6 +3,7 @@ package cn.mcarl.miars.core.ui;
 import cc.carm.lib.easyplugin.gui.GUI;
 import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
+import cn.mcarl.miars.core.publics.GUIUtils;
 import cn.mcarl.miars.storage.utils.ItemBuilder;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
@@ -10,6 +11,7 @@ import cn.mcarl.miars.storage.entity.practice.PlayerState;
 import cn.mcarl.miars.storage.utils.BukkitUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -25,7 +27,7 @@ public class OpenInvGUI extends GUI {
     final FInventory fInventory;
 
     public OpenInvGUI(Player player, ArenaState state, String name) {
-        super(GUIType.SIX_BY_NINE, "&7"+name+" 的信息");
+        super(GUIType.SIX_BY_NINE, "&7Inventory of "+name);
         this.player = player;
         this.name = name;
         this.playerState = name.equals(state.getPlayerA()) ? state.getPlayerStateA() : state.getPlayerStateB();
@@ -45,14 +47,12 @@ public class OpenInvGUI extends GUI {
             setItem(i,new GUIItem(item));
         }
 
+        for (int i = 36; i < 45; i++) {
+            setItem(i, new GUIItem(GUIUtils.getLineItem()));
+        }
 
-        setItem(45,getViewOtherItem());
-
-        setItem(48,getPlayerHp());
-        setItem(49,getPlayerFoot());
-        setItem(50,getHealthPotions());
-
-
+        setItem(51,getHealthPotions());
+        setItem(52,getMatchStats());
         setItem(53,getViewOtherItem());
     }
 
@@ -60,11 +60,17 @@ public class OpenInvGUI extends GUI {
         String nameV = this.name.equals(state.getPlayerA())?state.getPlayerB():state.getPlayerA();
 
         return new GUIItem(
-                new ItemBuilder(Material.ARROW)
-                        .setName("&a"+nameV+" 的信息")
-                        .setLore("&7点击查看预览")
+                new ItemBuilder(Material.LEVER)
+                        .setName("&bView "+nameV+"'s Inventory")
+                        .setLore("&r")
+                        .setLore("&eClick to swap over to "+nameV+"'s inventory")
                         .toItemStack()
-        ){};
+        ){
+            @Override
+            public void onClick(Player clicker, ClickType type) {
+                OpenInvGUI.open(clicker,state,nameV);
+            }
+        };
     }
 
     public GUIItem getPlayerHp(){
@@ -91,10 +97,32 @@ public class OpenInvGUI extends GUI {
                 i++;
             }
         }
+        for (ItemStack itemStack:fInventory.getItemCote().values()){
+            if (itemStack!=null && itemStack.equals(heal)){
+                i++;
+            }
+        }
         return new GUIItem(
                 new ItemBuilder(Material.POTION, i)
                         .setData((short) 16421)
-                        .setName("&7治疗药水: &a"+i)
+                        .setName("&bPotion Count")
+                        .setLore(
+                                "&r",
+                                "&a"+name+" &fhad &b"+i+" &fhealth potions left."
+                        )
+                        .toItemStack()
+        );
+    }
+    public GUIItem getMatchStats(){
+        return new GUIItem(
+                new ItemBuilder(Material.PAPER)
+                        .setName("&bMatch Stats")
+                        .setLore(
+                                "&r",
+                                "&bCombat Stats",
+                                "&r",
+                                "&bPotion Stats"
+                        )
                         .toItemStack()
         );
     }

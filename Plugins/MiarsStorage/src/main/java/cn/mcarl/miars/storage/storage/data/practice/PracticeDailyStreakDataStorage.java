@@ -47,10 +47,19 @@ public class PracticeDailyStreakDataStorage {
 
     }
 
-    // 获取连胜Top3
+    // 控制查询速度
+    Long time = 0L;
+
+    // 获取连胜Top
     public List<DailyStreak> getDailyStreaksTop(QueueType queueType, FKitType fKitType){
+
+        // 控制速度
+        if ((System.currentTimeMillis()-time)/1000 > 3){
+            dailyStreaks = getDailyStreaksRedisList();
+        }
+
         List<DailyStreak> list = new ArrayList<>();
-        for (DailyStreak d:getDailyStreaksRedisList()) {
+        for (DailyStreak d:dailyStreaks) {
             if (d.getFKitType().equals(fKitType) && d.getQueueType().equals(queueType)){
                 list.add(d);
             }
@@ -60,8 +69,8 @@ public class PracticeDailyStreakDataStorage {
     }
 
     // 获得玩家的连胜次数
-    public DailyStreak getDailyStreaksByPlayer(Player player, QueueType queueType, FKitType fKitType){
-        for (DailyStreak d:getDailyStreaksRedisList()) {
+    public DailyStreak getDailyStreaksByPlayer(Player player, QueueType queueType, FKitType fKitType,List<DailyStreak> list){
+        for (DailyStreak d:list) {
             if (d.getName().equals(player.getName()) && d.getFKitType().equals(fKitType) && d.getQueueType().equals(queueType)){
                 return d;
             }
@@ -75,6 +84,10 @@ public class PracticeDailyStreakDataStorage {
     }
 
 
+    /**
+     * 请不要频繁调用，会影响性能
+     * @return
+     */
     public List<DailyStreak> getDailyStreaksRedisList(){
 
         String json = MiarsStorage.getRedisStorage().getJedis(REDIS_KEY);
@@ -85,6 +98,10 @@ public class PracticeDailyStreakDataStorage {
         return JSONArray.parseArray(json).toJavaList(DailyStreak.class);
     }
 
+    /**
+     * 请不要频繁调用，会影响性能
+     * @return
+     */
     public void setDailyStreaksRedisList(List<DailyStreak> list){
         if (list.size()==0){
             MiarsStorage.getRedisStorage().delJedis(REDIS_KEY);

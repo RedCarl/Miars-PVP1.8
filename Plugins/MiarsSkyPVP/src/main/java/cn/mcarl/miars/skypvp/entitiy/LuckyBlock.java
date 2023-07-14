@@ -1,8 +1,7 @@
 package cn.mcarl.miars.skypvp.entitiy;
 
-import cn.mcarl.miars.core.utils.Award;
+import cn.mcarl.miars.storage.utils.Award;
 import cn.mcarl.miars.skypvp.conf.LuckyConfig;
-import cn.mcarl.miars.skypvp.conf.PluginConfig;
 import cn.mcarl.miars.skypvp.enums.LuckBlockType;
 import lombok.AllArgsConstructor;
 import lombok.Data;

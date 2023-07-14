@@ -19,6 +19,7 @@ public class ShopItem {
 
     private PriceType type;
     private double price;
+    private double discount;
     private List<String> command;
     private List<ItemStack> items;
 
@@ -26,6 +27,7 @@ public class ShopItem {
         Gson gson = new Gson();
         this.type = PriceType.valueOf(toString.getType());
         this.price = toString.getPrice();
+        this.discount = toString.getDiscount();
         this.command = toString.getCommand();
         List<ItemStack> list = new ArrayList<>();
         for (String s:toString.getItems()) {
@@ -42,6 +44,7 @@ public class ShopItem {
         ToString toString = new ToString(
                 this.type.name(),
                 this.price,
+                this.discount,
                 this.command,
                 list
         );
@@ -57,6 +60,7 @@ public class ShopItem {
     class ToString{
         private String type;
         private double price;
+        private double discount;
         private List<String> command;
         private List<String> items;
     }

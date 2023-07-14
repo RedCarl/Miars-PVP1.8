@@ -5,7 +5,11 @@ import cc.carm.lib.easyplugin.gui.GUIItem;
 import cc.carm.lib.easyplugin.gui.GUIType;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.publics.GUIUtils;
-import cn.mcarl.miars.core.utils.jsonmessage.JSONMessage;
+import cn.mcarl.miars.storage.entity.MPlayer;
+import cn.mcarl.miars.storage.entity.MRank;
+import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
+import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
+import cn.mcarl.miars.storage.utils.jsonmessage.JSONMessage;
 import cn.mcarl.miars.practiceffa.MiarsPracticeFFA;
 import cn.mcarl.miars.practiceffa.entity.GamePlayer;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
@@ -31,7 +35,7 @@ public class SelectPracticeGUI extends GUI {
     final Player player;
 
     public SelectPracticeGUI(Player player,QueueType queueType,Player duel) {
-        super(GUIType.THREE_BY_NINE, "&0["+queueType+"] 请选择模式...");
+        super(GUIType.THREE_BY_NINE, "&0"+queueType.getName()+" Queue");
         this.player = player;
 
         for (int j = 0; j < 27; j++) {
@@ -51,15 +55,6 @@ public class SelectPracticeGUI extends GUI {
                 updateView();
             }
         }.runTaskTimerAsynchronously(MiarsPracticeFFA.getInstance(),0,20L);
-
-
-        setItem(22,new GUIItem(GUIUtils.getCloseItem()){
-            @Override
-            public void onClick(Player clicker, ClickType type) {
-                player.closeInventory();
-            }
-        });
-
     }
 
     public void setItem(QueueType queueType,Player duel){
@@ -69,12 +64,12 @@ public class SelectPracticeGUI extends GUI {
                 @Override
                 public void onClick(Player clicker, ClickType type) {
 
-                    // 初始化背包
-                    GamePlayer.get(player).initData();
-
                     if (duel==null){
                         // 开始匹配
                         PracticeQueueDataStorage.getInstance().addQueue(ft,queueType,FPlayerDataStorage.getInstance().getFPlayer(player));
+
+                        // 初始化背包
+                        GamePlayer.get(player).initData();
                     }else {
                         if (
                                 PracticeQueueDataStorage.getInstance().addDuel(
@@ -83,19 +78,22 @@ public class SelectPracticeGUI extends GUI {
                                         )
                                 )
                         ){
+                            MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(duel);
+                            MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
                             player.sendMessage(ColorParser.parse("&r"));
-                            player.sendMessage(ColorParser.parse("&e&l"+ft.getName()+" Duel"));
-                            player.sendMessage(ColorParser.parse("&e┃ &7Opponent: &c"+duel.getName()));
-                            player.sendMessage(ColorParser.parse("&e┃ &7Ping: &c"+((CraftPlayer) duel).getHandle().ping+" ms"));
+                            player.sendMessage(ColorParser.parse("&b&lSent Request"));
+                            player.sendMessage(ColorParser.parse("&b&l ● &fTo: &c"+mRank.getNameColor()+duel.getName()+" &7(&b"+((CraftPlayer) duel).getHandle().ping+" ms&7)"));
+                            player.sendMessage(ColorParser.parse("&b&l ● &fKit: &b"+ft.getName()));
                             player.sendMessage(ColorParser.parse("&r"));
 
-
+                            mPlayer = MPlayerDataStorage.getInstance().getMPlayer(player);
+                            mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
                             duel.sendMessage(ColorParser.parse("&r"));
-                            duel.sendMessage(ColorParser.parse("&e&l"+ft.getName()+" Duel Request"));
-                            duel.sendMessage(ColorParser.parse("&e┃ &7From: &c"+player.getName()));
-                            duel.sendMessage(ColorParser.parse("&e┃ &7Ping: &c"+((CraftPlayer) player).getHandle().ping+" ms"));
+                            duel.sendMessage(ColorParser.parse("&b&lDuel Request"));
+                            duel.sendMessage(ColorParser.parse("&b&l ● &fFrom: "+mRank.getNameColor()+player.getName()+" &7(&b"+((CraftPlayer) player).getHandle().ping+" ms&7)"));
+                            duel.sendMessage(ColorParser.parse("&b&l ● &fKit: &b"+ft.getName()));
                             JSONMessage.create()
-                                    .then(ColorParser.parse("&a&l[CLICK TO ACCEPT]"))
+                                    .then(ColorParser.parse("&a&l [CLICK TO ACCEPT]"))
                                     .tooltip(ColorParser.parse("&7Click to accept"))
                                     .runCommand("/duel accept "+player.getName()+" "+ft.name())
                                     .then(ColorParser.parse("\n&r"))
@@ -121,12 +119,13 @@ public class SelectPracticeGUI extends GUI {
         if (queueType.equals(QueueType.RANKED)){
             List<ArenaState> list = PracticeGameDataStorage.getInstance().getArenaDataByWin(player.getName());
             if (!(list.size()>=10)){
-                player.sendMessage(ColorParser.parse("&7请在本赛季再赢得 &c"+(10-list.size())+" &7场匹配比赛，才有资格进入排位赛。"));
+                int last = (10-list.size());
+                player.sendMessage(ColorParser.parse("&fYou have to win &b10 Unranked Matches &fto play ranked! If you don't want to, you can buy any rank at &bstore.kazer.gg&f."));
                 return;
             }
         }
 
-        player.closeInventory();
+       // player.closeInventory();
         SelectPracticeGUI gui = new SelectPracticeGUI(player,queueType,duel);
         gui.openGUI(player);
     }

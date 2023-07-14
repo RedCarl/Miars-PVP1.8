@@ -41,7 +41,7 @@ public class QueueManager {
     }
 
     public void unRankTick(){
-        for (QueueInfo q: PracticeQueueDataStorage.getInstance().getQueueInfos(FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()),QueueType.UNRANKED)) {
+        for (QueueInfo q: PracticeQueueDataStorage.getInstance().getQueueInfos(MiarsPractice.getModeType(),QueueType.UNRANKED)) {
             ArenaState state = PracticeArenaStateDataStorage.getInstance().isNullArena();
             if (state!=null){
                 List<String> players = new ArrayList<>();
@@ -62,7 +62,7 @@ public class QueueManager {
     }
 
     public void rankTick(){
-        for (QueueInfo q: PracticeQueueDataStorage.getInstance().getQueueInfos(FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()),QueueType.RANKED)) {
+        for (QueueInfo q: PracticeQueueDataStorage.getInstance().getQueueInfos(MiarsPractice.getModeType(),QueueType.RANKED)) {
             ArenaState state = PracticeArenaStateDataStorage.getInstance().isNullArena();
             if (state!=null){
                 List<String> players = new ArrayList<>();
@@ -83,14 +83,14 @@ public class QueueManager {
     }
 
     public void duelTick(){
-        for (Duel d: PracticeQueueDataStorage.getInstance().getDuels(FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()))) {
+        for (Duel d: PracticeQueueDataStorage.getInstance().getDuels(MiarsPractice.getModeType())) {
             ArenaState state = PracticeArenaStateDataStorage.getInstance().isNullArena();
             if (state!=null){
                 ArenaManager.getInstance().allotArena(d.getA(),d.getB(),state,QueueType.UNRANKED);
 
                 PracticeQueueDataStorage.getInstance().removeDuel(
                         new Duel(
-                                FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()),
+                                MiarsPractice.getModeType(),
                                 d.getA(),
                                 d.getB(),
                                 0L,

@@ -19,9 +19,9 @@ public class InvisibilityTask extends BukkitRunnable {
 
         players.forEach(player ->{
             if(player.hasPotionEffect(PotionEffectType.INVISIBILITY)){
-                MiarsCore.getApi().hideNametag(player);
+                MiarsCore.getNametagAPI().hideNametag(player);
             }else{
-                MiarsCore.getApi().showNametag(player);
+                MiarsCore.getNametagAPI().showNametag(player);
             }
         });
     }

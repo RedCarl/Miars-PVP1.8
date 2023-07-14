@@ -20,6 +20,15 @@ public class PluginConfig extends ConfigurationRoot {
 
         @HeaderComment({"是否开启NameTag"})
         public static final ConfigValue<Boolean> NAME_TAG = ConfiguredValue.of(Boolean.class, true);
+
+        @HeaderComment({"禁止爆炸破坏方块"})
+        public static final ConfigValue<Boolean> DISABLED_EXPLODE_DESTROY = ConfiguredValue.of(Boolean.class, true);
+
+        @HeaderComment({"禁止天气更改"})
+        public static final ConfigValue<Boolean> DISABLED_WEATHER_CHANGE = ConfiguredValue.of(Boolean.class, true);
+
+        @HeaderComment({"禁止时间变化"})
+        public static final ConfigValue<Boolean> DISABLED_TIME_CHANGE = ConfiguredValue.of(Boolean.class, true);
     }
 
 

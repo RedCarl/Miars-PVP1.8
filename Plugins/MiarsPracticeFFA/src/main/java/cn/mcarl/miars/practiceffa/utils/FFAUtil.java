@@ -1,17 +1,19 @@
 package cn.mcarl.miars.practiceffa.utils;
 
-import cn.mcarl.miars.core.utils.ToolUtils;
+import cn.mcarl.miars.core.utils.MiarsUtils;
 import cn.mcarl.miars.practiceffa.conf.PluginConfig;
-import cn.mcarl.miars.practiceffa.kits.BuildUHC;
-import cn.mcarl.miars.practiceffa.kits.NoDeBuff;
+import cn.mcarl.miars.practiceffa.kits.*;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.practiceffa.listener.ProtocolListener;
 import cn.mcarl.miars.practiceffa.manager.CombatManager;
 import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
+import cn.mcarl.miars.storage.utils.ToolUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
@@ -78,14 +80,14 @@ public class FFAUtil {
             if (isRange(
                     player,
                     new Location(
-                            PluginConfig.FFA_SITE.LOCATION.get().getWorld(),
-                            (PluginConfig.FFA_SITE.LOCATION.get().getX() + PluginConfig.FFA_SITE.RADIUS.get()),
-                            PluginConfig.FFA_SITE.LOCATION.get().getY(),
-                            (PluginConfig.FFA_SITE.LOCATION.get().getZ() + PluginConfig.FFA_SITE.RADIUS.get()) - i),
+                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(),
+                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()),
+                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getY(),
+                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get()) - i),
                     PluginConfig.FFA_SITE.BORDER_RADIUS.get()
             )) {
                 for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
-                    Location location = new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() + PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.get().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.get().getZ() + PluginConfig.FFA_SITE.RADIUS.get()) - i);
+                    Location location = new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get()) - i);
                     if (ProtocolListener.isDisablePlace(player,location.getBlock())) {
                         continue;
                     }
@@ -93,21 +95,21 @@ public class FFAUtil {
                 }
             } else {
                 for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
-                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() + PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.get().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.get().getZ() + PluginConfig.FFA_SITE.RADIUS.get()) - i), Material.AIR, (byte) 0);
+                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get()) - i), Material.AIR, (byte) 0);
                 }
             }
 
             if (isRange(
                     player,
                     new Location(
-                            PluginConfig.FFA_SITE.LOCATION.get().getWorld(),
-                            (PluginConfig.FFA_SITE.LOCATION.get().getX() + PluginConfig.FFA_SITE.RADIUS.get()) - i,
-                            PluginConfig.FFA_SITE.LOCATION.get().getY(),
-                            (PluginConfig.FFA_SITE.LOCATION.get().getZ() + PluginConfig.FFA_SITE.RADIUS.get())),
+                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(),
+                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()) - i,
+                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getY(),
+                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get())),
                     PluginConfig.FFA_SITE.BORDER_RADIUS.get()
             )) {
                 for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
-                    Location location = new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() + PluginConfig.FFA_SITE.RADIUS.get()) - i, PluginConfig.FFA_SITE.LOCATION.get().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.get().getZ() + PluginConfig.FFA_SITE.RADIUS.get()));
+                    Location location = new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()) - i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get()));
                     if (ProtocolListener.isDisablePlace(player,location.getBlock())) {
                         continue;
                     }
@@ -115,21 +117,21 @@ public class FFAUtil {
                 }
             } else {
                 for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
-                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() + PluginConfig.FFA_SITE.RADIUS.get()) - i, PluginConfig.FFA_SITE.LOCATION.get().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.get().getZ() + PluginConfig.FFA_SITE.RADIUS.get())), Material.AIR, (byte) 0);
+                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()) - i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get())), Material.AIR, (byte) 0);
                 }
             }
 
             if (isRange(
                     player,
                     new Location(
-                            PluginConfig.FFA_SITE.LOCATION.get().getWorld(),
-                            (PluginConfig.FFA_SITE.LOCATION.get().getX() - PluginConfig.FFA_SITE.RADIUS.get()),
-                            PluginConfig.FFA_SITE.LOCATION.get().getY(),
-                            (PluginConfig.FFA_SITE.LOCATION.get().getZ() - PluginConfig.FFA_SITE.RADIUS.get()) + i),
+                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(),
+                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()),
+                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getY(),
+                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get()) + i),
                     PluginConfig.FFA_SITE.BORDER_RADIUS.get()
             )) {
                 for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
-                    Location location = new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() - PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.get().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.get().getZ() - PluginConfig.FFA_SITE.RADIUS.get()) + i);
+                    Location location = new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get()) + i);
                     if (ProtocolListener.isDisablePlace(player,location.getBlock())) {
                         continue;
                     }
@@ -137,21 +139,21 @@ public class FFAUtil {
                 }
             } else {
                 for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
-                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() - PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.get().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.get().getZ() - PluginConfig.FFA_SITE.RADIUS.get()) + i), Material.AIR, (byte) 0);
+                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get()) + i), Material.AIR, (byte) 0);
                 }
             }
 
             if (isRange(
                     player,
                     new Location(
-                            PluginConfig.FFA_SITE.LOCATION.get().getWorld(),
-                            (PluginConfig.FFA_SITE.LOCATION.get().getX() - PluginConfig.FFA_SITE.RADIUS.get()) + i,
-                            PluginConfig.FFA_SITE.LOCATION.get().getY(),
-                            (PluginConfig.FFA_SITE.LOCATION.get().getZ() - PluginConfig.FFA_SITE.RADIUS.get())),
+                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(),
+                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()) + i,
+                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getY(),
+                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get())),
                     PluginConfig.FFA_SITE.BORDER_RADIUS.get()
             )) {
                 for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
-                    Location location = new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() - PluginConfig.FFA_SITE.RADIUS.get()) + i, PluginConfig.FFA_SITE.LOCATION.get().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.get().getZ() - PluginConfig.FFA_SITE.RADIUS.get()));
+                    Location location = new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()) + i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get()));
                     if (ProtocolListener.isDisablePlace(player,location.getBlock())) {
                         continue;
                     }
@@ -159,7 +161,7 @@ public class FFAUtil {
                 }
             } else {
                 for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
-                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() - PluginConfig.FFA_SITE.RADIUS.get()) + i, PluginConfig.FFA_SITE.LOCATION.get().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.get().getZ() - PluginConfig.FFA_SITE.RADIUS.get())), Material.AIR, (byte) 0);
+                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()) + i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get())), Material.AIR, (byte) 0);
                 }
             }
         }
@@ -173,44 +175,44 @@ public class FFAUtil {
     public static void removeVirtualBorder(Player player) {
 
         for (int i = 0; i < (PluginConfig.FFA_SITE.RADIUS.get() * 2 + 1); i++) {
-            if (isRange(player, new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() + PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.get().getY(), (PluginConfig.FFA_SITE.LOCATION.get().getZ() + PluginConfig.FFA_SITE.RADIUS.get()) - i), PluginConfig.FFA_SITE.BORDER_RADIUS.get())) {
+            if (isRange(player, new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getY(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get()) - i), PluginConfig.FFA_SITE.BORDER_RADIUS.get())) {
                 for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get() + 1; j++) {
-                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() + PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.get().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.get().getZ() + PluginConfig.FFA_SITE.RADIUS.get()) - i), Material.AIR, (byte) 0);
+                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get()) - i), Material.AIR, (byte) 0);
                 }
             } else {
                 for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get() + 1; j++) {
-                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() + PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.get().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.get().getZ() + PluginConfig.FFA_SITE.RADIUS.get()) - i), Material.AIR, (byte) 0);
+                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get()) - i), Material.AIR, (byte) 0);
                 }
             }
 
-            if (isRange(player, new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() + PluginConfig.FFA_SITE.RADIUS.get()) - i, PluginConfig.FFA_SITE.LOCATION.get().getY(), (PluginConfig.FFA_SITE.LOCATION.get().getZ() + PluginConfig.FFA_SITE.RADIUS.get())), PluginConfig.FFA_SITE.BORDER_RADIUS.get())) {
+            if (isRange(player, new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()) - i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getY(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get())), PluginConfig.FFA_SITE.BORDER_RADIUS.get())) {
                 for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get() + 1; j++) {
-                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() + PluginConfig.FFA_SITE.RADIUS.get()) - i, PluginConfig.FFA_SITE.LOCATION.get().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.get().getZ() + PluginConfig.FFA_SITE.RADIUS.get())), Material.AIR, (byte) 0);
+                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()) - i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get())), Material.AIR, (byte) 0);
                 }
             } else {
                 for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get() + 1; j++) {
-                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() + PluginConfig.FFA_SITE.RADIUS.get()) - i, PluginConfig.FFA_SITE.LOCATION.get().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.get().getZ() + PluginConfig.FFA_SITE.RADIUS.get())), Material.AIR, (byte) 0);
+                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()) - i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get())), Material.AIR, (byte) 0);
                 }
             }
 
-            if (isRange(player, new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() - PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.get().getY(), (PluginConfig.FFA_SITE.LOCATION.get().getZ() - PluginConfig.FFA_SITE.RADIUS.get()) + i), PluginConfig.FFA_SITE.BORDER_RADIUS.get())) {
+            if (isRange(player, new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getY(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get()) + i), PluginConfig.FFA_SITE.BORDER_RADIUS.get())) {
                 for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get() + 1; j++) {
-                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() - PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.get().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.get().getZ() - PluginConfig.FFA_SITE.RADIUS.get()) + i), Material.AIR, (byte) 0);
+                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get()) + i), Material.AIR, (byte) 0);
                 }
             } else {
                 for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get() + 1; j++) {
-                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() - PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.get().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.get().getZ() - PluginConfig.FFA_SITE.RADIUS.get()) + i), Material.AIR, (byte) 0);
+                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get()) + i), Material.AIR, (byte) 0);
 
                 }
             }
 
-            if (isRange(player, new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() - PluginConfig.FFA_SITE.RADIUS.get()) + i, PluginConfig.FFA_SITE.LOCATION.get().getY(), (PluginConfig.FFA_SITE.LOCATION.get().getZ() - PluginConfig.FFA_SITE.RADIUS.get())), PluginConfig.FFA_SITE.BORDER_RADIUS.get())) {
+            if (isRange(player, new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()) + i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getY(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get())), PluginConfig.FFA_SITE.BORDER_RADIUS.get())) {
                 for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get() + 1; j++) {
-                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() - PluginConfig.FFA_SITE.RADIUS.get()) + i, PluginConfig.FFA_SITE.LOCATION.get().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.get().getZ() - PluginConfig.FFA_SITE.RADIUS.get())), Material.AIR, (byte) 0);
+                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()) + i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get())), Material.AIR, (byte) 0);
                 }
             } else {
                 for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get() + 1; j++) {
-                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(), (PluginConfig.FFA_SITE.LOCATION.get().getX() - PluginConfig.FFA_SITE.RADIUS.get()) + i, PluginConfig.FFA_SITE.LOCATION.get().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.get().getZ() - PluginConfig.FFA_SITE.RADIUS.get())), Material.AIR, (byte) 0);
+                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()) + i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get())), Material.AIR, (byte) 0);
                 }
             }
         }
@@ -222,25 +224,25 @@ public class FFAUtil {
      */
     public static void setBorder(){
         for (int i = 0; i < (PluginConfig.FFA_SITE.RADIUS.get()*2+1); i++) {
-            Block currentBlock = PluginConfig.FFA_SITE.LOCATION.get().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.get().getBlockX()+PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.get().getBlockY(), (PluginConfig.FFA_SITE.LOCATION.get().getBlockZ()+PluginConfig.FFA_SITE.RADIUS.get())-i);
+            Block currentBlock = PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockX()+PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockY(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockZ()+PluginConfig.FFA_SITE.RADIUS.get())-i);
             currentBlock.setType(Material.WOOL);
             currentBlock.setData((byte)14);
         }
 
         for (int i = 0; i < (PluginConfig.FFA_SITE.RADIUS.get()*2+1); i++) {
-            Block currentBlock = PluginConfig.FFA_SITE.LOCATION.get().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.get().getBlockX()+PluginConfig.FFA_SITE.RADIUS.get())-i, PluginConfig.FFA_SITE.LOCATION.get().getBlockY(), (PluginConfig.FFA_SITE.LOCATION.get().getBlockZ()+PluginConfig.FFA_SITE.RADIUS.get()));
+            Block currentBlock = PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockX()+PluginConfig.FFA_SITE.RADIUS.get())-i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockY(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockZ()+PluginConfig.FFA_SITE.RADIUS.get()));
             currentBlock.setType(Material.WOOL);
             currentBlock.setData((byte)14);
         }
 
         for (int i = 0; i < (PluginConfig.FFA_SITE.RADIUS.get()*2+1); i++) {
-            Block currentBlock = PluginConfig.FFA_SITE.LOCATION.get().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.get().getBlockX()-PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.get().getBlockY(), (PluginConfig.FFA_SITE.LOCATION.get().getBlockZ()-PluginConfig.FFA_SITE.RADIUS.get())+i);
+            Block currentBlock = PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockX()-PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockY(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockZ()-PluginConfig.FFA_SITE.RADIUS.get())+i);
             currentBlock.setType(Material.WOOL);
             currentBlock.setData((byte)14);
         }
 
         for (int i = 0; i < (PluginConfig.FFA_SITE.RADIUS.get()*2+1); i++) {
-            Block currentBlock = PluginConfig.FFA_SITE.LOCATION.get().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.get().getBlockX()-PluginConfig.FFA_SITE.RADIUS.get())+i, PluginConfig.FFA_SITE.LOCATION.get().getBlockY(), (PluginConfig.FFA_SITE.LOCATION.get().getBlockZ()-PluginConfig.FFA_SITE.RADIUS.get()));
+            Block currentBlock = PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockX()-PluginConfig.FFA_SITE.RADIUS.get())+i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockY(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockZ()-PluginConfig.FFA_SITE.RADIUS.get()));
             currentBlock.setType(Material.WOOL);
             currentBlock.setData((byte)14);
         }
@@ -250,28 +252,28 @@ public class FFAUtil {
      * 将出生点外部分的范围使用 基岩 圈出来
      */
     public static void setGlassBorder(){
-        for (int a = 0; a < PluginConfig.FFA_SITE.LOCATION.get().getY()+1; a++) {
+        for (int a = 0; a < PluginConfig.FFA_SITE.LOCATION.getNotNull().getY()+1; a++) {
             for (int j = 1; j <= PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
                 for (int i = 0; i < ((PluginConfig.FFA_SITE.RADIUS.get()+j)*2+1); i++) {
-                    Block currentBlock = PluginConfig.FFA_SITE.LOCATION.get().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.get().getBlockX()+(PluginConfig.FFA_SITE.RADIUS.get()+j)), a, (PluginConfig.FFA_SITE.LOCATION.get().getBlockZ()+(PluginConfig.FFA_SITE.RADIUS.get()+j))-i);
+                    Block currentBlock = PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockX()+(PluginConfig.FFA_SITE.RADIUS.get()+j)), a, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockZ()+(PluginConfig.FFA_SITE.RADIUS.get()+j))-i);
                     currentBlock.setType(Material.GRASS);
                     currentBlock.setData((byte)14);
                 }
 
                 for (int i = 0; i < ((PluginConfig.FFA_SITE.RADIUS.get()+j)*2+1); i++) {
-                    Block currentBlock = PluginConfig.FFA_SITE.LOCATION.get().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.get().getBlockX()+(PluginConfig.FFA_SITE.RADIUS.get()+j))-i, a, (PluginConfig.FFA_SITE.LOCATION.get().getBlockZ()+(PluginConfig.FFA_SITE.RADIUS.get()+j)));
+                    Block currentBlock = PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockX()+(PluginConfig.FFA_SITE.RADIUS.get()+j))-i, a, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockZ()+(PluginConfig.FFA_SITE.RADIUS.get()+j)));
                     currentBlock.setType(Material.GRASS);
                     currentBlock.setData((byte)14);
                 }
 
                 for (int i = 0; i < ((PluginConfig.FFA_SITE.RADIUS.get()+j)*2+1); i++) {
-                    Block currentBlock = PluginConfig.FFA_SITE.LOCATION.get().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.get().getBlockX()-(PluginConfig.FFA_SITE.RADIUS.get()+j)), a, (PluginConfig.FFA_SITE.LOCATION.get().getBlockZ()-(PluginConfig.FFA_SITE.RADIUS.get()+j))+i);
+                    Block currentBlock = PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockX()-(PluginConfig.FFA_SITE.RADIUS.get()+j)), a, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockZ()-(PluginConfig.FFA_SITE.RADIUS.get()+j))+i);
                     currentBlock.setType(Material.GRASS);
                     currentBlock.setData((byte)14);
                 }
 
                 for (int i = 0; i < ((PluginConfig.FFA_SITE.RADIUS.get()+j)*2+1); i++) {
-                    Block currentBlock = PluginConfig.FFA_SITE.LOCATION.get().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.get().getBlockX()-(PluginConfig.FFA_SITE.RADIUS.get()+j))+i, a, (PluginConfig.FFA_SITE.LOCATION.get().getBlockZ()-(PluginConfig.FFA_SITE.RADIUS.get()+j)));
+                    Block currentBlock = PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockX()-(PluginConfig.FFA_SITE.RADIUS.get()+j))+i, a, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockZ()-(PluginConfig.FFA_SITE.RADIUS.get()+j)));
                     currentBlock.setType(Material.GRASS);
                     currentBlock.setData((byte)14);
                 }
@@ -284,23 +286,23 @@ public class FFAUtil {
      */
     public static void setFFAGameBorder(){
         for (int j = 1; j < 4; j++) {
-            for (int i = 0; i < ((PluginConfig.FFA_SITE.RADIUS.get()*6)*2+1); i++) {
-                Block currentBlock = PluginConfig.FFA_SITE.LOCATION.get().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.get().getBlockX()+(PluginConfig.FFA_SITE.RADIUS.get()*6)), j, ((PluginConfig.FFA_SITE.LOCATION.get().getBlockZ()+(PluginConfig.FFA_SITE.RADIUS.get()*6))-i));
+            for (int i = 0; i < ((PluginConfig.FFA_SITE.BUILD_RADIUS.getNotNull())*2+1); i++) {
+                Block currentBlock = PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockX()+(PluginConfig.FFA_SITE.BUILD_RADIUS.getNotNull())), j, ((PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockZ()+(PluginConfig.FFA_SITE.BUILD_RADIUS.getNotNull()))-i));
                 currentBlock.setType(Material.OBSIDIAN);
             }
 
-            for (int i = 0; i < ((PluginConfig.FFA_SITE.RADIUS.get()*6)*2+1); i++) {
-                Block currentBlock = PluginConfig.FFA_SITE.LOCATION.get().getWorld().getBlockAt(((PluginConfig.FFA_SITE.LOCATION.get().getBlockX()+(PluginConfig.FFA_SITE.RADIUS.get()*6))-i), j, (PluginConfig.FFA_SITE.LOCATION.get().getBlockZ()+(PluginConfig.FFA_SITE.RADIUS.get()*6)));
+            for (int i = 0; i < ((PluginConfig.FFA_SITE.BUILD_RADIUS.getNotNull())*2+1); i++) {
+                Block currentBlock = PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld().getBlockAt(((PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockX()+(PluginConfig.FFA_SITE.BUILD_RADIUS.getNotNull()))-i), j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockZ()+(PluginConfig.FFA_SITE.BUILD_RADIUS.getNotNull())));
                 currentBlock.setType(Material.OBSIDIAN);
             }
 
-            for (int i = 0; i < ((PluginConfig.FFA_SITE.RADIUS.get()*6)*2+1); i++) {
-                Block currentBlock = PluginConfig.FFA_SITE.LOCATION.get().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.get().getBlockX()-(PluginConfig.FFA_SITE.RADIUS.get()*6)), j, ((PluginConfig.FFA_SITE.LOCATION.get().getBlockZ()-(PluginConfig.FFA_SITE.RADIUS.get()*6))+i));
+            for (int i = 0; i < ((PluginConfig.FFA_SITE.BUILD_RADIUS.getNotNull())*2+1); i++) {
+                Block currentBlock = PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld().getBlockAt((PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockX()-(PluginConfig.FFA_SITE.BUILD_RADIUS.getNotNull())), j, ((PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockZ()-(PluginConfig.FFA_SITE.BUILD_RADIUS.getNotNull()))+i));
                 currentBlock.setType(Material.OBSIDIAN);
             }
 
-            for (int i = 0; i < ((PluginConfig.FFA_SITE.RADIUS.get()*6)*2+1); i++) {
-                Block currentBlock = PluginConfig.FFA_SITE.LOCATION.get().getWorld().getBlockAt(((PluginConfig.FFA_SITE.LOCATION.get().getBlockX()-(PluginConfig.FFA_SITE.RADIUS.get()*6))+i), j, (PluginConfig.FFA_SITE.LOCATION.get().getBlockZ()-(PluginConfig.FFA_SITE.RADIUS.get()*6)));
+            for (int i = 0; i < ((PluginConfig.FFA_SITE.BUILD_RADIUS.getNotNull())*2+1); i++) {
+                Block currentBlock = PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld().getBlockAt(((PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockX()-(PluginConfig.FFA_SITE.BUILD_RADIUS.getNotNull()))+i), j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getBlockZ()-(PluginConfig.FFA_SITE.BUILD_RADIUS.getNotNull())));
                 currentBlock.setType(Material.OBSIDIAN);
             }
         }
@@ -397,8 +399,22 @@ public class FFAUtil {
             case BUILD_UHC -> {
                 return BuildUHC.get();
             }
+            case BOXING -> {
+                return Boxing.get();
+            }
+            case SUMO -> {
+                return Sumo.get();
+            }
+            case BOW -> {
+                return Bow.get();
+            }
+            case COMBO -> {
+                return Combo.get();
+            }
         }
 
         return null;
     }
+
+
 }

@@ -1,13 +1,18 @@
 package cn.mcarl.miars.storage.utils;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -16,10 +21,9 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * Easily create itemstacks, without messing your hands.
@@ -75,6 +79,7 @@ public class ItemBuilder {
      *
      * @return The cloned instance.
      */
+    @Override
     public ItemBuilder clone() {
         return new ItemBuilder(is);
     }
@@ -349,6 +354,37 @@ public class ItemBuilder {
      */
     public ItemBuilder setAmount(Integer i) {
         is.setAmount(i);
+        return this;
+    }
+
+    Field profile_field;
+    /**
+     * skull
+     */
+    public ItemBuilder setSkull(String url) {
+        try {
+            Class<? extends ItemMeta> class_to_nms = (new ItemStack(Material.SKULL_ITEM)).getItemMeta().getClass();
+            profile_field = class_to_nms.getDeclaredField("profile");
+            profile_field.setAccessible(true);
+        } catch (SecurityException | NoSuchFieldException var5) {
+            var5.printStackTrace();
+        }
+
+        url = Mojang.getBaseHead(url);
+
+        Base64.Encoder encoder = Base64.getEncoder();
+        SkullMeta meta = (SkullMeta)is.getItemMeta();
+        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+        String before = "{\"textures\":{\"SKIN\":{\"url\":\"";
+        String after = "\"}}}";
+        url = before + url + after;
+        profile.getProperties().put("textures", new Property("textures", encoder.encodeToString(url.getBytes())));
+        try {
+            profile_field.set(meta, profile);
+        } catch (IllegalAccessException | IllegalArgumentException var4) {
+            var4.printStackTrace();
+        }
+        is.setItemMeta(meta);
         return this;
     }
 

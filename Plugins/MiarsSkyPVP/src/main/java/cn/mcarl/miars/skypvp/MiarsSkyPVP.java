@@ -75,6 +75,7 @@ public class MiarsSkyPVP extends JavaPlugin {
         log("卸载监听器...");
         Bukkit.getServicesManager().unregisterAll(this);
         LuckyManager.getInstance().clear();
+        OreRespawnManager.getInstance().clear();
 
         log("卸载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 

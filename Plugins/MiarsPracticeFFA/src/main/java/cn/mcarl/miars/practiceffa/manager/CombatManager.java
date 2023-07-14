@@ -6,9 +6,7 @@ import cn.mcarl.miars.practiceffa.utils.FFAUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @Author: carl0
@@ -41,6 +39,19 @@ public class CombatManager {
     public int getLastSecond(Player p){
         if (isCombat(p)){
             return (int) Math.abs((data.get(p.getUniqueId()).getDate()-System.currentTimeMillis())/1000);
+        }
+        return 0;
+    }
+
+    /**
+     * 获取战斗时刻的剩余时间
+     *
+     * @param p 玩家
+     * @return 毫秒
+     */
+    public int getLastMilliSeconds(Player p){
+        if (isCombat(p)){
+            return (int) Math.abs((data.get(p.getUniqueId()).getDate()-System.currentTimeMillis()));
         }
         return 0;
     }
@@ -84,5 +95,9 @@ public class CombatManager {
                 FFAUtil.removeVirtualBorder(p);
             }
         }.runTaskLaterAsynchronously(MiarsPracticeFFA.getInstance(),10);
+    }
+
+    public List<UUID> getCombatPlayers(){
+        return new ArrayList<>(data.keySet());
     }
 }

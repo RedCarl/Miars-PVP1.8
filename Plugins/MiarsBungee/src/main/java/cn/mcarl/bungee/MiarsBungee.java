@@ -1,6 +1,8 @@
 package cn.mcarl.bungee;
 
 import cn.mcarl.bungee.command.HubCommands;
+import cn.mcarl.bungee.command.ShoutAllCommands;
+import cn.mcarl.bungee.command.TpServerCommands;
 import cn.mcarl.bungee.listener.PlayerListener;
 import cn.mcarl.bungee.manager.ConfigManager;
 import cn.mcarl.bungee.manager.ServerManager;
@@ -41,6 +43,8 @@ public class MiarsBungee extends Plugin {
         log("正在注册指令...");
         regCommand(new HubCommands("hub"));
         regCommand(new HubCommands("lobby"));
+        regCommand(new ShoutAllCommands("shoutAll"));
+        regCommand(new TpServerCommands("tpServer"));
 
         log("正在开启 HttpServer 服务端...");
         ServerManager.getInstance().run();
@@ -81,6 +85,6 @@ public class MiarsBungee extends Plugin {
      */
     private void showAD() {
         log("&7感谢您使用 &c&l"+getDescription().getName()+" v" + getDescription().getVersion());
-        log("&7本插件由 &c&lMCarl Studios &7提供长期支持与维护。");
+        log("&7本插件由 &c&lMiars Studios &7提供长期支持与维护。");
     }
 }

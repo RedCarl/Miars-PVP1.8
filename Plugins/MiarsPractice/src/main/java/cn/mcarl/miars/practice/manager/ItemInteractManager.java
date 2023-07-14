@@ -20,9 +20,10 @@ public class ItemInteractManager {
 
         NBTItem nbtItem = new NBTItem(i);
 
-        if (nbtItem.getString("practice_kit")!=null && !nbtItem.getString("practice_kit").equals("")){
+        if (nbtItem.getString("practice_kit")!=null && !"".equals(nbtItem.getString("practice_kit"))){
             FKit fKit = FKitDataStorage.getInstance().getFKitDataById(Integer.valueOf(nbtItem.getString("practice_kit")));
             PlayerInventoryManager.getInstance().autoEquip(p,fKit.getInventory());
         }
+
     }
 }

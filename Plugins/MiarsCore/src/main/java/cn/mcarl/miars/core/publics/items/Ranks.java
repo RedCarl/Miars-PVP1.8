@@ -2,7 +2,7 @@ package cn.mcarl.miars.core.publics.items;
 
 import cn.mcarl.miars.core.ui.RanksGUI;
 import cn.mcarl.miars.storage.utils.ItemBuilder;
-import cn.mcarl.miars.core.utils.easyitem.AbstractItem;
+import cn.mcarl.miars.storage.utils.easyitem.AbstractItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -10,23 +10,29 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class Ranks extends AbstractItem {
-    public Ranks(){
+    public Ranks(boolean prefix,boolean ascFlag){
+        this.prefix = prefix;
+        this.ascFlag = ascFlag;
+
         register();
     }
+
+    boolean prefix;
+    boolean ascFlag;
 
     @Override
     public void init() {
 
         id = "ranks";
         item = new ItemBuilder(Material.NAME_TAG)
-                        .setName("&c头衔管理 &7(右键打开)")
+                        .setName("&bName Tag &7(Right Click)")
                         .toItemStack();
     }
 
     @Override
     public void onInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
-        RanksGUI.open(player);
+        RanksGUI.open(player,this.prefix,this.ascFlag);
     }
 
     @Override

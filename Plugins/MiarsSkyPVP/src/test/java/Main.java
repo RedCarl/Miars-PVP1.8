@@ -1,5 +1,3 @@
-import cn.mcarl.miars.core.utils.MiarsUtil;
-
 public class Main {
     private String format = "<%1$s> %2$s";
     public static void main(String[] args) {

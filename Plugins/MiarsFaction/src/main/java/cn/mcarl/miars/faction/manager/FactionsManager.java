@@ -37,7 +37,6 @@ public class FactionsManager {
 
     private List<FactionsEntity> getAllFactions() {
         List<FactionsEntity> list = new ArrayList<>();
-        
         return list;
     }
 
@@ -102,7 +101,6 @@ public class FactionsManager {
         return false;
     }
 
-
     /**
      * 查询所在区块是否可以占领
      *
@@ -148,7 +146,6 @@ public class FactionsManager {
         saveFactions(factionsEntity);
         return true;
     }
-
 
     /**
      * 获取玩家附近有没有其它派系
@@ -261,7 +258,6 @@ public class FactionsManager {
         return itemMeta;
     }
 
-
     /**
      * 是否能对派系进行一系列的操作
      * @param fe 派系
@@ -279,7 +275,6 @@ public class FactionsManager {
         }
         return false;
     }
-
 
     /**
      * 获取该派系每分钟所需的费用

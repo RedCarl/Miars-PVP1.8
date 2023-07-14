@@ -1,15 +1,20 @@
 package cn.mcarl.miars.practice.manager;
 
-import cn.mcarl.miars.practice.conf.PluginConfig;
+import cn.mcarl.miars.practice.MiarsPractice;
 import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BuildUHCManager {
     private static final BuildUHCManager instance = new BuildUHCManager();
@@ -47,7 +52,7 @@ public class BuildUHCManager {
             return false;
         }
 
-        return FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get()) == FKitType.BUILD_UHC;
+        return MiarsPractice.getModeType() == FKitType.BUILD_UHC;
     }
 
     /**
@@ -57,7 +62,7 @@ public class BuildUHCManager {
      */
     public boolean placeBlock(Arena arena,ArenaState state, Block block){
         if (arena==null || state==null){
-            if (FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get())!=FKitType.BUILD_UHC){
+            if (MiarsPractice.getModeType()!=FKitType.BUILD_UHC){
                 return true;
             }
         }else {
@@ -101,7 +106,7 @@ public class BuildUHCManager {
      * 清理方块
      * @param arena
      */
-    public void clearBlock(Arena arena){
+    public void clearBlock(World world, Arena arena){
         List<Block> blocks = new ArrayList<>();
 
         if (this.map.get(arena.getId())!=null){
@@ -113,8 +118,10 @@ public class BuildUHCManager {
         }
 
         if (arena.getCenter()!=null){
-            for (Entity entity:arena.getCenter().getWorld().getNearbyEntities(arena.getCenter(),32,256,32)) {
-                if (entity instanceof Arrow){
+            Location location = arena.getCenter();
+            location.setWorld(world);
+            for (Entity entity:world.getNearbyEntities(location,64,256,64)) {
+                if (entity.getType() != EntityType.PLAYER){
                     entity.remove();
                 }
             }

@@ -35,14 +35,5 @@ public class GameEndListener implements Listener {
             }
         }
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (Bukkit.getOnlinePlayers().size()==0){
-                    Bukkit.shutdown();
-                }
-            }
-        }.runTaskTimer(BedWars.plugin,0,20);
-
     }
 }

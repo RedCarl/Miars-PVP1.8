@@ -1,5 +1,6 @@
 package cn.mcarl.miars.faction.utils;
 
+import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.faction.entity.ChunkData;
 import cn.mcarl.miars.faction.entity.FactionsEntity;
 import cn.mcarl.miars.faction.manager.FactionsManager;
@@ -35,7 +36,9 @@ public class Map {
         int height = halfHeight * 2 + 1;
 
 
-        // ret.add(new FancyMessage(new TranslateMessage("factions-hell.map.header.message").getMessage(player)));
+        ret.add(new FancyMessage("§r"));
+        ret.add(new FancyMessage("§r"));
+        ret.add(new FancyMessage(ColorParser.parse("&7您可以在这里看到周围的区块，并查看它们的状态。")));
 
         // For each row
         for (int dz = 0; dz < height; dz++) {
@@ -47,16 +50,16 @@ public class Map {
             }
             for (int dx = (dz < 3 ? 6 : 3); dx < width; dx++) {
                 if (dx == halfWidth && dz == halfHeight) {
-                    // row.then("+").color(ChatColor.AQUA).tooltip(new TranslateMessage("factions-hell.map.me.tooltip",dx + topLeft.getX(), dz + topLeft.getZ()).getMessage(player));
+                    row.then("+").color(ChatColor.AQUA).tooltip(ColorParser.parse("&7("+(dx + topLeft.getX())+","+(dz + topLeft.getZ())+")"));
                 } else {
                     FactionsEntity factions = FactionsManager.getInstance().getFactionsChunk(new ChunkData((int) (dx + topLeft.getX()), (int) (dz + topLeft.getZ()),0));
                     FactionsEntity meFactions = FactionsManager.getInstance().getFactionsByPlayer(player.getUniqueId());
                     if (factions==null){
-                        // row.then("-").color(ChatColor.GRAY).tooltip(new TranslateMessage("factions-hell.map.field.tooltip",dx + topLeft.getX(), dz + topLeft.getZ()).getMessage(player));
+                        row.then("-").color(ChatColor.GRAY).tooltip(ColorParser.parse("&7("+(dx + topLeft.getX())+","+(dz + topLeft.getZ())+")"));
                     }else if (meFactions!=null && factions.getUuid()==meFactions.getUuid()){
-                        // row.then("-").color(ChatColor.GREEN).tooltip(new TranslateMessage("factions-hell.map.me-factions.tooltip",dx + topLeft.getX(), dz + topLeft.getZ()).getMessage(player));
+                        row.then("-").color(ChatColor.GREEN).tooltip(ColorParser.parse("&7("+(dx + topLeft.getX())+","+(dz + topLeft.getZ())+")"));
                     }else {
-                        // row.then("-").color(ChatColor.RED).tooltip(new TranslateMessage("factions-hell.map.factions.tooltip",dx + topLeft.getX(), dz + topLeft.getZ(),factions.getName()).getMessage(player));
+                        row.then("-").color(ChatColor.RED).tooltip(ColorParser.parse("&7("+(dx + topLeft.getX())+","+(dz + topLeft.getZ())+")"));
                     }
 
                 }

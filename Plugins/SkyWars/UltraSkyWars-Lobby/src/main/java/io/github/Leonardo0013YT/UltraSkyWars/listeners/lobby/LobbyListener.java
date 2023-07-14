@@ -83,7 +83,7 @@ public class LobbyListener implements Listener {
         if (plugin.getCm().isItemLobbyEnabled()) {
             p.getInventory().setItem(plugin.getCm().getItemLobbySlot(), plugin.getIm().getLobby());
             new ServerMenu().give(p,0);
-            new Ranks().give(p,1);
+            new Ranks(true,false).give(p,1);
         }
     }
 

@@ -1,9 +1,8 @@
 package com.andrei1058.bedwars.manager;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
-import cn.mcarl.miars.core.MiarsCore;
-import cn.mcarl.miars.core.utils.ToolUtils;
-import cn.mcarl.miars.core.utils.fastboard.FastBoard;
+import cn.mcarl.miars.core.utils.MiarsUtils;
+import cn.mcarl.miars.storage.utils.fastboard.FastBoard;
 import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
@@ -17,7 +16,6 @@ import com.andrei1058.bedwars.api.configuration.ConfigPath;
 import com.andrei1058.bedwars.api.language.Language;
 import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.arena.Arena;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -73,7 +71,7 @@ public class ScoreBoardManager {
 
         List<String> lines = new ArrayList<>();
         board.updateTitle("&e起床战争 &8| &e"+ ServerInfoDataStorage.getInstance().getServerInfo().getNameCn());
-        lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis())+" &8"+ ToolUtils.getServerCode());
+        lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis())+" &8"+ MiarsUtils.getServerCode());
         lines.add("");
         lines.addAll(getBoard(arena,p));
         lines.add("");
@@ -172,7 +170,11 @@ public class ScoreBoardManager {
             SimpleDateFormat dateFormat = new SimpleDateFormat(getMsg(player, Messages.FORMATTING_SCOREBOARD_DATE));
             String time;
             if (arena.getStatus() == GameState.playing || arena.getStatus() == GameState.restarting) {
-                time =  getNextEventTime();
+                try {
+                    time =  getNextEventTime();
+                }catch (NullPointerException ignored){
+                    time = String.valueOf(0);
+                }
             } else {
                 if (arena.getStatus() == GameState.starting) {
                     if (arena.getStartingTask() != null) {

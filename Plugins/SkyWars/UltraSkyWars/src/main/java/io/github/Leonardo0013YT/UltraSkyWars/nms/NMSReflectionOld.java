@@ -1,6 +1,6 @@
 package io.github.Leonardo0013YT.UltraSkyWars.nms;
 
-import cn.mcarl.miars.core.utils.MiarsUtil;
+import cn.mcarl.miars.core.utils.MiarsUtils;
 import io.github.Leonardo0013YT.UltraSkyWars.enums.DamageCauses;
 import io.github.Leonardo0013YT.UltraSkyWars.enums.nms.NametagVersion;
 import io.github.Leonardo0013YT.UltraSkyWars.superclass.NMSReflection;
@@ -83,7 +83,7 @@ public class NMSReflectionOld extends NMSReflection {
             BaseComponent[] text = new ComponentBuilder(msg).create();
             for (Player p : players) {
                 if (p == null || !p.isOnline()) continue;
-                MiarsUtil.sendActionText(p,msg);
+                MiarsUtils.sendActionText(p,msg);
             }
         } else {
             try {

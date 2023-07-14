@@ -1,7 +1,7 @@
 package cn.mcarl.miars.skypvp.utils;
 
 import cn.mcarl.miars.storage.utils.ItemBuilder;
-import cn.mcarl.miars.core.utils.MiarsUtil;
+import cn.mcarl.miars.core.utils.MiarsUtils;
 import cn.mcarl.miars.skypvp.MiarsSkyPVP;
 import cn.mcarl.miars.skypvp.enums.LuckBlockType;
 import org.bukkit.Location;
@@ -16,7 +16,7 @@ public class RotatingHead {
     public static RotatingHead getInstance() {
         return instance;
     }
-    public ArmorStand spawnOrb(Location location, LuckBlockType luckBlockType) {
+    public ArmorStand spawnLucky(Location location, LuckBlockType luckBlockType) {
 
         // Gets world the player is in.
         World world = location.getWorld();
@@ -37,7 +37,7 @@ public class RotatingHead {
         // Sets the helmet of the armor stand to a player head.
         stand.getEquipment().setHelmet(
                 new ItemBuilder(
-                        MiarsUtil.createSkull(luckBlockType.getValue())
+                        MiarsUtils.createSkull(luckBlockType.getValue())
                 )
                         .toItemStack()
         );
@@ -52,7 +52,6 @@ public class RotatingHead {
                 }
 
                 Location l = stand.getLocation();
-
 
                 if (i==0){
                     a=false;

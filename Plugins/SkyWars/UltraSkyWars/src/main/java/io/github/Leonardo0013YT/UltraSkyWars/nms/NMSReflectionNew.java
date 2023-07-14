@@ -1,6 +1,6 @@
 //package io.github.Leonardo0013YT.UltraSkyWars.nms;
 //
-//import cn.mcarl.miars.core.utils.MiarsUtil;
+//import cn.mcarl.miars.core.utils.MiarsUtils;
 //import io.github.Leonardo0013YT.UltraSkyWars.enums.DamageCauses;
 //import io.github.Leonardo0013YT.UltraSkyWars.enums.nms.NametagVersion;
 //import io.github.Leonardo0013YT.UltraSkyWars.superclass.NMSReflection;
@@ -74,7 +74,7 @@
 //    public void sendActionBar(String msg, Collection<Player> players) {
 //        for (Player p : players) {
 //            if (p == null || !p.isOnline()) continue;
-//            MiarsUtil.sendActionText(p,msg);
+//            MiarsUtils.sendActionText(p,msg);
 //        }
 //    }
 //

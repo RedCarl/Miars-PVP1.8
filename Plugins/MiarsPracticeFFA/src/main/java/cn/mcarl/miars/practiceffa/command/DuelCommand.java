@@ -31,9 +31,13 @@ public class DuelCommand implements CommandExecutor, TabCompleter {
                 case 1 -> {
                     Player p = Bukkit.getPlayerExact(args[0]);
                     if (p!=null){
+                        if (p.getName().equals(player.getName())){
+                            player.sendMessage(ColorParser.parse("&7您无法向自己发起决斗申请。"));
+                            return true;
+                        }
                         SelectPracticeGUI.open(player, QueueType.UNRANKED,p);
                     }else {
-                        player.sendMessage(ColorParser.parse("&7No player matching &e"+args[0]+" &7is connected to this server."));
+                        player.sendMessage(ColorParser.parse("&7没有这个玩家 &b"+args[0]+" &7请确保该玩家在线。"));
                     }
                 }
                 case 3 -> {
@@ -56,12 +60,12 @@ public class DuelCommand implements CommandExecutor, TabCompleter {
                                 player.sendMessage(ColorParser.parse("&7您无法再接受这个请求。"));
                             }
                         }else {
-                            player.sendMessage(ColorParser.parse("&7No player matching &e"+args[1]+" &7is connected to this server."));
+                            player.sendMessage(ColorParser.parse("&7没有这个玩家 &b"+args[1]+" &7请确保该玩家在线。"));
                         }
                     }
                 }
                 default -> {
-                    player.sendMessage(ColorParser.parse("&7请输入 &e/duel &7玩家名称 来发起决斗申请。"));
+                    player.sendMessage(ColorParser.parse("&7请输入 &b/duel &7玩家名称 来发起决斗申请。"));
                 }
             }
 

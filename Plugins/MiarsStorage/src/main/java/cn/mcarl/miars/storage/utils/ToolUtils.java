@@ -1,13 +1,22 @@
 package cn.mcarl.miars.storage.utils;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.storage.MiarsStorage;
+import cn.mcarl.miars.storage.entity.MServerInfo;
+import cn.mcarl.miars.storage.entity.ffa.FInventory;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
+import net.minecraft.server.v1_8_R3.ChatComponentText;
+import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
@@ -27,18 +36,18 @@ public class ToolUtils {
 
     /**
      * 获取范围内最近的玩家
-     * @param pixelmonLocation 坐标
+     * @param location 坐标
      * @return 玩家
      */
-    public static Player getRandPlayer(Location pixelmonLocation) {
+    public static Player getRandPlayer(Location location) {
         double distance = Double.MAX_VALUE;
         Player player = null;
         Iterator<Player> var6 = (Iterator<Player>) Bukkit.getOnlinePlayers().iterator();
         while (var6.hasNext()) {
             Player p = var6.next();
             Location loc = p.getLocation();
-            if (pixelmonLocation.getWorld().getName().equalsIgnoreCase(loc.getWorld().getName()) && pixelmonLocation.distance(loc) < distance) {
-                distance = pixelmonLocation.distance(loc);
+            if (location.getWorld().getName().equalsIgnoreCase(loc.getWorld().getName()) && location.distance(loc) < distance) {
+                distance = location.distance(loc);
                 player = p;
             }
         }
@@ -89,7 +98,6 @@ public class ToolUtils {
         }
         return itemStack;
     }
-
     /**
      * 秒格式化
      */
@@ -105,6 +113,38 @@ public class ToolUtils {
             long m = (date%3600)/60;
             long s = (date%3600)%60;
             return "&c"+h+" &7小时"+" &c"+m+" &7分"+" &c"+s+" &7秒";
+        }
+    }
+
+    /**
+     * 秒格式化
+     */
+    public static String getDateMode(long date){
+        if (date<3600) {
+            long m = date/60;
+            long s = date%60;
+            if (s<10){
+                if (m<10){
+                    return "0"+m+":0"+s;
+                }
+                return m+":0"+s;
+            }
+            return m+":"+s;
+        }else {
+            long h = date/3600;
+            long m = (date%3600)/60;
+            long s = (date%3600)%60;
+
+            if (s<10){
+                if (m<10){
+                    if (h<10){
+                        return "0"+h+":0"+m+":0"+s;
+                    }
+                    return h+":0"+m+":0"+s;
+                }
+                return h+":"+m+":0"+s;
+            }
+            return h+":"+m+":"+s;
         }
     }
 
@@ -189,6 +229,7 @@ public class ToolUtils {
         e.getPlayer().setFoodLevel(20);
         e.getPlayer().setSaturation(20);
         e.setFireTicks(0);
+        e.getActivePotionEffects().clear();
     }
 
     /**
@@ -230,5 +271,100 @@ public class ToolUtils {
             list.add(pe.serialize());
         }
         return list;
+    }
+
+    /**
+     * 将玩家的背包转为FInv
+     * @param player
+     * @return
+     */
+    public static FInventory playerToFInv(Player player, FKitType fKitType){
+
+        Map<Integer,ItemStack> backpack = new HashMap<>();
+        for (int i = 9; i <= 35; i++) {
+            backpack.put(i,player.getInventory().getItem(i));
+        }
+        Map<Integer,ItemStack> itemCote = new HashMap<>();
+        for (int i = 0; i <= 8; i++) {
+            itemCote.put(i,player.getInventory().getItem(i));
+        }
+        return new FInventory(
+                fKitType,
+                player.getPlayer().getInventory().getItem(39),
+                player.getPlayer().getInventory().getItem(38),
+                player.getPlayer().getInventory().getItem(37),
+                player.getPlayer().getInventory().getItem(36),
+                backpack,
+                itemCote
+
+        );
+    }
+
+    public static void reduceXpBar (final Player p, int ticks) {
+        p.setExp(1F);
+
+
+        final float division = p.getExp() / ticks;
+
+        new BukkitRunnable()
+        {
+            @Override
+            public void run()
+            {
+                float currentLevel = p.getExp();
+                p.setExp(currentLevel - division);
+                currentLevel = p.getExp();
+
+                // Reached 0
+                if (currentLevel <= 0) {
+                    cancel();
+                }
+            }
+        }.runTaskTimer(MiarsStorage.getInstance(), 1L, 1L);
+
+    }
+
+    public static String subStringToEnd(String str,String er){
+        String str1=str.substring(0, str.indexOf(er));
+        String str2=str.substring(str1.length()+1, str.length());
+
+        return str2;
+    }
+
+
+    public static Long getTheDay(){
+
+        long current = System.currentTimeMillis();
+
+        return current/(1000*3600*24)*(1000*3600*24) - TimeZone.getDefault().getRawOffset();
+    }
+
+
+    /**
+     * 自动初始化该玩家装备
+     * @param p
+     */
+    public static void autoEquip(Player p,FInventory fInv){
+        p.getInventory().clear();
+
+        Inventory inv = p.getInventory();
+
+        inv.setItem(39,fInv.getHelmet());
+        inv.setItem(38,fInv.getChestPlate());
+        inv.setItem(37,fInv.getLeggings());
+        inv.setItem(36,fInv.getBoots());
+
+        for (Integer i:fInv.getItemCote().keySet()){
+            inv.setItem(i,fInv.getItemCote().get(i));
+        }
+
+        for (Integer i:fInv.getBackpack().keySet()){
+            inv.setItem(i,fInv.getBackpack().get(i));
+        }
+    }
+
+    public static void sendActionText(Player player, String message){
+        PacketPlayOutChat packet = new PacketPlayOutChat(new ChatComponentText(message), (byte)2);
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }
 }

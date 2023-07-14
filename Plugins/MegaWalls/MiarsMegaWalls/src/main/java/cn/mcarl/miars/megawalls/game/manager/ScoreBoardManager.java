@@ -2,8 +2,9 @@ package cn.mcarl.miars.megawalls.game.manager;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
-import cn.mcarl.miars.core.utils.ToolUtils;
-import cn.mcarl.miars.core.utils.fastboard.FastBoard;
+import cn.mcarl.miars.core.utils.MiarsUtils;
+import cn.mcarl.miars.storage.utils.ToolUtils;
+import cn.mcarl.miars.storage.utils.fastboard.FastBoard;
 import cn.mcarl.miars.megawalls.conf.PluginConfig;
 import cn.mcarl.miars.megawalls.game.entitiy.GameInfo;
 import cn.mcarl.miars.megawalls.game.entitiy.GamePlayer;
@@ -64,7 +65,7 @@ public class ScoreBoardManager {
             board.updateTitle("&eMEGA WALLS &8| &e"+ ServerInfoDataStorage.getInstance().getServerInfo().getNameCn());
         }
 
-        lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis())+" &8"+ ToolUtils.getServerCode());
+        lines.add("&7"+simpleDateFormat.format(System.currentTimeMillis())+" &8"+ MiarsUtils.getServerCode());
 
         if (gameInfo.getGameState() != GameState.WAIT && gameInfo.getGameState() != GameState.READY){
             if (gameInfo.getGameState()== GameState.START){
@@ -94,7 +95,7 @@ public class ScoreBoardManager {
                             lines.add("&f战墙倒塌: &c"+s);
                         }
                     }else {
-                        lines.add("&f战墙倒塌: &a"+ToolUtils.getDateMode(GameManager.getInstance().getWallTime()));
+                        lines.add("&f战墙倒塌: &a"+ ToolUtils.getDateMode(GameManager.getInstance().getWallTime()));
                     }
 
                 }else {
@@ -111,7 +112,7 @@ public class ScoreBoardManager {
                             lines.add("&f凋灵暴怒消失: &c"+s);
                         }
                     }else {
-                        lines.add("&f凋灵暴怒消失: &a"+ToolUtils.getDateMode(GameManager.getInstance().getWitherFury()));
+                        lines.add("&f凋灵暴怒消失: &a"+ ToolUtils.getDateMode(GameManager.getInstance().getWitherFury()));
                     }
 
                 }else {
@@ -128,7 +129,7 @@ public class ScoreBoardManager {
                             lines.add("&f游戏结束: &c"+s);
                         }
                     }else {
-                        lines.add("&f游戏结束: &a"+ToolUtils.getDateMode(GameManager.getInstance().getGameOver()));
+                        lines.add("&f游戏结束: &a"+ ToolUtils.getDateMode(GameManager.getInstance().getGameOver()));
                     }
                 }
             }

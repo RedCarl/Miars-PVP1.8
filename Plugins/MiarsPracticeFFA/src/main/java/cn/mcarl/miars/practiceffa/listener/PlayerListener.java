@@ -1,36 +1,42 @@
 package cn.mcarl.miars.practiceffa.listener;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
-import cn.mcarl.miars.core.utils.MiarsUtil;
+import cn.mcarl.miars.core.manager.EnderPearlManager;
+import cn.mcarl.miars.core.utils.MiarsUtils;
 import cn.mcarl.miars.practiceffa.entity.GamePlayer;
 import cn.mcarl.miars.practiceffa.manager.*;
 import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
 import cn.mcarl.miars.storage.entity.ffa.FKit;
+import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import cn.mcarl.miars.practiceffa.MiarsPracticeFFA;
 import cn.mcarl.miars.practiceffa.conf.PluginConfig;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
-import cn.mcarl.miars.storage.storage.data.practice.FKitDataStorage;
-import cn.mcarl.miars.storage.storage.data.practice.FPlayerDataStorage;
+import cn.mcarl.miars.storage.storage.data.practice.*;
 import cn.mcarl.miars.practiceffa.ui.BlockGUI;
 import cn.mcarl.miars.practiceffa.utils.FFAUtil;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
-import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
-import cn.mcarl.miars.storage.storage.data.practice.RankScoreDataStorage;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.entity.EnderPearl;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.Date;
 
@@ -58,17 +64,17 @@ public class PlayerListener implements Listener {
         ScoreBoardManager.getInstance().joinPlayer(player);
 
         // 初始化头衔
-        MiarsUtil.initPlayerNametag(player,false);
+        MiarsUtils.initPlayerNametag(player,false);
 
-        player.sendMessage(ColorParser.parse("&r"));
-        player.sendMessage(ColorParser.parse("&ePractice"));
-        player.sendMessage(ColorParser.parse("&7 1v1s, Parties, Events"));
-        player.sendMessage(ColorParser.parse("&7 15+Games & Duels"));
-        player.sendMessage(ColorParser.parse("&r"));
-        player.sendMessage(ColorParser.parse("&e┃ &7To duel a friend,do: &e/duel &7[their name]"));
-        player.sendMessage(ColorParser.parse("&e┃ &7To quick play,right click your sword."));
-        player.sendMessage(ColorParser.parse("&e┃ &7To edit a kit,right click with your book."));
-        player.sendMessage(ColorParser.parse("&r"));
+//        player.sendMessage(ColorParser.parse("&r"));
+//        player.sendMessage(ColorParser.parse("&bPractice"));
+//        player.sendMessage(ColorParser.parse("&7 1v1s, Parties, Events"));
+//        player.sendMessage(ColorParser.parse("&7 15+Games & Duels"));
+//        player.sendMessage(ColorParser.parse("&r"));
+//        player.sendMessage(ColorParser.parse("&b┃ &7To duel a friend,do: &b/duel &7[their name]"));
+//        player.sendMessage(ColorParser.parse("&b┃ &7To quick play,right click your sword."));
+//        player.sendMessage(ColorParser.parse("&b┃ &7To edit a kit,right click with your book."));
+//        player.sendMessage(ColorParser.parse("&r"));
 
 
         for (FKitType ft:FKitType.values()) {
@@ -112,6 +118,7 @@ public class PlayerListener implements Listener {
 
         e.setRespawnLocation(new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(),PluginConfig.FFA_SITE.LOCATION.get().getX(),PluginConfig.FFA_SITE.LOCATION.get().getY()+1,PluginConfig.FFA_SITE.LOCATION.get().getZ()));
 
+        System.out.println(player.getLocation());
         GamePlayer.init(player);
     }
 
@@ -194,8 +201,9 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void PlayerDeathEvent(PlayerDeathEvent e) {
+
+        Player deathPlayer = e.getEntity(); // 死亡的玩家
         if (e.getEntity().getKiller() != null) {
-            Player deathPlayer = e.getEntity(); // 死亡的玩家
             Player attackPlayer = e.getEntity().getKiller(); // 击杀的玩家
 
 
@@ -206,9 +214,11 @@ public class PlayerListener implements Listener {
             if (attackPlayer!=null){
                 FPlayer attackFPlayer = FPlayerDataStorage.getInstance().getFPlayer(attackPlayer);
                 attackFPlayer.addKillsCount();
+                attackPlayer.setHealth(20);
             }
         }
 
+        DeathChestManager.getInstance().generateChests(deathPlayer,deathPlayer.getLocation());
 
         e.setDeathMessage(null);
         e.setKeepInventory(true);
@@ -220,4 +230,5 @@ public class PlayerListener implements Listener {
         MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
         e.setFormat(ColorParser.parse(mRank.getPrefix()+mRank.getNameColor()+"%1$s&f: %2$s"));
     }
+
 }

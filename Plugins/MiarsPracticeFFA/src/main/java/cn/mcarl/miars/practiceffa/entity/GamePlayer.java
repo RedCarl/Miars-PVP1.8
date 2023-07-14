@@ -1,12 +1,12 @@
 package cn.mcarl.miars.practiceffa.entity;
 
 import cn.mcarl.miars.core.publics.items.BackBed;
-import cn.mcarl.miars.core.utils.MiarsUtil;
+import cn.mcarl.miars.core.publics.items.Ranks;
+import cn.mcarl.miars.core.utils.MiarsUtils;
 import cn.mcarl.miars.practiceffa.conf.PluginConfig;
-import cn.mcarl.miars.practiceffa.items.EditKit;
-import cn.mcarl.miars.practiceffa.items.PracticeSelect;
-import cn.mcarl.miars.practiceffa.items.QueueCancel;
+import cn.mcarl.miars.practiceffa.items.*;
 import cn.mcarl.miars.practiceffa.kits.FFAGame;
+import cn.mcarl.miars.practiceffa.kits.NoDeBuff;
 import cn.mcarl.miars.practiceffa.manager.CombatManager;
 import cn.mcarl.miars.practiceffa.manager.GamePlayerManager;
 import cn.mcarl.miars.practiceffa.utils.FFAUtil;
@@ -82,7 +82,8 @@ public class GamePlayer {
         }else {
             this.practiceBackpack = PracticeBackpack.FFA;
            if (this.fInventory==null){
-               this.fInventory = FFAGame.get();
+//               this.fInventory = FFAGame.get();
+               this.fInventory = NoDeBuff.get();
 
                FFAUtil.autoEquip(player,this.fInventory);
                FFAUtil.initializePlayer(player);
@@ -99,10 +100,15 @@ public class GamePlayer {
         Player p = getPlayer();
         FFAUtil.clearPlayerInv(p);
         this.queue = false;
-        MiarsUtil.initPlayerNametag(p,false);
+        MiarsUtils.initPlayerNametag(p,false);
+
         new PracticeSelect().give(p,0);
-        new EditKit().give(p,7);
-        new BackBed().give(p,8);
+        new ShopMenu().give(p,1);
+        new Team().give(p,2);
+        new Spectate().give(p,4);
+        new Event().give(p,6);
+        new Settings().give(p,7);
+        new EditKit().give(p,8);
     }
 
     private void setQueue(){
@@ -110,11 +116,8 @@ public class GamePlayer {
         FFAUtil.clearPlayerInv(p);
         this.queue = true;
         switch (this.queueType){
-            case RANKED -> {
-                MiarsUtil.initPlayerNametag(p," &6["+this.queueModel.getName()+"]",false);
-            }
-            case UNRANKED -> {
-                MiarsUtil.initPlayerNametag(p," &e["+this.queueModel.getName()+"]",false);
+            case RANKED, UNRANKED -> {
+                MiarsUtils.initPlayerNametag(p," &b["+this.queueModel.getName()+"]",false);
             }
         }
         new QueueCancel().give(p,4);
@@ -131,5 +134,6 @@ public class GamePlayer {
 
     public static void init(Player player){
         GamePlayerManager.getInstance().init(player);
+        GamePlayer.get(player).initData();
     }
 }

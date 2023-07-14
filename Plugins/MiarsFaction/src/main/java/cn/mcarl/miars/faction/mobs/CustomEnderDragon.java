@@ -1,11 +1,14 @@
 package cn.mcarl.miars.faction.mobs;
 
+import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.faction.conf.PluginConfig;
 import cn.mcarl.miars.faction.utils.Schematic;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.data.DataException;
 import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -18,6 +21,8 @@ public class CustomEnderDragon extends EntityEnderDragon {
     public CustomEnderDragon(World world) {
         super(world);
     }
+
+    @Override
     protected void aZ() {
         if (!this.dead) {
             ++this.by;
@@ -88,7 +93,10 @@ public class CustomEnderDragon extends EntityEnderDragon {
                     }
                 }
                 try {
-                    Schematic.getInstance().setSchematic(new Location(Bukkit.getWorld("factions_the_end"), 0, 70, 0), "schematics/NetherPvp.schematic");
+                    Schematic.getInstance().setSchematic(new Location(Bukkit.getWorld(PluginConfig.PROTECTED_REGION.WORLD_NAME.get()+"_the_end"), 0, 70, 0), "schematics/NetherPvp.schematic");
+                    for (Player player:Bukkit.getOnlinePlayers()) {
+                        player.sendMessage(ColorParser.parse("&5&l末地! &7末影龙被击杀，末地竞技场已开启..."));
+                    }
                 } catch (DataException | IOException | MaxChangedBlocksException ex) {
                     throw new RuntimeException(ex);
                 }

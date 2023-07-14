@@ -22,7 +22,7 @@ public class NoDeBuff {
         // 物品栏
         Map<Integer,ItemStack> itemCote = new HashMap<>();
 
-        itemCote.put(0, new ItemBuilder(Material.DIAMOND_SWORD).addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 2).addUnsafeEnchantment(Enchantment.DURABILITY, 3).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 2).setUnbreakable().toItemStack());
+        itemCote.put(0, new ItemBuilder(Material.DIAMOND_SWORD).addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 3).addUnsafeEnchantment(Enchantment.DURABILITY, 3).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 2).setUnbreakable().toItemStack());
         itemCote.put(1, new ItemBuilder(Material.ENDER_PEARL, 16).toItemStack());
         itemCote.put(2, speed);
         itemCote.put(3, fire);
@@ -43,7 +43,7 @@ public class NoDeBuff {
         // 穿戴
         inv.setBoots(
                 new ItemBuilder(Material.DIAMOND_BOOTS)
-                        .addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2)
+                        .addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3)
                         .addUnsafeEnchantment(Enchantment.DURABILITY, 3)
                         .addUnsafeEnchantment(Enchantment.PROTECTION_FALL, 4)
                         .setUnbreakable()
@@ -51,21 +51,21 @@ public class NoDeBuff {
         );
         inv.setLeggings(
                 new ItemBuilder(Material.DIAMOND_LEGGINGS)
-                        .addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2)
+                        .addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3)
                         .addUnsafeEnchantment(Enchantment.DURABILITY, 3)
                         .setUnbreakable()
                         .toItemStack()
         );
         inv.setChestPlate(
                 new ItemBuilder(Material.DIAMOND_CHESTPLATE)
-                        .addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2)
+                        .addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3)
                         .addUnsafeEnchantment(Enchantment.DURABILITY, 3)
                         .setUnbreakable()
                         .toItemStack()
         );
         inv.setHelmet(
                 new ItemBuilder(Material.DIAMOND_HELMET)
-                        .addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 2)
+                        .addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3)
                         .addUnsafeEnchantment(Enchantment.DURABILITY, 3)
                         .setUnbreakable()
                         .toItemStack()

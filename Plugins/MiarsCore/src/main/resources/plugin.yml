@@ -27,3 +27,11 @@ commands:
     description: "硬币"
     aliases:
       - money
+  "gamemode":
+    description: "模式"
+    aliases:
+      - gm
+  "spawner":
+    description: "刷怪笼"
+    aliases:
+      - spawner

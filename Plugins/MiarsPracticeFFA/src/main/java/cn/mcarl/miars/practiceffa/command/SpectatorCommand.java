@@ -28,11 +28,11 @@ public class SpectatorCommand implements CommandExecutor, TabCompleter {
                     //PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer();
 //                    if (p!=null){
 //                    }else {
-//                        player.sendMessage(ColorParser.parse("&7No player matching &e"+args[0]+" &7is connected to this server."));
+//                        player.sendMessage(ColorParser.parse("&7No player matching &b"+args[0]+" &7is connected to this server."));
 //                    }
                 }
                 default -> {
-                    player.sendMessage(ColorParser.parse("&7请输入 &e/spec &7玩家名称 来观看战斗。"));
+                    player.sendMessage(ColorParser.parse("&7请输入 &b/spec &7玩家名称 来观看战斗。"));
                 }
             }
 

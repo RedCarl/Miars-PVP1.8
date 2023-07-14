@@ -1,26 +1,23 @@
 package cn.mcarl.miars.pay;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.pay.api.MiarsPayAPI;
-import cn.mcarl.miars.pay.command.PayCommand;
+import cn.mcarl.miars.pay.command.RechargeCommand;
 import cn.mcarl.miars.pay.event.OrderShipEvent;
 import cn.mcarl.miars.pay.listener.PlayerListener;
 import cn.mcarl.miars.pay.utils.PayQueue;
-import cn.mcarl.miars.pay.utils.Utils;
 import com.google.gson.JsonObject;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class MiarsPay extends JavaPlugin {
     private static MiarsPay instance;
@@ -49,7 +46,7 @@ public class MiarsPay extends JavaPlugin {
         new PlayerListener(this);
 
         log("正在注册指令...");
-        regCommand("Pay",new PayCommand());
+        regCommand("Recharge",new RechargeCommand());
 
         log("正在开启订单监控...");
         this.createShipTask();
@@ -158,6 +155,8 @@ public class MiarsPay extends JavaPlugin {
             }
             orderInfo = orderShipEvent.getOrderInfo();
             double money = orderInfo.get("totalFee").getAsDouble();
+
+            MiarsCore.getPpAPI().give(player.getUniqueId(), (int) money);
 
             player.sendMessage(ColorParser.parse("&a&l商城! &7成功充值了 &6"+money+" &7金子，请注意查收。"));
 

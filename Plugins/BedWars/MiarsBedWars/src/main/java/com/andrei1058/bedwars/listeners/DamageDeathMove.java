@@ -110,7 +110,9 @@ public class DamageDeathMove implements Listener {
                 if (BedWarsTeam.reSpawnInvulnerability.containsKey(p.getUniqueId())) {
                     if (BedWarsTeam.reSpawnInvulnerability.get(p.getUniqueId()) > System.currentTimeMillis()) {
                         e.setCancelled(true);
-                    } else BedWarsTeam.reSpawnInvulnerability.remove(p.getUniqueId());
+                    } else {
+                        BedWarsTeam.reSpawnInvulnerability.remove(p.getUniqueId());
+                    }
                 }
                 //}
 
@@ -126,23 +128,39 @@ public class DamageDeathMove implements Listener {
     // show player health on bow hit
     @EventHandler(priority = EventPriority.MONITOR)
     public void onBowHit(EntityDamageByEntityEvent e) {
-        if(e.isCancelled()) return;
-        if (e.getEntity().getType() != EntityType.PLAYER) return;
-        if (!(e.getDamager() instanceof Projectile)) return;
+        if(e.isCancelled()) {
+            return;
+        }
+        if (e.getEntity().getType() != EntityType.PLAYER) {
+            return;
+        }
+        if (!(e.getDamager() instanceof Projectile)) {
+            return;
+        }
         Projectile projectile = (Projectile) e.getDamager();
-        if (projectile.getShooter() == null) return;
-        if (!(projectile.getShooter() instanceof Player)) return;
+        if (projectile.getShooter() == null) {
+            return;
+        }
+        if (!(projectile.getShooter() instanceof Player)) {
+            return;
+        }
 
         Player p = (Player) e.getEntity();
         Player damager = (Player) projectile.getShooter();
         IArena a = Arena.getArenaByPlayer(p);
-        if (a == null) return;
-        if (a.getStatus() != GameState.playing) return;
+        if (a == null) {
+            return;
+        }
+        if (a.getStatus() != GameState.playing) {
+            return;
+        }
 
         // projectile hit message #696, #711
         ITeam team = a.getTeam(p);
         Language lang = Language.getPlayerLanguage(damager);
-        if (lang.m(Messages.PLAYER_HIT_BOW).isEmpty()) return;
+        if (lang.m(Messages.PLAYER_HIT_BOW).isEmpty()) {
+            return;
+        }
         String message = lang.m(Messages.PLAYER_HIT_BOW)
                 .replace("{amount}", new DecimalFormat("00.#").format(((Player) e.getEntity()).getHealth() - e.getFinalDamage()))
                 .replace("{TeamColor}", team.getColor().chat().toString())
@@ -174,7 +192,9 @@ public class DamageDeathMove implements Listener {
                     ProjectileSource shooter = ((Projectile) e.getDamager()).getShooter();
                     if (shooter instanceof Player) {
                         damager = (Player) shooter;
-                    } else return;
+                    } else {
+                        return;
+                    }
                     projectile = true;
                 } else if (e.getDamager() instanceof Player) {
                     damager = (Player) e.getDamager();
@@ -212,7 +232,9 @@ public class DamageDeathMove implements Listener {
                                     }
                                 }
                             }
-                        } else return;
+                        } else {
+                            return;
+                        }
                     }
                 } else if ((e.getDamager() instanceof Silverfish) || (e.getDamager() instanceof IronGolem)) {
                     LastHit lh = LastHit.getLastHit(p);
@@ -241,7 +263,9 @@ public class DamageDeathMove implements Listener {
                         if (BedWarsTeam.reSpawnInvulnerability.get(p.getUniqueId()) > System.currentTimeMillis()) {
                             e.setCancelled(true);
                             return;
-                        } else BedWarsTeam.reSpawnInvulnerability.remove(p.getUniqueId());
+                        } else {
+                            BedWarsTeam.reSpawnInvulnerability.remove(p.getUniqueId());
+                        }
                     }
                     // but if the damageR is the re-spawning player remove protection
                     BedWarsTeam.reSpawnInvulnerability.remove(damager.getUniqueId());
@@ -282,8 +306,12 @@ public class DamageDeathMove implements Listener {
                 TNTPrimed tnt = (TNTPrimed) e.getDamager();
                 if (tnt.getSource() instanceof Player) {
                     damager = (Player) tnt.getSource();
-                } else return;
-            } else return;
+                } else {
+                    return;
+                }
+            } else {
+                return;
+            }
             IArena a = Arena.getArenaByPlayer(damager);
             if (a != null) {
                 if (a.isPlayer(damager)) {
@@ -295,27 +323,7 @@ public class DamageDeathMove implements Listener {
                     e.setCancelled(true);
                 }
             }
-        } /*else if (e.getEntity() instanceof IronGolem) {
-            Player damager;
-            if (e.getDamager() instanceof Player) {
-                damager = (Player) e.getDamager();
-            } else if (e.getDamager() instanceof Projectile) {
-                Projectile proj = (Projectile) e.getDamager();
-                damager = (Player) proj.getShooter();
-            } else {
-                return;
-            }
-            Arena a = Arena.getArenaByPlayer(damager);
-            if (a != null) {
-                if (a.isPlayer(damager)) {
-                    if (nms.isDespawnable(e.getEntity())) {
-                        if (a.getTeam(damager) == ((OwnedByTeam) nms.getDespawnablesList().get(e.getEntity().getUniqueId())).getOwner()) {
-                            e.setCancelled(true);
-                        }
-                    }
-                }
-            }
-        }*/
+        }
         if (BedWars.getServerType() == ServerType.MULTIARENA) {
             if (e.getEntity().getLocation().getWorld().getName().equalsIgnoreCase(BedWars.getLobbyWorld())) {
                 e.setCancelled(true);
@@ -360,8 +368,12 @@ public class DamageDeathMove implements Listener {
                     LastHit lh = getLastHit(victim);
                     if (lh != null) {
                         if (lh.getTime() >= System.currentTimeMillis() - 15000) {
-                            if (lh.getDamager() instanceof Player) killer = (Player) lh.getDamager();
-                            if (killer != null && killer.getUniqueId().equals(victim.getUniqueId())) killer = null;
+                            if (lh.getDamager() instanceof Player) {
+                                killer = (Player) lh.getDamager();
+                            }
+                            if (killer != null && killer.getUniqueId().equals(victim.getUniqueId())) {
+                                killer = null;
+                            }
                         }
                     }
                     if (killer == null) {
@@ -379,8 +391,12 @@ public class DamageDeathMove implements Listener {
                     LastHit lh = getLastHit(victim);
                     if (lh != null) {
                         if (lh.getTime() >= System.currentTimeMillis() - 15000) {
-                            if (lh.getDamager() instanceof Player) killer = (Player) lh.getDamager();
-                            if (killer != null && killer.getUniqueId().equals(victim.getUniqueId())) killer = null;
+                            if (lh.getDamager() instanceof Player) {
+                                killer = (Player) lh.getDamager();
+                            }
+                            if (killer != null && killer.getUniqueId().equals(victim.getUniqueId())) {
+                                killer = null;
+                            }
                         }
                     }
                     if (killer == null) {
@@ -420,8 +436,12 @@ public class DamageDeathMove implements Listener {
                     if (lh != null) {
                         // check if kicked off in the last 10 seconds
                         if (lh.getTime() >= System.currentTimeMillis() - 10000) {
-                            if (lh.getDamager() instanceof Player) killer = (Player) lh.getDamager();
-                            if (killer != null && killer.getUniqueId().equals(victim.getUniqueId())) killer = null;
+                            if (lh.getDamager() instanceof Player) {
+                                killer = (Player) lh.getDamager();
+                            }
+                            if (killer != null && killer.getUniqueId().equals(victim.getUniqueId())) {
+                                killer = null;
+                            }
                             if (killer != null) {
                                 if (killer != victim) {
                                     message = victimsTeam.isBedDestroyed() ? Messages.PLAYER_DIE_KNOCKED_BY_FINAL_KILL : Messages.PLAYER_DIE_KNOCKED_BY_REGULAR_KILL;
@@ -435,7 +455,9 @@ public class DamageDeathMove implements Listener {
                 }
             }
 
-            if (killer != null) killersTeam = a.getTeam(killer);
+            if (killer != null) {
+                killersTeam = a.getTeam(killer);
+            }
             String finalMessage = message;
             PlayerKillEvent playerKillEvent = new PlayerKillEvent(a, victim, killer, player -> Language.getMsg(player, finalMessage), cause);
             Bukkit.getPluginManager().callEvent(playerKillEvent);
@@ -620,14 +642,18 @@ public class DamageDeathMove implements Listener {
                     for (ITeam t : a.getTeams()) {
                         if (e.getPlayer().getLocation().distance(t.getBed()) < 4) {
                             if (t.isMember(e.getPlayer()) && t instanceof BedWarsTeam) {
-                                if (((BedWarsTeam) t).getBedHolo(e.getPlayer()) == null) continue;
+                                if (((BedWarsTeam) t).getBedHolo(e.getPlayer()) == null) {
+                                    continue;
+                                }
                                 if (!((BedWarsTeam) t).getBedHolo(e.getPlayer()).isHidden()) {
                                     ((BedWarsTeam) t).getBedHolo(e.getPlayer()).hide();
                                 }
                             }
                         } else {
                             if (t.isMember(e.getPlayer()) && t instanceof BedWarsTeam) {
-                                if (((BedWarsTeam) t).getBedHolo(e.getPlayer()) == null) continue;
+                                if (((BedWarsTeam) t).getBedHolo(e.getPlayer()) == null) {
+                                    continue;
+                                }
                                 if (((BedWarsTeam) t).getBedHolo(e.getPlayer()).isHidden()) {
                                     ((BedWarsTeam) t).getBedHolo(e.getPlayer()).show();
                                 }
@@ -661,11 +687,15 @@ public class DamageDeathMove implements Listener {
     @EventHandler
     public void onProjHit(ProjectileHitEvent e) {
         Projectile proj = e.getEntity();
-        if (proj == null) return;
+        if (proj == null) {
+            return;
+        }
         if (e.getEntity().getShooter() instanceof Player) {
             IArena a = Arena.getArenaByPlayer((Player) e.getEntity().getShooter());
             if (a != null) {
-                if (!a.isPlayer((Player) e.getEntity().getShooter())) return;
+                if (!a.isPlayer((Player) e.getEntity().getShooter())) {
+                    return;
+                }
                 String utility = "";
                 if (proj instanceof Snowball) {
                     utility = "silverfish";

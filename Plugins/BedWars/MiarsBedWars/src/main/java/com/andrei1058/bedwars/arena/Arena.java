@@ -447,6 +447,7 @@ public class Arena implements IArena {
      * @param skipOwnerCheck - True if you want to skip the party checking for this player. This
      * @return true if was added.
      */
+    @Override
     public boolean addPlayer(Player p, boolean skipOwnerCheck) {
         if (p == null) {
             return false;
@@ -613,6 +614,7 @@ public class Arena implements IArena {
      * @param p            Player to be added
      * @param playerBefore True if the player has played in this arena before and he died so now should be a spectator.
      */
+    @Override
     public boolean addSpectator(@NotNull Player p, boolean playerBefore, Location staffTeleport) {
         if (allowSpectate || playerBefore || staffTeleport != null) {
             debug("Spectator added: " + p.getName() + " arena: " + getArenaName());
@@ -752,6 +754,7 @@ public class Arena implements IArena {
      * @param p          Player to be removed
      * @param disconnect True if the player was disconnected
      */
+    @Override
     public void removePlayer(@NotNull Player p, boolean disconnect) {
         if(leaving.contains(p)) {
             return;
@@ -837,6 +840,7 @@ public class Arena implements IArena {
                     }
                 }
             } else if (alive_teams == 0 && !BedWars.isShuttingDown()) {
+                checkWinner();
                 Bukkit.getScheduler().runTaskLater(BedWars.plugin, () -> changeStatus(GameState.restarting), 10L);
             } else if(!BedWars.isShuttingDown()) {
                 //ReJoin feature
@@ -994,6 +998,7 @@ public class Arena implements IArena {
      * @param p          Player to be removed
      * @param disconnect True if the player was disconnected
      */
+    @Override
     public void removeSpectator(@NotNull Player p, boolean disconnect) {
         debug("Spectator removed: " + p.getName() + " arena: " + getArenaName());
 
@@ -1088,6 +1093,7 @@ public class Arena implements IArena {
     /**
      * Rejoin an arena
      */
+    @Override
     public boolean reJoin(Player p) {
         ReJoin reJoin = ReJoin.getPlayer(p);
         if (reJoin == null) {
@@ -1159,6 +1165,7 @@ public class Arena implements IArena {
      * Disable the arena.
      * This will automatically kick/ remove the people from the arena.
      */
+    @Override
     public void disable() {
         for (Player p : new ArrayList<>(players)) {
             removePlayer(p, false);
@@ -1187,6 +1194,7 @@ public class Arena implements IArena {
     /**
      * Restart the arena.
      */
+    @Override
     public void restart() {
         if (getRestartingTask() != null) {
             getRestartingTask().cancel();
@@ -1217,6 +1225,7 @@ public class Arena implements IArena {
     /**
      * Get the arena world
      */
+    @Override
     public World getWorld() {
         return world;
     }
@@ -1269,6 +1278,7 @@ public class Arena implements IArena {
      * Get the display status for an arena.
      * A message that can be used on signs etc.
      */
+    @Override
     public String getDisplayStatus(Language lang) {
         String s = "";
         switch (status) {
@@ -1386,6 +1396,7 @@ public class Arena implements IArena {
      * @param p          Target player
      * @param finalKills True if you want to get the Final Kills. False for regular kills.
      */
+    @Override
     public int getPlayerKills(Player p, boolean finalKills) {
         if (finalKills) {
             return playerFinalKills.getOrDefault(p, 0);
@@ -1398,6 +1409,7 @@ public class Arena implements IArena {
      *
      * @param p Target player
      */
+    @Override
     public int getPlayerBedsDestroyed(Player p) {
         if (playerBedsDestroyed.containsKey(p)) {
             return playerBedsDestroyed.get(p);
@@ -1410,6 +1422,7 @@ public class Arena implements IArena {
      *
      * @return signs.
      */
+    @Override
     public List<Block> getSigns() {
         return signs;
     }
@@ -1417,11 +1430,13 @@ public class Arena implements IArena {
     /**
      * Get the island radius
      */
+    @Override
     public int getIslandRadius() {
         return islandRadius;
     }
 
     //SETTER METHODS
+    @Override
     public void setGroup(String group) {
         this.group = group;
     }
@@ -1449,6 +1464,7 @@ public class Arena implements IArena {
     /**
      * Set game status without starting stats.
      */
+    @Override
     public void setStatus(GameState status) {
         if (this.status != GameState.playing && status == GameState.playing) {
             startTime = Instant.now();
@@ -1466,6 +1482,7 @@ public class Arena implements IArena {
     /**
      * Change game status starting tasks.
      */
+    @Override
     public void changeStatus(GameState status) {
         this.status = status;
         Bukkit.getPluginManager().callEvent(new GameStateChangeEvent(this, status, status));
@@ -1509,10 +1526,6 @@ public class Arena implements IArena {
         if (null != perMinuteTask) {
             perMinuteTask.cancel();
         }
-
-//        players.forEach(c -> SidebarService.getInstance().giveSidebar(c, this, false));
-//
-//        spectators.forEach(c -> SidebarService.getInstance().giveSidebar(c, this, false));
 
         if (status == GameState.starting) {
             startingTask = new GameStartingTask(this);
@@ -1578,6 +1591,7 @@ public class Arena implements IArena {
     /**
      * Add a join sign for the arena.
      */
+    @Override
     public void addSign(Location loc) {
         if (loc == null) {
             return;
@@ -1601,6 +1615,7 @@ public class Arena implements IArena {
     /**
      * Refresh signs.
      */
+    @Override
     public synchronized void refreshSigns() {
         for (Block b : getSigns()) {
             if (b == null) {
@@ -1649,6 +1664,7 @@ public class Arena implements IArena {
     /**
      * Add a kill point to the game stats.
      */
+    @Override
     public void addPlayerKill(Player p, boolean finalKill, Player victim) {
         if (p == null) {
             return;
@@ -1671,6 +1687,7 @@ public class Arena implements IArena {
     /**
      * Add a destroyed bed point to the player temp stats.
      */
+    @Override
     public void addPlayerBedDestroyed(Player p) {
         if (playerBedsDestroyed.containsKey(p)) {
             playerBedsDestroyed.replace(p, playerBedsDestroyed.get(p) + 1);
@@ -1735,6 +1752,7 @@ public class Arena implements IArena {
      * This will give the pre-game command Items.
      * This will clear the inventory first.
      */
+    @Override
     public void sendPreGameCommandItems(Player p) {
         if (config.getYml().get(ConfigPath.GENERAL_CONFIGURATION_PRE_GAME_ITEMS_PATH) == null) {
             return;
@@ -1777,6 +1795,7 @@ public class Arena implements IArena {
      * This will give the spectator command Items.
      * This will clear the inventory first.
      */
+    @Override
     public void sendSpectatorCommandItems(Player p) {
         if (config.getYml().get(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_PATH) == null) {
             return;
@@ -1858,6 +1877,7 @@ public class Arena implements IArena {
      * Make sure the player is in this arena first.
      */
     @Deprecated
+    @Override
     public ITeam getPlayerTeam(String playerCache) {
         for (ITeam t : getTeams()) {
             for (Player p : t.getMembersCache()) {
@@ -1873,6 +1893,7 @@ public class Arena implements IArena {
      * Check winner. You can always do that.
      * It will manage the arena restart and the needed stuff.
      */
+    @Override
     public void checkWinner() {
         if (getStatus() != GameState.restarting) {
             int max = getTeams().size(), eliminated = 0;
@@ -1997,12 +2018,15 @@ public class Arena implements IArena {
             if (players.size() == 0 && getStatus() != GameState.restarting) {
                 changeStatus(GameState.restarting);
             }
+        }else {
+
         }
     }
 
     /**
      * Add a kill to the player temp stats.
      */
+    @Override
     public void addPlayerDeath(Player p) {
         if (playerDeaths.containsKey(p)) {
             playerDeaths.replace(p, playerDeaths.get(p) + 1);
@@ -2015,6 +2039,7 @@ public class Arena implements IArena {
     /**
      * Set next event for the arena.
      */
+    @Override
     public void setNextEvent(NextEvent nextEvent) {
         if (this.nextEvent != null) {
             Sounds.playSound(this.nextEvent.getSoundPath(), getPlayers());
@@ -2153,6 +2178,7 @@ public class Arena implements IArena {
     /**
      * Get next event.
      */
+    @Override
     public NextEvent getNextEvent() {
         return nextEvent;
     }
@@ -2202,6 +2228,7 @@ public class Arena implements IArena {
     /**
      * Get a team by name
      */
+    @Override
     public ITeam getTeam(String name) {
         for (ITeam bwt : getTeams()) {
             if (bwt.getName().equals(name)) {
@@ -2232,6 +2259,7 @@ public class Arena implements IArena {
     /**
      * Get invisibility for armor
      */
+    @Override
     public ConcurrentHashMap<Player, Integer> getShowTime() {
         return showTime;
     }
@@ -2239,6 +2267,7 @@ public class Arena implements IArena {
     /**
      * Get instance of the starting task.
      */
+    @Override
     public StartingTask getStartingTask() {
         return startingTask;
     }
@@ -2246,6 +2275,7 @@ public class Arena implements IArena {
     /**
      * Get instance of the playing task.
      */
+    @Override
     public PlayingTask getPlayingTask() {
         return playingTask;
     }
@@ -2253,6 +2283,7 @@ public class Arena implements IArena {
     /**
      * Get instance of the game restarting task.
      */
+    @Override
     public RestartingTask getRestartingTask() {
         return restartingTask;
     }
@@ -2260,6 +2291,7 @@ public class Arena implements IArena {
     /**
      * Get arena ore generators Ore Generators.
      */
+    @Override
     public List<IGenerator> getOreGenerators() {
         return oreGenerators;
     }
@@ -2352,6 +2384,7 @@ public class Arena implements IArena {
      * Get the list of next events to come.
      * Not ordered.
      */
+    @Override
     public List<String> getNextEvents() {
         return new ArrayList<>(nextEvents);
     }
@@ -2359,6 +2392,7 @@ public class Arena implements IArena {
     /**
      * Get player deaths.
      */
+    @Override
     public int getPlayerDeaths(Player p, boolean finalDeaths) {
         if (finalDeaths) {
             return playerFinalKillDeaths.getOrDefault(p, 0);
@@ -2370,6 +2404,7 @@ public class Arena implements IArena {
      * Show upgrade announcement to players.
      * Change diamondTier value first.
      */
+    @Override
     public void sendDiamondsUpgradeMessages() {
         for (Player p : getPlayers()) {
             p.sendMessage(getMsg(p, Messages.GENERATOR_UPGRADE_CHAT_ANNOUNCEMENT).replace("{generatorType}",
@@ -2385,6 +2420,7 @@ public class Arena implements IArena {
      * Show upgrade announcement to players.
      * Change emeraldTier value first.
      */
+    @Override
     public void sendEmeraldsUpgradeMessages() {
         for (Player p : getPlayers()) {
             p.sendMessage(getMsg(p, Messages.GENERATOR_UPGRADE_CHAT_ANNOUNCEMENT).replace("{generatorType}",
@@ -2405,10 +2441,12 @@ public class Arena implements IArena {
         Arena.gamesBeforeRestart = gamesBeforeRestart;
     }
 
+    @Override
     public List<Region> getRegionsList() {
         return regionsList;
     }
 
+    @Override
     public LinkedList<Vector> getPlaced() {
         return placed;
     }
@@ -2419,10 +2457,12 @@ public class Arena implements IArena {
 
     private final Map<UUID, Long> fireballCooldowns = new HashMap<>();
 
+    @Override
     public Map<UUID, Long> getFireballCooldowns() {
         return fireballCooldowns;
     }
 
+    @Override
     public void destroyData() {
         destroyReJoins();
         if (worldName != null) {
@@ -2496,22 +2536,27 @@ public class Arena implements IArena {
         }
     }
 
+    @Override
     public int getUpgradeDiamondsCount() {
         return upgradeDiamondsCount;
     }
 
+    @Override
     public int getUpgradeEmeraldsCount() {
         return upgradeEmeraldsCount;
     }
 
+    @Override
     public void setAllowSpectate(boolean allowSpectate) {
         this.allowSpectate = allowSpectate;
     }
 
+    @Override
     public boolean isAllowSpectate() {
         return allowSpectate;
     }
 
+    @Override
     public String getWorldName() {
         return worldName;
     }

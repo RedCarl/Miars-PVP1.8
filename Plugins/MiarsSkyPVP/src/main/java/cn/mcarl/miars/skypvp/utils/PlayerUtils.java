@@ -1,12 +1,12 @@
 package cn.mcarl.miars.skypvp.utils;
 
 import cn.mcarl.miars.storage.utils.ItemBuilder;
-import cn.mcarl.miars.core.utils.MiarsUtil;
-import cn.mcarl.miars.core.utils.ToolUtils;
+import cn.mcarl.miars.core.utils.MiarsUtils;
 import cn.mcarl.miars.skypvp.conf.PluginConfig;
 import cn.mcarl.miars.skypvp.items.SpawnSlimeball;
 import cn.mcarl.miars.skypvp.manager.CombatManager;
 import cn.mcarl.miars.storage.entity.skypvp.SPlayer;
+import cn.mcarl.miars.storage.utils.ToolUtils;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -77,7 +77,7 @@ public class PlayerUtils {
                         .toItemStack()
                 );
 
-        List<Color> list = MiarsUtil.getColors();
+        List<Color> list = MiarsUtils.getColors();
         int index = (int) (Math.random()* list.size());
         player.getInventory().setItem(38,
                 new ItemBuilder(Material.LEATHER_CHESTPLATE)

@@ -60,14 +60,4 @@ public class MRank {
      */
     private Integer power;
 
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
 }

@@ -7,8 +7,9 @@ import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.core.conf.PluginConfig;
 import cn.mcarl.miars.core.manager.ServerManager;
+import cn.mcarl.miars.storage.entity.vault.enums.PriceType;
 import cn.mcarl.miars.storage.utils.ItemBuilder;
-import cn.mcarl.miars.core.utils.ToolUtils;
+import cn.mcarl.miars.core.utils.MiarsUtils;
 import cn.mcarl.miars.storage.entity.serverMenu.ServerMenuItem;
 import cn.mcarl.miars.storage.entity.serverMenu.ShopItem;
 import cn.mcarl.miars.storage.storage.data.serverMenu.ServerMenuDataStorage;
@@ -65,7 +66,7 @@ public class ServerMenuGUI extends GUI {
                     setItem(menuItem.getSlot(),new GUIItem(
                             new ItemBuilder(menuItem.getIcon())
                                     .setName(PlaceholderAPI.setPlaceholders(player,menuItem.getName()))
-                                    .setLore(ToolUtils.initLorePapi(PlaceholderAPI.setPlaceholders(player,menuItem.getLore()),is,"gui",menuItem.getValue()))
+                                    .setLore(MiarsUtils.initLorePapi(PlaceholderAPI.setPlaceholders(player,menuItem.getLore()),is,"gui",menuItem.getValue()))
                                     .toItemStack()
                     ){
                         @Override
@@ -83,13 +84,7 @@ public class ServerMenuGUI extends GUI {
                             }
                         }
                     });
-
                 }
-//                case "message" -> {
-//                    for (String s:menuItem.getValue().split("/n")) {
-//                        clicker.sendMessage(ColorParser.parse(s));
-//                    }
-//                }
                 case "menu" -> {
                     setItem(menuItem.getSlot(),new GUIItem(
                             new ItemBuilder(menuItem.getIcon())
@@ -115,7 +110,7 @@ public class ServerMenuGUI extends GUI {
                         @Override
                         public void onClick(Player clicker, ClickType type) {
                             if (type.name().equals(menuItem.getClickType()) || "ALL".equals(menuItem.getClickType())){
-                                Bukkit.dispatchCommand(player,menuItem.getValue());
+                                Bukkit.dispatchCommand(player,PlaceholderAPI.setPlaceholders(player,menuItem.getValue()));
                             }
                         }
                     });
@@ -127,38 +122,80 @@ public class ServerMenuGUI extends GUI {
                             shopItem.getItems().size()==1
                                     ?
                                     new ItemBuilder(new ItemStack(shopItem.getItems().get(0)))
-                                            .setLore(
-                                                    "&r",
-                                                    "&7价格: "+shopItem.getType().getColor()+shopItem.getPrice()+" &7"+(shopItem.getType().getName())
+                                            .setLore(PlaceholderAPI.setPlaceholders(player,menuItem.getLore()))
+                                            .addLoreLine(
+                                                    "&7价格: "+
+                                                            (
+                                                                    shopItem.getDiscount()==0?
+                                                                            shopItem.getType().getColor()+shopItem.getPrice():
+                                                                            "&7&m"+shopItem.getPrice()+"&r "+shopItem.getType().getColor()+(shopItem.getPrice()*shopItem.getDiscount())
+                                                                                    +" &c&l"+(shopItem.getDiscount()*10)+"折优惠"
+                                                            )
+                                                            +" &7"+(shopItem.getType().getName())
                                             )
                                             .toItemStack()
                                     :
                                     new ItemBuilder(menuItem.getIcon())
                                             .setName(PlaceholderAPI.setPlaceholders(player,menuItem.getName()))
                                             .setLore(PlaceholderAPI.setPlaceholders(player,menuItem.getLore()))
+                                            .addLoreLine(
+                                                    "&7价格: "+
+                                                            (
+                                                                    shopItem.getDiscount()==0?
+                                                                            shopItem.getType().getColor()+shopItem.getPrice():
+                                                                            "&7&m"+shopItem.getPrice()+"&r "+shopItem.getType().getColor()+(shopItem.getPrice()*shopItem.getDiscount())
+                                                                                    +" &c&l"+(shopItem.getDiscount()*10)+"折优惠"
+                                                            )
+                                                            +" &7"+(shopItem.getType().getName())
+                                            )
                                             .toItemStack()
                     ){
                         @Override
                         public void onClick(Player clicker, ClickType type) {
                             if (type.name().equals(menuItem.getClickType()) || "ALL".equals(menuItem.getClickType())){
-                                if (MiarsCore.getEcon().has(player,shopItem.getPrice())){
-                                    MiarsCore.getEcon().withdrawPlayer(player,shopItem.getPrice());
 
-                                    // 执行指令
-                                    for (String s:shopItem.getCommand()) {
-                                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),s);
+                                double money = shopItem.getDiscount()==0?shopItem.getPrice():shopItem.getPrice()*shopItem.getDiscount();
+
+                                if (shopItem.getType()== PriceType.VAULT){
+                                    if (MiarsCore.getEcon().has(player,money)){
+                                        MiarsCore.getEcon().withdrawPlayer(player,money);
+
+                                        // 执行指令
+                                        for (String s:shopItem.getCommand()) {
+                                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(),PlaceholderAPI.setPlaceholders(player,s));
+                                        }
+
+                                        // 给予物品
+                                        for (ItemStack s:shopItem.getItems()) {
+                                            player.getInventory().addItem(s);
+                                        }
+
+                                        player.closeInventory();
+                                        player.sendMessage(ColorParser.parse("&a&l购买成功! &7您成功购买了这个物品，请注意查收！"));
+                                    }else {
+                                        player.closeInventory();
+                                        player.sendMessage(ColorParser.parse("&c&l余额不足! &7很抱歉，您的余额不足购买这个物品。"));
                                     }
-
-                                    // 给予物品
-                                    for (ItemStack s:shopItem.getItems()) {
-                                        player.getInventory().addItem(s);
-                                    }
-
-                                    player.closeInventory();
-                                    player.sendMessage(ColorParser.parse("&a&l购买成功! &7您成功购买了这个物品，请注意查收！"));
                                 }else {
-                                    player.closeInventory();
-                                    player.sendMessage(ColorParser.parse("&c&l余额不足! &7很抱歉，您的余额不足购买这个物品。"));
+                                    if (MiarsCore.getPpAPI().look(player.getUniqueId()) >= money){
+                                        MiarsCore.getPpAPI().take(player.getUniqueId(), (int) money);
+
+                                        // 执行指令
+                                        for (String s:shopItem.getCommand()) {
+                                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(),PlaceholderAPI.setPlaceholders(player,s));
+                                        }
+
+                                        // 给予物品
+                                        for (ItemStack s:shopItem.getItems()) {
+                                            player.getInventory().addItem(s);
+                                        }
+
+                                        player.closeInventory();
+                                        player.sendMessage(ColorParser.parse("&a&l购买成功! &7您成功购买了这个物品，请注意查收！"));
+                                    }else {
+                                        player.closeInventory();
+                                        player.sendMessage(ColorParser.parse("&c&l余额不足! &7很抱歉，您的余额不足购买这个物品。"));
+                                    }
                                 }
                             }
                         }
@@ -169,8 +206,10 @@ public class ServerMenuGUI extends GUI {
                     ShopItem shopItem = new ShopItem(JSON.toJavaObject(JSON.parseObject(menuItem.getValue()),ShopItem.ToString.class));
                     setItem(menuItem.getSlot(),new GUIItem(
                             new ItemBuilder(menuItem.getIcon())
-                                    .setName(PlaceholderAPI.setPlaceholders(player,menuItem.getName()))
-                                    .setLore(PlaceholderAPI.setPlaceholders(player,menuItem.getLore()))
+                                    .setLore(
+                                            "&r",
+                                            "&7报酬: "+shopItem.getType().getColor()+shopItem.getPrice()+" &7"+(shopItem.getType().getName())
+                                    )
                                     .toItemStack()
                     ){
                         @Override

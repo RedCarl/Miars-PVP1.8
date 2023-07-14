@@ -6,7 +6,7 @@ import cc.carm.lib.configuration.core.value.ConfigValue;
 import cc.carm.lib.configuration.core.value.type.ConfiguredList;
 import cc.carm.lib.configuration.core.value.type.ConfiguredValue;
 import cn.mcarl.miars.storage.utils.ItemBuilder;
-import cn.mcarl.miars.core.utils.MiarsUtil;
+import cn.mcarl.miars.core.utils.MiarsUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -24,7 +24,7 @@ public class LuckyConfig extends ConfigurationRoot {
             @HeaderComment({"位置列表"})
             public static final ConfiguredList<Location> LOCATION = ConfigValue.builder()
                     .asList(Location.class).fromObject()
-                    .parseValue(MiarsUtil::locationParse)
+                    .parseValue(MiarsUtils::locationParse)
                     .serializeValue(Location::serialize)
                     .defaults(
                             new Location(Bukkit.getWorld("world"),0,0,0),
@@ -35,7 +35,7 @@ public class LuckyConfig extends ConfigurationRoot {
             @HeaderComment({"奖励内容"})
             public static final ConfiguredList<ItemStack> REWARD = ConfigValue.builder()
                     .asList(ItemStack.class).fromObject()
-                    .parseValue(MiarsUtil::itemStackParse)
+                    .parseValue(MiarsUtils::itemStackParse)
                     .serializeValue(ItemStack::serialize)
                     .defaults(
                             new ItemBuilder(Material.STONE_SWORD)
@@ -60,7 +60,7 @@ public class LuckyConfig extends ConfigurationRoot {
             @HeaderComment({"位置列表"})
             public static final ConfiguredList<Location> LOCATION = ConfigValue.builder()
                     .asList(Location.class).fromObject()
-                    .parseValue(MiarsUtil::locationParse)
+                    .parseValue(MiarsUtils::locationParse)
                     .serializeValue(Location::serialize)
                     .defaults(
                             new Location(Bukkit.getWorld("world"),0,0,0),
@@ -71,7 +71,7 @@ public class LuckyConfig extends ConfigurationRoot {
             @HeaderComment({"奖励内容"})
             public static final ConfiguredList<ItemStack> REWARD = ConfigValue.builder()
                     .asList(ItemStack.class).fromObject()
-                    .parseValue(MiarsUtil::itemStackParse)
+                    .parseValue(MiarsUtils::itemStackParse)
                     .serializeValue(ItemStack::serialize)
                     .defaults(
                             new ItemBuilder(Material.STONE_SWORD)
@@ -93,7 +93,7 @@ public class LuckyConfig extends ConfigurationRoot {
             @HeaderComment({"位置列表"})
             public static final ConfiguredList<Location> LOCATION = ConfigValue.builder()
                     .asList(Location.class).fromObject()
-                    .parseValue(MiarsUtil::locationParse)
+                    .parseValue(MiarsUtils::locationParse)
                     .serializeValue(Location::serialize)
                     .defaults(
                             new Location(Bukkit.getWorld("world"),0,0,0),
@@ -104,7 +104,7 @@ public class LuckyConfig extends ConfigurationRoot {
             @HeaderComment({"奖励内容"})
             public static final ConfiguredList<ItemStack> REWARD = ConfigValue.builder()
                     .asList(ItemStack.class).fromObject()
-                    .parseValue(MiarsUtil::itemStackParse)
+                    .parseValue(MiarsUtils::itemStackParse)
                     .serializeValue(ItemStack::serialize)
                     .defaults(
                             new ItemBuilder(Material.STONE_SWORD)
@@ -126,7 +126,7 @@ public class LuckyConfig extends ConfigurationRoot {
             @HeaderComment({"位置列表"})
             public static final ConfiguredList<Location> LOCATION = ConfigValue.builder()
                     .asList(Location.class).fromObject()
-                    .parseValue(MiarsUtil::locationParse)
+                    .parseValue(MiarsUtils::locationParse)
                     .serializeValue(Location::serialize)
                     .defaults(
                             new Location(Bukkit.getWorld("world"),0,0,0),
@@ -137,7 +137,7 @@ public class LuckyConfig extends ConfigurationRoot {
             @HeaderComment({"奖励内容"})
             public static final ConfiguredList<ItemStack> REWARD = ConfigValue.builder()
                     .asList(ItemStack.class).fromObject()
-                    .parseValue(MiarsUtil::itemStackParse)
+                    .parseValue(MiarsUtils::itemStackParse)
                     .serializeValue(ItemStack::serialize)
                     .defaults(
                             new ItemBuilder(Material.STONE_SWORD)

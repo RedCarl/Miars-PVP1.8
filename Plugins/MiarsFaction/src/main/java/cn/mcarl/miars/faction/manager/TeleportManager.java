@@ -1,6 +1,10 @@
 package cn.mcarl.miars.faction.manager;
 
+import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.faction.MiarsFaction;
+import cn.mcarl.miars.storage.utils.ToolUtils;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -49,7 +53,8 @@ public class TeleportManager {
                     cancel();
                     return;
                 }
-                //player.sendActionBar(new TranslateMessage("factions.teleport.time",(5-(System.currentTimeMillis() - time.get(player.getUuid()))/1000)));
+                long t = (5-(System.currentTimeMillis() - time.get(player.getUniqueId()))/1000);
+                ToolUtils.sendActionText(player,ColorParser.parse("&a将在 &c"+t+" &a秒后进行传送..."));
             }
         }.runTaskTimer(MiarsFaction.getInstance(),20,20);
     }
@@ -57,7 +62,7 @@ public class TeleportManager {
     public void cancelTeleport(Player player){
         if (time.containsKey(player.getUniqueId()) && time.get(player.getUniqueId())!=0){
             time.put(player.getUniqueId(),0L);
-            //player.sendActionBar(new TranslateMessage("factions.teleport.cancel"));
+            ToolUtils.sendActionText(player,ColorParser.parse("&c您的移动取消了本次传送。"));
         }
     }
 

@@ -32,10 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Type;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class MySQLStorage {
 
@@ -127,11 +124,9 @@ public class MySQLStorage {
 							"`group` varchar(255) DEFAULT NULL",// 权限组
 							"`describe` longtext", // 描述
 							"`power` int(255) DEFAULT NULL", // 权重
-							"`update_time` DATE", // 更新时间
-							"`create_time` DATE", // 创建时间
 							"PRIMARY KEY (`id`)", // 主键
 					});
-			getRankDataTable().createTable(sqlManager);
+			getMRankDataTable().createTable(sqlManager);
 
 			// 竞技场玩家信息
 			this.fPlayerDataTable = new DatabaseTable(
@@ -322,15 +317,15 @@ public class MySQLStorage {
 	}
 
 	public void replaceMRankData(@NotNull MRank data) throws Exception {
-		getSQLManager().createReplace(getRankDataTable().getTableName())
-				.setColumnNames("name", "prefix", "suffix", "nameColor", "permissions", "group", "describe", "power", "update_time", "create_time")
-				.setParams(data.getName(), data.getPrefix(), data.getSuffix(), data.getNameColor(), data.getPermissions(), data.getGroup(), data.getDescribe(), data.getPower(), data.getUpdateTime(),data.getCreateTime())
+		getSQLManager().createReplace(getMRankDataTable().getTableName())
+				.setColumnNames("name", "prefix", "suffix", "nameColor", "permissions", "group", "describe", "power")
+				.setParams(data.getName(), data.getPrefix(), data.getSuffix(), data.getNameColor(), data.getPermissions(), data.getGroup(), data.getDescribe(), data.getPower())
 				.execute();
 	}
 
 	public MRank queryMRankDataByName(@NotNull String name) {
 		return getSQLManager().createQuery()
-				.inTable(getRankDataTable().getTableName())
+				.inTable(getMRankDataTable().getTableName())
 				.addCondition("name", name)
 				.build()
 				.execute(
@@ -347,8 +342,6 @@ public class MySQLStorage {
 								data.setGroup(result.getString("group"));
 								data.setDescribe(result.getString("describe"));
 								data.setPower(result.getInt("power"));
-								data.setUpdateTime(result.getDate("update_time"));
-								data.setCreateTime(result.getDate("create_time"));
 								return data;
 							}
 							return null;
@@ -357,9 +350,9 @@ public class MySQLStorage {
 				);
 	}
 
-	public List<MRank> queryRankDataList() {
+	public List<MRank> queryMRankDataList() {
 		return getSQLManager().createQuery()
-				.inTable(getRankDataTable().getTableName())
+				.inTable(getMRankDataTable().getTableName())
 				.build()
 				.execute(
 						(query) -> {
@@ -377,8 +370,6 @@ public class MySQLStorage {
 								data.setGroup(result.getString("group"));
 								data.setDescribe(result.getString("describe"));
 								data.setPower(result.getInt("power"));
-								data.setUpdateTime(result.getDate("update_time"));
-								data.setCreateTime(result.getDate("create_time"));
 								datas.add(data);
 							}
 
@@ -781,7 +772,10 @@ public class MySQLStorage {
 
 								data.setName(result.getString("name"));
 								data.setSizeType(result.getString("size_type"));
-								data.setLore(List.of(result.getString("lore").split("/n")));
+
+								String lore = result.getString("lore");
+								data.setLore((lore.contains("/n") ? List.of(lore.split("/n")) : Collections.singletonList(lore)));
+
 								data.setSlot(result.getInt("slot"));
 								data.setClickType(result.getString("click_type"));
 								data.setType(result.getString("type"));
@@ -812,8 +806,8 @@ public class MySQLStorage {
 								data.setBanSite(result.getString("ban_site"));
 								data.setKook(result.getString("kook"));
 								data.setDiscord(result.getString("discord"));
-								data.setTabHead(result.getString("tab_head"));
-								data.setTabFoot(result.getString("tab_foot"));
+//								data.setTabHead(result.getString("tab_head"));
+//								data.setTabFoot(result.getString("tab_foot"));
 							}
 
 							return data;
@@ -988,7 +982,7 @@ public class MySQLStorage {
 	private SQLManager getSQLManager() {
 		return sqlManager;
 	}
-	public DatabaseTable getRankDataTable() {
+	public DatabaseTable getMRankDataTable() {
 		return mRankDataTable;
 	}
 	public DatabaseTable getMPlayerTable() {

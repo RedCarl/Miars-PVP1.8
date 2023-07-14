@@ -10,6 +10,7 @@ import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @Author: carl0
@@ -62,6 +63,29 @@ public class MPlayerDataStorage {
 
         dataMap.put(player.getUniqueId().toString(),data);
         return dataMap.get(player.getUniqueId().toString());
+    }
+
+    /**
+     * 获取玩家数据
+     */
+    public MPlayer getMPlayer(UUID uuid){
+        if (dataMap.containsKey(uuid.toString())){
+            return dataMap.get(uuid.toString());
+        }
+        MPlayer data = MiarsStorage.getMySQLStorage().queryMPlayerByUUID(uuid.toString());
+
+        //如果没有数据，就初始化玩家数据
+        if (data==null){
+            try {
+                putMPlayer(new MPlayer(uuid.toString(),"default", List.of(new String[]{"default"}),null,new Date(System.currentTimeMillis())));
+                data = MiarsStorage.getMySQLStorage().queryMPlayerByUUID(uuid.toString());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        dataMap.put(uuid.toString(),data);
+        return dataMap.get(uuid.toString());
     }
 
     public MPlayer getMPlayer(OfflinePlayer player){

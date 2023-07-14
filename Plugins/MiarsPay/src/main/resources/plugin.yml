@@ -10,7 +10,7 @@ depend:
   - PlaceholderAPI
 
 commands:
-  "Pay":
-    description: pay.
+  "Recharge":
+    description: "充值系统"
     aliases:
-      - pay
+      - recharge
