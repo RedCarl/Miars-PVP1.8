@@ -414,6 +414,13 @@ public class MySQLStorage {
 				.execute();
 	}
 
+	public void deleteFKitDataById(@NotNull Integer id) throws Exception {
+		getSQLManager().createDelete(getFKitDataTable().getTableName())
+				.addCondition("id",id)
+				.build()
+				.executeAsync(); //执行
+	}
+
 	public List<FKit> queryFKitDataList(@NotNull UUID uuid, FKitType type) {
 		return getSQLManager().createQuery()
 				.inTable(getFKitDataTable().getTableName())

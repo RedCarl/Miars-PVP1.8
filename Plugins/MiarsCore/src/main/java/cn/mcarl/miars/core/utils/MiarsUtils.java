@@ -1,6 +1,5 @@
 package cn.mcarl.miars.core.utils;
 
-import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.core.conf.PluginConfig;
 import cn.mcarl.miars.core.manager.ServerManager;
@@ -15,15 +14,12 @@ import com.mojang.authlib.properties.Property;
 import net.minecraft.server.v1_8_R3.ChatComponentText;
 import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 import org.bukkit.*;
-import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.util.NumberConversions;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,69 +35,6 @@ import java.util.*;
  */
 public class MiarsUtils {
 
-    /**
-     * 获取服务器版本信息
-     *
-     * @param player 玩家
-     */
-    public static void getVersion(CommandSender player) {
-        player.sendMessage(ColorParser.parse("&r"));
-        player.sendMessage(ColorParser.parse("&3&lMiarsSystem&8(forked Bukkit) &7服务端相关信息"));
-        player.sendMessage(ColorParser.parse("&r &b| &7运行版本 &bgit-MiarsSystem-1.8.8 (MC: 1.8.8)"));
-        player.sendMessage(ColorParser.parse("&r &b| &7接口版本 &b") + Bukkit.getBukkitVersion());
-        player.sendMessage(ColorParser.parse("&r &b| &f相关服务端更新请查询开发者内部构建服务器。"));
-        player.sendMessage(ColorParser.parse("&r &b| &f相关插件状态查询请参考 &b/Plugins &f指令。"));
-    }
-
-    /**
-     * 获取服务器插件列表
-     *
-     * @param sender 玩家
-     */
-    public static void getPlugins(CommandSender sender) {
-        Plugin[] pluginsOriginal = Bukkit.getPluginManager().getPlugins();
-        List<Plugin> pluginsRely = new ArrayList<>();
-        StringBuilder pluginName = new StringBuilder();
-        int hidePluginCount = 0;
-        for (Plugin plugin : pluginsOriginal) {
-            String s = plugin.getName().toLowerCase(Locale.ROOT);
-            if (sender instanceof Player && !s.contains("miars") && (
-                    s.contains("lib")
-                            || s.contains("api")
-                            || s.contains("world")
-                            || s.contains("spark")
-                            || s.contains("citizen")
-                            || s.contains("vault")
-                            || s.contains("lore")
-                            || s.contains("perm")
-            )) {
-                ++hidePluginCount;
-                continue;
-            }
-            if (isPrivatePlugin(plugin.getDescription())) {
-                pluginName.append("&b").append(plugin.getName()).append("&fⒸ&8, ");
-            } else {
-                pluginsRely.add(plugin);
-            }
-        }
-        for (Plugin plugin : pluginsRely) {
-            pluginName.append("&3").append(plugin.getName()).append("&7, ");
-        }
-        sender.sendMessage(ColorParser.parse("&7您好,本服有 &f" + (pluginsOriginal.length - hidePluginCount) + "&7 插件 &b(标有&fⒸ&b为原创)&7:"));
-        sender.sendMessage(ColorParser.parse(pluginName.substring(0, pluginName.length() - 2)));
-    }
-
-    public static boolean isPrivatePlugin(PluginDescriptionFile desc) {
-        if (desc.getAuthors().stream().map(e -> e.toLowerCase(Locale.ROOT)).anyMatch(author -> author.contains("red_carl"))) {
-            return true;
-        }
-        if (desc.getMain().toLowerCase(Locale.ROOT).contains("miars")) {
-            return true;
-        }
-        return false;
-    }
-
-
     public static void initPlayerNametag(Player player,boolean prefix){
 
         MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(player);
@@ -114,23 +47,21 @@ public class MiarsUtils {
 
     }
 
+    public static void initPlayerNametag(Player player,String suffix,boolean prefix){
+        MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(player);
+        MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
+        if (prefix){
+            MiarsCore.getNametagAPI().setNametag(player,mRank.getPrefix(),suffix,mRank.getPower());
+        }else {
+            MiarsCore.getNametagAPI().setNametag(player,mRank.getNameColor(),suffix,mRank.getPower());
+        }
+    }
 
     public static void initPlayerNametag(Player player,String p,String s){
         MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(player);
 
         MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
         MiarsCore.getNametagAPI().setNametag(player,mRank.getPrefix(),mRank.getSuffix(),mRank.getPower());
-    }
-
-
-    public static void initPlayerNametag(Player player,String s,boolean prefix){
-        MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(player);
-        MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
-        if (prefix){
-            MiarsCore.getNametagAPI().setNametag(player,mRank.getPrefix(),s,mRank.getPower());
-        }else {
-            MiarsCore.getNametagAPI().setNametag(player,mRank.getNameColor(),s,mRank.getPower());
-        }
     }
 
     public static ItemStack createSkull(String value) {

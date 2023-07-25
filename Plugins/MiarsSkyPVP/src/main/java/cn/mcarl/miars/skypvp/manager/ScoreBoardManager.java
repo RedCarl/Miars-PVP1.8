@@ -5,7 +5,7 @@ import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.core.utils.MiarsUtils;
 import cn.mcarl.miars.storage.utils.ToolUtils;
 import cn.mcarl.miars.storage.utils.fastboard.FastBoard;
-import cn.mcarl.miars.skypvp.entitiy.GamePlayer;
+import cn.mcarl.miars.skypvp.entity.GamePlayer;
 import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;

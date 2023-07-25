@@ -1,7 +1,7 @@
 package cn.mcarl.miars.storage.entity.practice.enums.practice;
 
 public enum FKitType {
-    NO_DEBUFF("NodeBuff"),
+    NO_DEBUFF("No DeBuff"),
     BUILD_UHC("BuildUHC"),
     BOXING("Boxing"),
     SUMO("Sumo"),

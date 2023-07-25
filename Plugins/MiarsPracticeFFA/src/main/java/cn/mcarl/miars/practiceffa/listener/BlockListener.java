@@ -13,20 +13,27 @@ public class BlockListener implements Listener {
     @EventHandler
     public void BlockPlaceEvent(BlockPlaceEvent e) {
 
-        if (FFAUtil.isItemRange(e.getBlock().getLocation(),PluginConfig.FFA_SITE.LOCATION.getNotNull(),(PluginConfig.FFA_SITE.BUILD_RADIUS.getNotNull()))){
-            if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
-                e.setCancelled(true);
-            }
-        }
+//        if (FFAUtil.isItemRange(e.getBlock().getLocation(),PluginConfig.FFA_SITE.LOCATION.getNotNull(),(PluginConfig.FFA_SITE.BUILD_RADIUS.getNotNull()))){
+//            if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
+//                e.setCancelled(true);
+//            }
+//        }
 
+        if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
+            e.setCancelled(true);
+        }
     }
     
     @EventHandler
     public void BlockBreakEvent(BlockBreakEvent e) {
-        if (FFAUtil.isItemRange(e.getBlock().getLocation(), PluginConfig.FFA_SITE.LOCATION.getNotNull(), (PluginConfig.FFA_SITE.BUILD_RADIUS.getNotNull()))){
-            if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
-                e.setCancelled(true);
-            }
+//        if (FFAUtil.isItemRange(e.getBlock().getLocation(), PluginConfig.FFA_SITE.LOCATION.getNotNull(), (PluginConfig.FFA_SITE.BUILD_RADIUS.getNotNull()))){
+//            if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
+//                e.setCancelled(true);
+//            }
+//        }
+
+        if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
+            e.setCancelled(true);
         }
     }
 }

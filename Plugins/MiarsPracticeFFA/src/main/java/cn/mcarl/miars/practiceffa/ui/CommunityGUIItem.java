@@ -30,7 +30,7 @@ public class CommunityGUIItem {
     /**
      * 游戏模式 (图标)
      */
-    public static ItemStack getPracticeTypeItem(Player player,FKitType fKitType, QueueType queueType) {
+    public static ItemStack getPracticeTypeItem(Player player,FKitType fKitType, QueueType queueType, boolean duel) {
 
         String[] lore = new String[0];
 
@@ -83,7 +83,7 @@ public class CommunityGUIItem {
         switch (fKitType){
             case NO_DEBUFF -> {
                 String name = "No DeBuff";
-                return new ItemBuilder(Material.POTION)
+                return new ItemBuilder(Material.POTION, (fights!=0&&(!duel)?fights:1))
                         .setData((short) 16421)
                         .setName((queueType==null?"&a":queueType.getColor())+name)
                         .setLore(getLoreInfo(
@@ -92,6 +92,7 @@ public class CommunityGUIItem {
                                 String.valueOf(fights),
                                 name,
                                 dailyStreaks,
+                                duel,
                                 lore
                         ))
                         .addFlag(ItemFlag.HIDE_POTION_EFFECTS)
@@ -101,7 +102,7 @@ public class CommunityGUIItem {
             }
             case BUILD_UHC -> {
                 String name = "Build UHC";
-                return new ItemBuilder(Material.LAVA_BUCKET)
+                return new ItemBuilder(Material.LAVA_BUCKET, (fights!=0&&(!duel)?fights:1))
                         .setName((queueType==null?"&a":queueType.getColor())+name)
                         .setLore(getLoreInfo(
                                 String.valueOf(dailyStreak!=null ? dailyStreak.getStreak() : 0),
@@ -109,13 +110,14 @@ public class CommunityGUIItem {
                                 String.valueOf(fights),
                                 name,
                                 dailyStreaks,
+                                duel,
                                 lore
                         ))
                         .toItemStack();
             }
             case BOXING -> {
                 String name = "Boxing";
-                return new ItemBuilder(Material.DIAMOND_SWORD)
+                return new ItemBuilder(Material.DIAMOND_SWORD, (fights!=0&&(!duel)?fights:1))
                         .setName((queueType==null?"&a":queueType.getColor())+name)
                         .setLore(getLoreInfo(
                                 String.valueOf(dailyStreak!=null ? dailyStreak.getStreak() : 0),
@@ -123,13 +125,14 @@ public class CommunityGUIItem {
                                 String.valueOf(fights),
                                 name,
                                 dailyStreaks,
+                                duel,
                                 lore
                         ))
                         .toItemStack();
             }
             case SUMO -> {
                 String name = "Sumo";
-                return new ItemBuilder(Material.LEASH)
+                return new ItemBuilder(Material.LEASH, (fights!=0&&(!duel)?fights:1))
                         .setName((queueType==null?"&a":queueType.getColor())+name)
                         .setLore(getLoreInfo(
                                 String.valueOf(dailyStreak!=null ? dailyStreak.getStreak() : 0),
@@ -137,13 +140,14 @@ public class CommunityGUIItem {
                                 String.valueOf(fights),
                                 name,
                                 dailyStreaks,
+                                duel,
                                 lore
                         ))
                         .toItemStack();
             }
             case BOW -> {
                 String name = "Bow";
-                return new ItemBuilder(Material.BOW)
+                return new ItemBuilder(Material.BOW, (fights!=0&&(!duel)?fights:1))
                         .setName((queueType==null?"&a":queueType.getColor())+name)
                         .setLore(getLoreInfo(
                                 String.valueOf(dailyStreak!=null ? dailyStreak.getStreak() : 0),
@@ -151,13 +155,14 @@ public class CommunityGUIItem {
                                 String.valueOf(fights),
                                 name,
                                 dailyStreaks,
+                                duel,
                                 lore
                         ))
                         .toItemStack();
             }
             case COMBO -> {
                 String name = "Combo";
-                return new ItemBuilder(Material.RAW_FISH)
+                return new ItemBuilder(Material.RAW_FISH, (fights!=0?fights:1))
                         .setName((queueType==null?"&a":queueType.getColor())+name)
                         .setData((short) 3)
                         .setLore(getLoreInfo(
@@ -166,6 +171,7 @@ public class CommunityGUIItem {
                                 String.valueOf(fights),
                                 name,
                                 dailyStreaks,
+                                duel,
                                 lore
                         ))
                         .toItemStack();
@@ -183,10 +189,15 @@ public class CommunityGUIItem {
             String fights,
             String queueMode,
             List<DailyStreak> top,
+            boolean duel,
             String...strings
     ){
 
         List<String> lore = new ArrayList<>();
+
+        if (duel){
+            return lore.toArray(new String[0]);
+        }
 
         for (String s:strings){
             MRank mRank1 = new MRank();

@@ -4,7 +4,7 @@ import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.skypvp.MiarsSkyPVP;
 import cn.mcarl.miars.skypvp.conf.PluginConfig;
-import cn.mcarl.miars.skypvp.entitiy.GamePlayer;
+import cn.mcarl.miars.skypvp.entity.GamePlayer;
 import cn.mcarl.miars.skypvp.items.SpawnSlimeball;
 import cn.mcarl.miars.skypvp.manager.CombatManager;
 import cn.mcarl.miars.skypvp.manager.LuckyManager;

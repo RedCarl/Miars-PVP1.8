@@ -3,7 +3,7 @@
 //import cn.mcarl.miars.core.MiarsCore;
 //import cn.mcarl.miars.megawalls.classes.Classes;
 //import cn.mcarl.miars.megawalls.classes.Skill;
-//import cn.mcarl.miars.megawalls.game.entitiy.GamePlayer;
+//import cn.mcarl.miars.megawalls.game.entity.GamePlayer;
 //import cn.mcarl.miars.megawalls.game.manager.GameManager;
 //import cn.mcarl.miars.megawalls.game.manager.GamePlayerManager;
 //import cn.mcarl.miars.megawalls.stats.ClassesStats;

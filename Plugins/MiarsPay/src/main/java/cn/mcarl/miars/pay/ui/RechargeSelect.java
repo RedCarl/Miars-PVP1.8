@@ -66,7 +66,6 @@ public class RechargeSelect extends GUI {
 
 
     public static void open(Player player, double money) {
-        player.closeInventory();
         RechargeSelect gui = new RechargeSelect(player,money);
         gui.openGUI(player);
     }

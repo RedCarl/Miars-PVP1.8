@@ -36,11 +36,6 @@ public class EntityListener implements Listener {
                 event.setCancelled(true);
             }
         }
-
-        //  关闭掉落伤害
-        if (event.getCause().equals(EntityDamageEvent.DamageCause.FALL)){
-            event.setCancelled(true);
-        }
     }
 
 }

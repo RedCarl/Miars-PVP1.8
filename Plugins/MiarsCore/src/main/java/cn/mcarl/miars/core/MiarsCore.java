@@ -17,8 +17,6 @@ import cn.mcarl.miars.core.manager.CitizensManager;
 import cn.mcarl.miars.core.manager.ConfigManager;
 import cn.mcarl.miars.core.manager.ItemsManager;
 import cn.mcarl.miars.core.manager.ServerManager;
-import cn.mcarl.miars.core.tab.TabProvider_1_7;
-import cn.mcarl.miars.core.tab.TabTask;
 import cn.mcarl.miars.storage.utils.BungeeApi;
 import cn.mcarl.miars.storage.utils.easyitem.ItemManager;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -29,11 +27,6 @@ import com.nametagedit.plugin.api.NametagAPI;
 import com.nametagedit.plugin.invisibility.InvisibilityTask;
 import dev.fls.tablist.TabHeaderAndFooter;
 import gg.noob.lib.hologram.HologramManager;
-import gg.noob.lib.hologram.click.listener.HologramClickListener;
-import gg.noob.lib.hologram.listener.HologramListener;
-import gg.noob.lib.tab.TabHandler;
-import gg.noob.lib.tab.TabManager;
-import gg.noob.lib.tab.impl.TabAPI;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.luckperms.api.LuckPerms;
@@ -70,8 +63,6 @@ public class MiarsCore extends JavaPlugin {
     private NametagManager manager;
     @Getter
     private static NametagAPI nametagAPI;
-    @Getter
-    private HologramManager hologramManager;
     @Getter
     private TabHeaderAndFooter tabHeaderAndFooter;
 
@@ -156,7 +147,6 @@ public class MiarsCore extends JavaPlugin {
         regListener(new PlayerListener());
         regListener(new CitizensListener());
         regListener(new ItemManager());
-        regListener(new HologramListener());
         regListener(new WorldListener());
 
         log("正在初始化 Bungee 代理...");
@@ -185,19 +175,10 @@ public class MiarsCore extends JavaPlugin {
 
         log("正在初始化 Tab 模块...");
         tabHeaderAndFooter = new TabHeaderAndFooter(this);
-        new TabTask().runTaskTimer(this,0,20);
-//        tabManager = new TabManager();
-//        getTabManager().setTabHandler(new TabHandler(new TabAPI(), new TabProvider_1_7(), this, 250L));
 
         log("正在初始化 LunarClientAPi 模块...");
         new LunarClientAPI().onEnable();
         registerLunarClientCoolDownAPI("EnderPearl", 12 * 1000L, Material.ENDER_PEARL);
-
-        log("正在初始化 HologramManager 模块...");
-        hologramManager = new HologramManager();
-
-        log("初始化数据包...");
-        MiarsCore.getProtocolManager().addPacketListener(new HologramClickListener());
 
         log("当前服务端版本 "+Bukkit.getServer().getVersion());
 

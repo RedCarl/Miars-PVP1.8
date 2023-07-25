@@ -7,10 +7,7 @@ import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
 import net.minecraft.server.v1_8_R3.ChatComponentText;
 import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -19,6 +16,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -225,9 +223,9 @@ public class ToolUtils {
      * 初始化 血量 饱食度 氧气度 药水效果
      */
     public static void playerInitialize(Player e) {
-        e.getPlayer().setHealth(20);
-        e.getPlayer().setFoodLevel(20);
-        e.getPlayer().setSaturation(20);
+        e.setHealth(20);
+        e.setFoodLevel(20);
+        e.setSaturation(20);
         e.setFireTicks(0);
         e.getActivePotionEffects().clear();
     }
@@ -366,5 +364,20 @@ public class ToolUtils {
     public static void sendActionText(Player player, String message){
         PacketPlayOutChat packet = new PacketPlayOutChat(new ChatComponentText(message), (byte)2);
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+    }
+
+    private static boolean deletePlayerData(OfflinePlayer player) {
+        if (player == null) {
+            return false;
+        }
+
+        // Get the world's save directory.
+        File worldSaveDirectory = Bukkit.getWorlds().get(0).getWorldFolder();
+
+        // Construct the path to the player data file using the player's UUID.
+        File playerDataFile = new File(worldSaveDirectory, "playerdata/" + player.getUniqueId() + ".dat");
+
+        // Delete the player data file.
+        return playerDataFile.delete();
     }
 }

@@ -65,37 +65,38 @@ public class PracticeQueueDataStorage {
     }
 
     /**
-     * 决斗
+     * 决斗申请
      */
     public boolean addDuel(Duel duel){
         List<Duel> duels = new ArrayList<>(getDuelRedisList());
 
-        // 判断是否是申请，如果是判断是否重复申请
-        if (duel.getB()==null){
-            for (Duel d:duels) {
-                if (d.isEqual(duel)){
-                    return false;
-                }
+        for (Duel d:duels) {
+            if (d.getA().equals(duel.getA()) && d.getB().equals(duel.getB()) && d.getType().equals(duel.getType())){
+                return false;
             }
-        }else {
-            // 接受的时候判断时间是否超时
-            for (Duel d:duels) {
-                if (d.isEqual(duel)){
-                    if ((System.currentTimeMillis() - d.getTime())/1000/60 >= 5){
-                        return false;
-                    }
-                    d.setState(1);
-                    setDuelRedisList(duels);
-                    return true;
-                }
-            }
-
-
         }
 
         duels.add(duel);
         setDuelRedisList(duels);
         return true;
+    }
+
+    public boolean acceptDuel(Duel duel){
+        List<Duel> duels = new ArrayList<>(getDuelRedisList());
+
+        for (Duel i:duels) {
+            if (duel.getA().equals(i.getA()) && duel.getB().equals(i.getB())){
+                // 接受的时候判断时间是否超时
+                if ((System.currentTimeMillis() - i.getTime())/1000/60 >= 5){
+                    return false;
+                }
+                i.setState(1);
+                setDuelRedisList(duels);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

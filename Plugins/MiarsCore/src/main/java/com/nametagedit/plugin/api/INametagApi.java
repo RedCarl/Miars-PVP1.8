@@ -1,11 +1,8 @@
 package com.nametagedit.plugin.api;
 
 import com.nametagedit.plugin.api.data.FakeTeam;
-import com.nametagedit.plugin.api.data.GroupData;
 import com.nametagedit.plugin.api.data.Nametag;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 /**
  *
@@ -132,31 +129,7 @@ public interface INametagApi {
      * @param prefix the prefix to change to
      * @param suffix the suffix to change to
      */
-    void setNametag(Player player, String prefix, String suffix,int sortPriority);
-
-    /**
-     * Sets the nametag for a player.
-     * <p>
-     * Note: Only affects memory, does NOT
-     * add/remove from storage.
-     *
-     * @param player the player whose nametag to change
-     * @param prefix the prefix to change to
-     * @param suffix the suffix to change to
-     */
     void setNametag(String player, String prefix, String suffix);
-
-    /**
-     * Sets the nametag for a player.
-     * <p>
-     * Note: Only affects memory, does NOT
-     * add/remove from storage.
-     *
-     * @param player the player whose nametag to change
-     * @param prefix the prefix to change to
-     * @param suffix the suffix to change to
-     */
-    void setNametag(String player, String prefix, String suffix,int sortPriority);
 
     /**
      * Hide the name above the head
@@ -181,19 +154,6 @@ public interface INametagApi {
      * @param player he player whose nametag to show
      */
     void showNametag(String player);
-
-    /**
-     * Gets the data of all groups
-     * @return list containing all group data
-     */
-    List<GroupData> getGroupData();
-
-
-    /**
-     * Saves the provided group data
-     * @param groupData the group data to save
-     */
-    void saveGroupData(GroupData... groupData);
 
     /**
      * Applies tags to all players
@@ -248,4 +208,9 @@ public interface INametagApi {
      * @param suffix suffix to set to
      */
     void updatePlayerNametag(String target, String prefix, String suffix);
+
+
+    void setNametag(Player player, String prefix, String suffix,int sortPriority);
+
+    void setNametag(String player, String prefix, String suffix,int sortPriority);
 }

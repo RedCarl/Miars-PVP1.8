@@ -32,12 +32,12 @@ public class DuelCommand implements CommandExecutor, TabCompleter {
                     Player p = Bukkit.getPlayerExact(args[0]);
                     if (p!=null){
                         if (p.getName().equals(player.getName())){
-                            player.sendMessage(ColorParser.parse("&7您无法向自己发起决斗申请。"));
+                            player.sendMessage(ColorParser.parse("&7You can't duel yourself."));
                             return true;
                         }
                         SelectPracticeGUI.open(player, QueueType.UNRANKED,p);
                     }else {
-                        player.sendMessage(ColorParser.parse("&7没有这个玩家 &b"+args[0]+" &7请确保该玩家在线。"));
+                        player.sendMessage(ColorParser.parse("&7No player matching &b"+args[0]+" &7is connected to this server."));
                     }
                 }
                 case 3 -> {
@@ -47,25 +47,23 @@ public class DuelCommand implements CommandExecutor, TabCompleter {
                         if (p!=null){
                             FKitType fKitType = FKitType.valueOf(args[2]);
 
-
-                            if (PracticeQueueDataStorage.getInstance().addDuel(
-                                    new Duel(
-                                            fKitType,p.getName(),player.getName(),System.currentTimeMillis(),1
-                                    )
+                            if (PracticeQueueDataStorage.getInstance().acceptDuel(
+                                    new Duel(fKitType,p.getName(),player.getName(),System.currentTimeMillis(),1)
                             )){
                                 for (int i = 0; i < 20; i++) {
                                     player.sendMessage("");
                                 }
                             }else {
-                                player.sendMessage(ColorParser.parse("&7您无法再接受这个请求。"));
+                                player.sendMessage(ColorParser.parse("&7You can no longer accept this request."));
                             }
+
                         }else {
-                            player.sendMessage(ColorParser.parse("&7没有这个玩家 &b"+args[1]+" &7请确保该玩家在线。"));
+                            player.sendMessage(ColorParser.parse("&7No player matching &b"+args[1]+" &7is connected to this server."));
                         }
                     }
                 }
                 default -> {
-                    player.sendMessage(ColorParser.parse("&7请输入 &b/duel &7玩家名称 来发起决斗申请。"));
+                    player.sendMessage(ColorParser.parse("&7Usage: &b/duel <player>"));
                 }
             }
 

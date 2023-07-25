@@ -1,8 +1,7 @@
 package cn.mcarl.miars.skypvp.command;
 
 import cn.mcarl.miars.skypvp.MiarsSkyPVP;
-import cn.mcarl.miars.skypvp.conf.PluginConfig;
-import cn.mcarl.miars.skypvp.entitiy.GamePlayer;
+import cn.mcarl.miars.skypvp.entity.GamePlayer;
 import cn.mcarl.miars.skypvp.manager.LuckyManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

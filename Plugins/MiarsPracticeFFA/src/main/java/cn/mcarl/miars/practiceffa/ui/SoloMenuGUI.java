@@ -74,7 +74,6 @@ public class SoloMenuGUI extends GUI {
 
 
     public static void open(Player player) {
-        //player.closeInventory();
         SoloMenuGUI gui = new SoloMenuGUI(player);
         gui.openGUI(player);
     }

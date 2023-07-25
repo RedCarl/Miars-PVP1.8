@@ -1,6 +1,6 @@
 package cn.mcarl.miars.skypvp.listener;
 
-import cn.mcarl.miars.skypvp.entitiy.OreBlock;
+import cn.mcarl.miars.skypvp.entity.OreBlock;
 import cn.mcarl.miars.skypvp.manager.OreRespawnManager;
 import org.bukkit.GameMode;
 import org.bukkit.Material;

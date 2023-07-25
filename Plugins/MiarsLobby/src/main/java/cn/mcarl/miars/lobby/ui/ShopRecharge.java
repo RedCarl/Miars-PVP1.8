@@ -31,7 +31,6 @@ public class ShopRecharge extends GUI {
 
 
     public static void open(Player player) {
-        player.closeInventory();
         ShopRecharge gui = new ShopRecharge(player);
         gui.openGUI(player);
     }

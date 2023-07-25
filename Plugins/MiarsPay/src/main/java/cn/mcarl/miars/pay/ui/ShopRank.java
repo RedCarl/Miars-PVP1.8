@@ -30,7 +30,6 @@ public class ShopRank extends GUI {
     }
 
     public static void open(Player player) {
-        player.closeInventory();
         ShopRank gui = new ShopRank(player);
         gui.openGUI(player);
     }

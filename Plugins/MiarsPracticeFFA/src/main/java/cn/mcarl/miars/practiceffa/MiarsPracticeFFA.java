@@ -4,25 +4,19 @@ import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.core.listener.EnderPearlListener;
 import cn.mcarl.miars.practiceffa.command.DuelCommand;
-import cn.mcarl.miars.practiceffa.command.LeaderboardsHologramCommand;
 import cn.mcarl.miars.practiceffa.hooker.PAPIExpansion;
 import cn.mcarl.miars.practiceffa.listener.BlockListener;
 import cn.mcarl.miars.practiceffa.listener.EntityListener;
 import cn.mcarl.miars.practiceffa.listener.PlayerListener;
-import cn.mcarl.miars.practiceffa.listener.ProtocolListener;
 import cn.mcarl.miars.practiceffa.manager.*;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeDailyStreakDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
-import gg.noob.lib.hologram.BaseHologram;
-import gg.noob.lib.hologram.Hologram;
-import gg.noob.lib.hologram.HologramManager;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * @Author: carl0
@@ -52,10 +46,11 @@ public class MiarsPracticeFFA extends JavaPlugin {
         regListener(new PlayerListener());
         regListener(new BlockListener());
         regListener(new EnderPearlListener());
+        regListener(new LeaderboardsDailyWins());
 
         log("正在注册指令...");
         regCommand("Duel",new DuelCommand());
-        regCommand("Leaderboard",new LeaderboardsHologramCommand());
+//        regCommand("Leaderboard",new LeaderboardsHologramCommand());
 
         /* PlaceholderAPI Support */
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
@@ -67,23 +62,18 @@ public class MiarsPracticeFFA extends JavaPlugin {
 
         log("正在初始化 Board 模块...");
         ScoreBoardManager.getInstance().init();
+        MiarsCore.getInstance().getTabHeaderAndFooter().getHeader().setLines(
+                "&bKazer Network",
+                "&r");
+        MiarsCore.getInstance().getTabHeaderAndFooter().getFooter().setLines(
+                "&r",
+                "&fYou are playing &bPractice &fon &bkazer.gg");
 
         log("正在初始化 DeathChest 模块...");
         DeathChestManager.getInstance().init();
 
-        log("初始化数据包...");
-        MiarsCore.getProtocolManager().addPacketListener(new ProtocolListener());
-
-        log("初始化全息排行榜...");
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                HologramManager hologramManager = MiarsCore.getInstance().getHologramManager();
-                Hologram leaderboardHologram = new Hologram(new LeaderboardsHologram());
-                leaderboardHologram.run();
-                hologramManager.registerHologram(leaderboardHologram);
-            }
-        }.runTaskLater(this,1L);
+//        log("初始化数据包...");
+//        MiarsCore.getProtocolManager().addPacketListener(new ProtocolListener());
 
         log("加载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 

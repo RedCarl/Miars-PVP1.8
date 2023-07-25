@@ -5,19 +5,21 @@ import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.core.listener.EnderPearlListener;
 import cn.mcarl.miars.practice.command.ArenaCreateCommand;
 import cn.mcarl.miars.practice.conf.PluginConfig;
-import cn.mcarl.miars.practice.listener.PlayerListener;
+import cn.mcarl.miars.practice.listener.BoxingListener;
+import cn.mcarl.miars.practice.listener.GlobalListener;
 import cn.mcarl.miars.practice.manager.ArenaManager;
 import cn.mcarl.miars.practice.manager.ConfigManager;
 import cn.mcarl.miars.practice.manager.QueueManager;
 import cn.mcarl.miars.practice.manager.ScoreBoardManager;
 import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
-import gg.noob.lib.hologram.HologramManager;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
 
 public class MiarsPractice extends JavaPlugin {
 
@@ -41,8 +43,14 @@ public class MiarsPractice extends JavaPlugin {
         modeType = FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.get());
 
         log("正在注册监听器...");
-        regListener(new PlayerListener());
+        regListener(new GlobalListener());
         regListener(new EnderPearlListener());
+
+        switch (FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.getNotNull())){
+            case BOXING -> {
+                regListener(new BoxingListener());
+            }
+        }
 
         log("正在注册指令...");
         regCommand("Arena", new ArenaCreateCommand());
@@ -56,6 +64,12 @@ public class MiarsPractice extends JavaPlugin {
 
         log("正在初始化 Board 模块...");
         ScoreBoardManager.getInstance().init();
+        MiarsCore.getInstance().getTabHeaderAndFooter().getHeader().setLines(
+                "&bKazer Network",
+                "&r");
+        MiarsCore.getInstance().getTabHeaderAndFooter().getFooter().setLines(
+                "&r",
+                "&fYou are playing &bPractice &fon &bkazer.gg");
 
         log("加载完成 ,共耗时 " + (System.currentTimeMillis() - startTime) + " ms 。");
 
@@ -67,6 +81,14 @@ public class MiarsPractice extends JavaPlugin {
     public void onDisable() {
         log(getName() + " " + getDescription().getVersion() + " 开始卸载...");
         long startTime = System.currentTimeMillis();
+
+        log("删除玩家数据...");
+        File[] files = new File(Bukkit.getWorld("world").getWorldFolder().getAbsolutePath() + "/playerdata/").listFiles();
+        if (files != null) {
+            for (File file : files) {
+                file.delete();
+            }
+        }
 
         log("卸载监听器...");
         Bukkit.getServicesManager().unregisterAll(this);

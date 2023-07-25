@@ -1,5 +1,6 @@
 package com.nametagedit.plugin.packets;
 
+import com.nametagedit.plugin.NametagHandler;
 import com.nametagedit.plugin.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -136,8 +137,10 @@ public class PacketWrapper {
                 PacketAccessor.VISIBILITY.set(packetParams, "");
                 PacketAccessor.TEAM_COLOR.set(packetParams, RESET_COLOR);
             }
-            // DISABLE_PUSH_ALL_TAGS
-//            if (false && PacketAccessor.PUSH != null) {
+
+            // If enabled, players with NametagEdit nametags will not be able to push each other (1.9+)
+            // DisablePush: false
+//            if (NametagHandler.DISABLE_PUSH_ALL_TAGS && PacketAccessor.PUSH != null) {
 //                if (!PacketAccessor.isParamsVersion()) {
 //                    PacketAccessor.PUSH.set(packet, "never");
 //                } else {
@@ -145,6 +148,7 @@ public class PacketWrapper {
 //                    PacketAccessor.PUSH.set(packetParams, "never");
 //                }
 //            }
+
         } catch (Exception e) {
             error = e.getMessage();
         }

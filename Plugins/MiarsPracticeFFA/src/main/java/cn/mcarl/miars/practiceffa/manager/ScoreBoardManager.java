@@ -3,26 +3,16 @@ package cn.mcarl.miars.practiceffa.manager;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.core.manager.ServerManager;
-import cn.mcarl.miars.core.utils.MiarsUtils;
 import cn.mcarl.miars.practiceffa.conf.PluginConfig;
-import cn.mcarl.miars.storage.entity.MPlayer;
-import cn.mcarl.miars.storage.entity.MRank;
-import cn.mcarl.miars.storage.entity.practice.enums.practice.QueueType;
-import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
-import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
-import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaStateDataStorage;
-import cn.mcarl.miars.storage.utils.ToolUtils;
-import cn.mcarl.miars.storage.utils.fastboard.FastBoard;
+import cn.mcarl.miars.practiceffa.utils.FFAUtil;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.storage.entity.practice.QueueInfo;
-import cn.mcarl.miars.storage.entity.practice.RankScore;
+import cn.mcarl.miars.storage.entity.practice.enums.practice.QueueType;
 import cn.mcarl.miars.storage.storage.data.practice.FPlayerDataStorage;
-import cn.mcarl.miars.practiceffa.utils.FFAUtil;
+import cn.mcarl.miars.storage.storage.data.practice.PracticeArenaStateDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
-import cn.mcarl.miars.storage.storage.data.practice.RankScoreDataStorage;
 import cn.mcarl.miars.storage.storage.data.serverInfo.ServerInfoDataStorage;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
+import cn.mcarl.miars.storage.utils.fastboard.FastBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -51,12 +41,7 @@ public class ScoreBoardManager {
     public void init(){
         tick();
     }
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy");
     DecimalFormat decimalFormat = new DecimalFormat("00");
-    DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("yyyy/M/d");
-    ZoneId zoneId = ZoneId.of("America/New_York");
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss a", Locale.US);
-
     public void tick(){
         new BukkitRunnable() {
             @Override
@@ -66,18 +51,6 @@ public class ScoreBoardManager {
                         updateBoard(board);
                     }
                 }
-
-                LocalDate currentDate = LocalDate.now();
-                String formattedDate = currentDate.format(formatterDate);
-                LocalTime currentTime = LocalTime.now();
-                String formattedTime = currentTime.format(formatter) + " " + zoneId.getDisplayName(TextStyle.SHORT, Locale.US);
-
-                MiarsCore.getInstance().getTabHeaderAndFooter().getHeader().setLines(
-                        "&f"+formattedDate+" &7| &bKazer Network &7| &f"+formattedTime,
-                        "&r");
-                MiarsCore.getInstance().getTabHeaderAndFooter().getFooter().setLines(
-                        "&r",
-                        "&fYou are playing &bPractice &fon &bkazer.gg");
             }
         }.runTaskTimerAsynchronously(MiarsCore.getInstance(),0,2);
     }

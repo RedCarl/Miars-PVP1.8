@@ -20,7 +20,7 @@ public class GameSelectGUI extends GUI {
         });
     }
     public static void open(Player player,String type) {
-        player.closeInventory();
+
         GameSelectGUI gui = new GameSelectGUI(player,type);
         gui.openGUI(player);
     }

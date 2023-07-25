@@ -1,10 +1,12 @@
 package com.nametagedit.plugin;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
+import cn.mcarl.miars.core.MiarsCore;
 import com.nametagedit.plugin.api.data.FakeTeam;
 import com.nametagedit.plugin.packets.PacketWrapper;
 import lombok.AllArgsConstructor;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -120,19 +122,12 @@ public class NametagManager {
     }
 
     void setNametag(String player, String prefix, String suffix, int sortPriority, boolean playerTag, boolean visible) {
-        addPlayerToTeam(player, ColorParser.parse((prefix != null ? prefix : "")),  ColorParser.parse((suffix != null ? suffix : "")), sortPriority, playerTag, visible);
+        addPlayerToTeam(player, prefix != null ? ColorParser.parse(prefix) : "", suffix != null ? ColorParser.parse(suffix) : "", sortPriority, playerTag, visible);
     }
 
     void sendTeams(Player player) {
         for (FakeTeam fakeTeam : TEAMS.values()) {
-            new PacketWrapper(
-                    fakeTeam.getName(),
-                    fakeTeam.getPrefix(),
-                    fakeTeam.getSuffix(),
-                    0,
-                    fakeTeam.getMembers(),
-                    fakeTeam.isVisible()
-            ).send(player);
+            new PacketWrapper(fakeTeam.getName(), fakeTeam.getPrefix(), fakeTeam.getSuffix(), 0, fakeTeam.getMembers(), fakeTeam.isVisible()).send(player);
         }
     }
 

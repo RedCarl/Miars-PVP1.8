@@ -124,7 +124,6 @@ public class RanksGUI extends GUI {
 
 
     public static void open(Player player,boolean prefix,boolean ascFlag) {
-        player.closeInventory();
         RanksGUI gui = new RanksGUI(player,prefix,ascFlag);
         gui.openGUI(player);
     }

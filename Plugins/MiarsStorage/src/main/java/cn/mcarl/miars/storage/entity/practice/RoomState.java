@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArenaState {
+public class RoomState {
 
     // 状态ID
     private Integer id;
@@ -31,16 +31,9 @@ public class ArenaState {
         ERROR
     }
 
-    // 玩家
     private String playerA;
-    private PlayerState playerStateA;
-    // 玩家的库存
-    private FInventoryByte aFInventory;
-    // 玩家
+
     private String playerB;
-    private PlayerState playerStateB;
-    // 玩家的库存
-    private FInventoryByte bFInventory;
 
     // 对局开始时间
     private Long startTime;
@@ -48,43 +41,20 @@ public class ArenaState {
     // 对局结束时间
     private Long endTime;
 
-    // 获胜方
-    private String win;
-
     // 游戏类型
     private FKitType fKitType;
 
     // 匹配类型
     private QueueType queueType;
 
-    public ArenaState(Integer arenaId,String world,State state){
-        this.arenaId = arenaId;
-        this.world = world;
-        this.state = state;
-        this.startTime = 0L;
-        this.endTime = 0L;
-    }
 
     public void init(){
         this.state = State.IDLE;
         this.playerA = null;
-        this.playerStateA = null;
-        this.aFInventory = null;
         this.playerB = null;
-        this.playerStateB = null;
-        this.bFInventory = null;
         this.startTime = null;
         this.endTime = null;
-        this.win = null;
         this.fKitType = null;
         this.queueType = null;
-    }
-
-    public void formatRedis(){
-        this.playerStateA = null;
-        this.aFInventory = null;
-        this.playerStateB = null;
-        this.bFInventory = null;
-        this.win = null;
     }
 }

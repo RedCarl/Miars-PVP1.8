@@ -1,6 +1,7 @@
 package cn.mcarl.miars.practice.manager;
 
 import cn.mcarl.miars.practice.MiarsPractice;
+import cn.mcarl.miars.practice.item.KitBook;
 import cn.mcarl.miars.storage.utils.CustomSort;
 import cn.mcarl.miars.storage.utils.ItemBuilder;
 import cn.mcarl.miars.practice.conf.PluginConfig;
@@ -37,14 +38,7 @@ public class PlayerInventoryManager {
         for (int i = 0; i <= 8; i++) {
             if (list.size()>=i+1){
                 FKit fKit = list.get(i);
-                p.getInventory().setItem(i,new ItemBuilder(Material.BOOK)
-                        .setName("&7"+fKit.getName()+" &c[Kit]")
-                        .addFlag(ItemFlag.HIDE_UNBREAKABLE)
-                        .addFlag(ItemFlag.HIDE_ENCHANTS)
-                        .setNbtBoolean("stopClick",true)
-                        .setNbtString("practice_kit", String.valueOf(fKit.getId()))
-                        .setUnbreakable()
-                        .toItemStack());
+                new KitBook(fKit).give(p,i);
             }else {
                 break;
             }

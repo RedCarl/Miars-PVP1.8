@@ -60,7 +60,7 @@ public class SelectPracticeGUI extends GUI {
     public void setItem(QueueType queueType,Player duel){
         int i = 10;
         for (FKitType ft:FKitType.values()) {
-            setItem(i,new GUIItem(CommunityGUIItem.getPracticeTypeItem(player,ft, queueType)){
+            setItem(i,new GUIItem(CommunityGUIItem.getPracticeTypeItem(player,ft, queueType,duel!=null)){
                 @Override
                 public void onClick(Player clicker, ClickType type) {
 
@@ -125,7 +125,6 @@ public class SelectPracticeGUI extends GUI {
             }
         }
 
-       // player.closeInventory();
         SelectPracticeGUI gui = new SelectPracticeGUI(player,queueType,duel);
         gui.openGUI(player);
     }

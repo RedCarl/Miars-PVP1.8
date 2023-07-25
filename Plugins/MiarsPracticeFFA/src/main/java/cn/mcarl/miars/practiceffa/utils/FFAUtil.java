@@ -1,19 +1,15 @@
 package cn.mcarl.miars.practiceffa.utils;
 
-import cn.mcarl.miars.core.utils.MiarsUtils;
 import cn.mcarl.miars.practiceffa.conf.PluginConfig;
 import cn.mcarl.miars.practiceffa.kits.*;
+import cn.mcarl.miars.practiceffa.manager.CombatManager;
 import cn.mcarl.miars.storage.entity.ffa.FInventory;
 import cn.mcarl.miars.storage.entity.ffa.FPlayer;
-import cn.mcarl.miars.practiceffa.listener.ProtocolListener;
-import cn.mcarl.miars.practiceffa.manager.CombatManager;
 import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
 import cn.mcarl.miars.storage.utils.ToolUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
@@ -70,102 +66,102 @@ public class FFAUtil {
         return false;
     }
 
-    /**
-     * 给这个玩家一个虚拟的屏障，使用 红色玻璃 作为墙。
-     * Todo 玻璃跟着玩家的高度改变高度
-     * @param player 玩家
-     */
-    public static void setVirtualBorder(Player player) {
-        for (int i = 0; i < (PluginConfig.FFA_SITE.RADIUS.get() * 2 + 1); i++) {
-            if (isRange(
-                    player,
-                    new Location(
-                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(),
-                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()),
-                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getY(),
-                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get()) - i),
-                    PluginConfig.FFA_SITE.BORDER_RADIUS.get()
-            )) {
-                for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
-                    Location location = new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get()) - i);
-                    if (ProtocolListener.isDisablePlace(player,location.getBlock())) {
-                        continue;
-                    }
-                    player.sendBlockChange(location, Material.STAINED_GLASS, (byte) 14);
-                }
-            } else {
-                for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
-                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get()) - i), Material.AIR, (byte) 0);
-                }
-            }
-
-            if (isRange(
-                    player,
-                    new Location(
-                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(),
-                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()) - i,
-                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getY(),
-                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get())),
-                    PluginConfig.FFA_SITE.BORDER_RADIUS.get()
-            )) {
-                for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
-                    Location location = new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()) - i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get()));
-                    if (ProtocolListener.isDisablePlace(player,location.getBlock())) {
-                        continue;
-                    }
-                    player.sendBlockChange(location, Material.STAINED_GLASS, (byte) 14);
-                }
-            } else {
-                for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
-                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()) - i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get())), Material.AIR, (byte) 0);
-                }
-            }
-
-            if (isRange(
-                    player,
-                    new Location(
-                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(),
-                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()),
-                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getY(),
-                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get()) + i),
-                    PluginConfig.FFA_SITE.BORDER_RADIUS.get()
-            )) {
-                for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
-                    Location location = new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get()) + i);
-                    if (ProtocolListener.isDisablePlace(player,location.getBlock())) {
-                        continue;
-                    }
-                    player.sendBlockChange(location, Material.STAINED_GLASS, (byte) 14);
-                }
-            } else {
-                for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
-                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get()) + i), Material.AIR, (byte) 0);
-                }
-            }
-
-            if (isRange(
-                    player,
-                    new Location(
-                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(),
-                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()) + i,
-                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getY(),
-                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get())),
-                    PluginConfig.FFA_SITE.BORDER_RADIUS.get()
-            )) {
-                for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
-                    Location location = new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()) + i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get()));
-                    if (ProtocolListener.isDisablePlace(player,location.getBlock())) {
-                        continue;
-                    }
-                    player.sendBlockChange(location, Material.STAINED_GLASS, (byte) 14);
-                }
-            } else {
-                for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
-                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()) + i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get())), Material.AIR, (byte) 0);
-                }
-            }
-        }
-    }
+//    /**
+//     * 给这个玩家一个虚拟的屏障，使用 红色玻璃 作为墙。
+//     * Todo 玻璃跟着玩家的高度改变高度
+//     * @param player 玩家
+//     */
+//    public static void setVirtualBorder(Player player) {
+//        for (int i = 0; i < (PluginConfig.FFA_SITE.RADIUS.get() * 2 + 1); i++) {
+//            if (isRange(
+//                    player,
+//                    new Location(
+//                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(),
+//                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()),
+//                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getY(),
+//                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get()) - i),
+//                    PluginConfig.FFA_SITE.BORDER_RADIUS.get()
+//            )) {
+//                for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
+//                    Location location = new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get()) - i);
+//                    if (ProtocolListener.isDisablePlace(player,location.getBlock())) {
+//                        continue;
+//                    }
+//                    player.sendBlockChange(location, Material.STAINED_GLASS, (byte) 14);
+//                }
+//            } else {
+//                for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
+//                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get()) - i), Material.AIR, (byte) 0);
+//                }
+//            }
+//
+//            if (isRange(
+//                    player,
+//                    new Location(
+//                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(),
+//                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()) - i,
+//                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getY(),
+//                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get())),
+//                    PluginConfig.FFA_SITE.BORDER_RADIUS.get()
+//            )) {
+//                for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
+//                    Location location = new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()) - i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get()));
+//                    if (ProtocolListener.isDisablePlace(player,location.getBlock())) {
+//                        continue;
+//                    }
+//                    player.sendBlockChange(location, Material.STAINED_GLASS, (byte) 14);
+//                }
+//            } else {
+//                for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
+//                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() + PluginConfig.FFA_SITE.RADIUS.get()) - i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() + PluginConfig.FFA_SITE.RADIUS.get())), Material.AIR, (byte) 0);
+//                }
+//            }
+//
+//            if (isRange(
+//                    player,
+//                    new Location(
+//                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(),
+//                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()),
+//                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getY(),
+//                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get()) + i),
+//                    PluginConfig.FFA_SITE.BORDER_RADIUS.get()
+//            )) {
+//                for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
+//                    Location location = new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get()) + i);
+//                    if (ProtocolListener.isDisablePlace(player,location.getBlock())) {
+//                        continue;
+//                    }
+//                    player.sendBlockChange(location, Material.STAINED_GLASS, (byte) 14);
+//                }
+//            } else {
+//                for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
+//                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()), PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get()) + i), Material.AIR, (byte) 0);
+//                }
+//            }
+//
+//            if (isRange(
+//                    player,
+//                    new Location(
+//                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(),
+//                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()) + i,
+//                            PluginConfig.FFA_SITE.LOCATION.getNotNull().getY(),
+//                            (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get())),
+//                    PluginConfig.FFA_SITE.BORDER_RADIUS.get()
+//            )) {
+//                for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
+//                    Location location = new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()) + i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get()));
+//                    if (ProtocolListener.isDisablePlace(player,location.getBlock())) {
+//                        continue;
+//                    }
+//                    player.sendBlockChange(location, Material.STAINED_GLASS, (byte) 14);
+//                }
+//            } else {
+//                for (int j = 0; j < PluginConfig.FFA_SITE.BORDER_RADIUS.get(); j++) {
+//                    player.sendBlockChange(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(), (PluginConfig.FFA_SITE.LOCATION.getNotNull().getX() - PluginConfig.FFA_SITE.RADIUS.get()) + i, PluginConfig.FFA_SITE.LOCATION.getNotNull().getY() + 1 + j, (PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ() - PluginConfig.FFA_SITE.RADIUS.get())), Material.AIR, (byte) 0);
+//                }
+//            }
+//        }
+//    }
 
     /**
      * 清理多余的边界

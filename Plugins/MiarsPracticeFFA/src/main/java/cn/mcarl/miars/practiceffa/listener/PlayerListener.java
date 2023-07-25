@@ -37,6 +37,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.sql.Date;
 
@@ -48,6 +49,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void PlayerJoinEvent(PlayerJoinEvent e){
+
         Player player = e.getPlayer();
 
         // 传送至出生点
@@ -66,32 +68,24 @@ public class PlayerListener implements Listener {
         // 初始化头衔
         MiarsUtils.initPlayerNametag(player,false);
 
-//        player.sendMessage(ColorParser.parse("&r"));
-//        player.sendMessage(ColorParser.parse("&bPractice"));
-//        player.sendMessage(ColorParser.parse("&7 1v1s, Parties, Events"));
-//        player.sendMessage(ColorParser.parse("&7 15+Games & Duels"));
-//        player.sendMessage(ColorParser.parse("&r"));
-//        player.sendMessage(ColorParser.parse("&b┃ &7To duel a friend,do: &b/duel &7[their name]"));
-//        player.sendMessage(ColorParser.parse("&b┃ &7To quick play,right click your sword."));
-//        player.sendMessage(ColorParser.parse("&b┃ &7To edit a kit,right click with your book."));
-//        player.sendMessage(ColorParser.parse("&r"));
-
-
         for (FKitType ft:FKitType.values()) {
             // 初始化Kit
             if (FKitDataStorage.getInstance().getFKitData(player.getUniqueId(),ft).size()==0) {
-                FKitDataStorage.getInstance().putFKitData(new FKit(
-                        null,
-                        player.getUniqueId().toString(),
-                        ft,
-                        "Default",
-                        FFAUtil.getFI(ft),
-                        0,
-                        null,
-                        new Date(System.currentTimeMillis())
-                ));
+                FKitDataStorage.getInstance().putFKitData(
+                        new FKit (
+                                null,
+                                player.getUniqueId().toString(),
+                                ft,
+                                "Default",
+                                FFAUtil.getFI(ft),
+                                0,
+                                null,
+                                new Date(System.currentTimeMillis())
+                        )
+                );
             }
         }
+
     }
 
     @EventHandler
@@ -116,9 +110,8 @@ public class PlayerListener implements Listener {
 
         player.setGameMode(GameMode.SURVIVAL);
 
-        e.setRespawnLocation(new Location(PluginConfig.FFA_SITE.LOCATION.get().getWorld(),PluginConfig.FFA_SITE.LOCATION.get().getX(),PluginConfig.FFA_SITE.LOCATION.get().getY()+1,PluginConfig.FFA_SITE.LOCATION.get().getZ()));
+        e.setRespawnLocation(new Location(PluginConfig.FFA_SITE.LOCATION.getNotNull().getWorld(),PluginConfig.FFA_SITE.LOCATION.getNotNull().getX(),PluginConfig.FFA_SITE.LOCATION.getNotNull().getY()+1,PluginConfig.FFA_SITE.LOCATION.getNotNull().getZ()));
 
-        System.out.println(player.getLocation());
         GamePlayer.init(player);
     }
 
@@ -126,13 +119,31 @@ public class PlayerListener implements Listener {
     public void PlayerMoveEvent(PlayerMoveEvent e){
         Player player = e.getPlayer();
 
-        GamePlayer.get(player).initData();
-
-        if (FFAUtil.isItemRange(e.getTo(),PluginConfig.FFA_SITE.LOCATION.get(),PluginConfig.FFA_SITE.RADIUS.get())){
-            if (CombatManager.getInstance().isCombat(player)){
+        if (CombatManager.getInstance().isCombat(player)){
+            if (FFAUtil.isItemRange(e.getTo(),PluginConfig.FFA_SITE.LOCATION.getNotNull(),PluginConfig.FFA_SITE.RADIUS.getNotNull())){
                 player.teleport(e.getFrom());
                 e.setCancelled(true);
+                Vector v = player.getVelocity();
+
+                // 写死的，需要后期改善
+                if (player.getLocation().getX()<=-50){
+                    v.setX(-0.5);
+                    v.setY(0.5);
+                }else if (player.getLocation().getZ()<=-50 ){
+                    v.setZ(-0.5);
+                    v.setY(0.5);
+                }else if (player.getLocation().getX()>=50){
+                    v.setX(0.5);
+                    v.setY(0.5);
+                }else if (player.getLocation().getZ()>=50 ){
+                    v.setZ(0.5);
+                    v.setY(0.5);
+                }
+
+                player.setVelocity(v);
             }
+        }else {
+            GamePlayer.get(player).initData();
         }
 
     }
@@ -141,7 +152,7 @@ public class PlayerListener implements Listener {
     public void FoodLevelChangeEvent(FoodLevelChangeEvent e){
         if (e.getEntity() instanceof Player p){
             // 判断玩家是否在安全区外面
-            if (FFAUtil.isRange(p,PluginConfig.FFA_SITE.LOCATION.get(),PluginConfig.FFA_SITE.RADIUS.get())){
+            if (FFAUtil.isRange(p,PluginConfig.FFA_SITE.LOCATION.getNotNull(),PluginConfig.FFA_SITE.RADIUS.getNotNull())){
                 p.setFoodLevel(20);
                 e.setCancelled(true);
             }
@@ -165,7 +176,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void PlayerTeleportEvent(PlayerTeleportEvent event) {
         // 防止玩家使用末影珍珠强制进入安全区
-        if (FFAUtil.isItemRange(event.getTo(),PluginConfig.FFA_SITE.LOCATION.get(),PluginConfig.FFA_SITE.RADIUS.get())){
+        if (FFAUtil.isItemRange(event.getTo(),PluginConfig.FFA_SITE.LOCATION.getNotNull(),PluginConfig.FFA_SITE.RADIUS.getNotNull())){
             if(event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
                 event.setCancelled(true);
             }
@@ -180,23 +191,6 @@ public class PlayerListener implements Listener {
             BlockGUI.open(player);
             e.setCancelled(true);
         }
-    }
-
-    /**
-     * 禁止玩家移动物品
-     */
-    @EventHandler
-    public void InventoryClickEvent(InventoryClickEvent e) {
-        Player player = e.getWhoClicked().getKiller();
-        ItemStack itemStack = e.getCurrentItem();
-
-        if (itemStack!=null && itemStack.getType()!=Material.AIR){
-            NBTItem nbtItem = new NBTItem(itemStack);
-            if (nbtItem.getBoolean("stopClick")){
-                e.setCancelled(true);
-            }
-        }
-
     }
 
     @EventHandler

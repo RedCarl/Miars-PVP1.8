@@ -28,7 +28,7 @@ public class SelectFKitEditGUI extends GUI {
 
 
     public SelectFKitEditGUI(Player player, FKitType fKitType) {
-        super(GUIType.ONE_BY_NINE, "&0请选择需要编辑的背包...");
+        super(GUIType.ONE_BY_NINE, "&0Select Kit");
 
         this.fKitType = fKitType;
         this.player = player;
@@ -106,7 +106,6 @@ public class SelectFKitEditGUI extends GUI {
 
 
     public static void open(Player player, FKitType type) {
-        player.closeInventory();
         SelectFKitEditGUI gui = new SelectFKitEditGUI(player,type);
         gui.openGUI(player);
     }

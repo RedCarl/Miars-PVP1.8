@@ -18,9 +18,6 @@ public class PluginConfig extends ConfigurationRoot {
     @HeaderComment({"插件配置文件"})
     public static final class SITE extends ConfigurationRoot {
 
-        @HeaderComment({"是否开启NameTag"})
-        public static final ConfigValue<Boolean> NAME_TAG = ConfiguredValue.of(Boolean.class, true);
-
         @HeaderComment({"禁止爆炸破坏方块"})
         public static final ConfigValue<Boolean> DISABLED_EXPLODE_DESTROY = ConfiguredValue.of(Boolean.class, true);
 

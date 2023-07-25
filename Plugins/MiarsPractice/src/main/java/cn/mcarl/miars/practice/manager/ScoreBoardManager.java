@@ -19,6 +19,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 
+import javax.swing.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -43,11 +44,7 @@ public class ScoreBoardManager {
     public void init(){
         tick();
     }
-    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy");
     DecimalFormat decimalFormat = new DecimalFormat("00");
-    DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("yyyy/M/d");
-    ZoneId zoneId = ZoneId.of("America/New_York");
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss a", Locale.US);
     public void tick(){
         new BukkitRunnable() {
             @Override
@@ -57,18 +54,6 @@ public class ScoreBoardManager {
                         updateBoard(board);
                     }
                 }catch (ConcurrentModificationException ignored){}
-
-                LocalDate currentDate = LocalDate.now();
-                String formattedDate = currentDate.format(formatterDate);
-                LocalTime currentTime = LocalTime.now();
-                String formattedTime = currentTime.format(formatter) + " " + zoneId.getDisplayName(TextStyle.SHORT, Locale.US);
-
-                MiarsCore.getInstance().getTabHeaderAndFooter().getHeader().setLines(
-                        "&f"+formattedDate+" &7| &bKazer Network &7| &f"+formattedTime,
-                        "&r");
-                MiarsCore.getInstance().getTabHeaderAndFooter().getFooter().setLines(
-                        "&r",
-                        "&fYou are playing &bPractice &fon &bkazer.gg");
             }
         }.runTaskTimerAsynchronously(MiarsCore.getInstance(),0,5);
     }
@@ -84,7 +69,7 @@ public class ScoreBoardManager {
             return;
         }
 
-        Arena arena = ArenaManager.getInstance().getArenaById(state);
+//        Arena arena = ArenaManager.getInstance().getArenaById(state);
 
         List<String> lines = new ArrayList<>();
         board.updateTitle("&b&lPractice");
@@ -134,15 +119,15 @@ public class ScoreBoardManager {
                         }
                     }
                     case BOXING -> {
-                        lines.add("&fFighting: &f"+their.getName());
                         lines.add("");
-
-                        lines.add("&fHits: "+BoxingManager.getInstance().getDifference(p.getUniqueId(),their.getUniqueId()));
-                        lines.add("&a  You: &b"+BoxingManager.getInstance().getBoxingData(p.getUniqueId()));
-                        lines.add("&c  Their: &b"+BoxingManager.getInstance().getBoxingData(their.getUniqueId()));
+                        lines.add("&bFighting");
+                        lines.add("&f"+their.getName());
                         lines.add("");
-                        lines.add("&aYour Ping: &b"+((CraftPlayer) p).getHandle().ping+"ms");
-                        lines.add("&cTheir Ping: &b"+((CraftPlayer) their).getHandle().ping+"ms");
+                        lines.add("&aYour: &f"+BoxingManager.getInstance().getBoxingData(p.getUniqueId())+" "+ BoxingManager.getInstance().getCombo(p.getUniqueId()));
+                        lines.add("&cTheir: &f"+BoxingManager.getInstance().getBoxingData(their.getUniqueId())+" "+ BoxingManager.getInstance().getCombo(their.getUniqueId()));
+                        lines.add("");
+                        lines.add("&fYour Ping: &b"+((CraftPlayer) p).getHandle().ping+"ms");
+                        lines.add("&fTheir Ping: &b"+((CraftPlayer) their).getHandle().ping+"ms");
                     }
                 }
             }

@@ -23,11 +23,10 @@
         <module>Plugins/MiarsSkyPVP</module>
         <module>Plugins/BedWars/MiarsBedWars</module>
         <module>Plugins/BedWars/MiarsBedWarsLobby</module>
-        <module>Plugins/SkyWars/UltraSkyWars-Lobby</module>
-        <module>Plugins/SkyWars/UltraSkyWars-Setup</module>
-        <module>Plugins/SkyWars/UltraSkyWars-Game</module>
-        <module>Plugins/SkyWars/UltraSkyWars-WorldParser</module>
-        <module>Plugins/MiarsJarvis</module>
+<!--        <module>Plugins/SkyWars/UltraSkyWars-Lobby</module>-->
+<!--        <module>Plugins/SkyWars/UltraSkyWars-Setup</module>-->
+<!--        <module>Plugins/SkyWars/UltraSkyWars-Game</module>-->
+<!--        <module>Plugins/SkyWars/UltraSkyWars-WorldParser</module>-->
     </modules>
 
     <properties>
@@ -155,6 +154,13 @@
             <groupId>me.filoghost.holographicdisplays</groupId>
             <artifactId>holographicdisplays-api</artifactId>
             <version>3.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.decentsoftware-eu</groupId>
+            <artifactId>decentholograms</artifactId>
+            <version>2.8.3</version>
             <scope>provided</scope>
         </dependency>
 
@@ -542,30 +548,30 @@
                                         <include name="MiarsBedWarsLobby-*.jar" />
                                     </fileset>
                                 </copy>
-                                <copy todir="libs/" overwrite="true">
-                                    <fileset dir="Plugins/SkyWars/UltraSkyWars-Game/target"
-                                             erroronmissingdir="false">
-                                        <include name="UltraSkyWars-Game-*.jar" />
-                                    </fileset>
-                                </copy>
-                                <copy todir="libs/" overwrite="true">
-                                    <fileset dir="Plugins/SkyWars/UltraSkyWars-Lobby/target"
-                                             erroronmissingdir="false">
-                                        <include name="UltraSkyWars-Lobby-*.jar" />
-                                    </fileset>
-                                </copy>
-                                <copy todir="libs/" overwrite="true">
-                                    <fileset dir="Plugins/SkyWars/UltraSkyWars-Setup/target"
-                                             erroronmissingdir="false">
-                                        <include name="UltraSkyWars-Setup-*.jar" />
-                                    </fileset>
-                                </copy>
-                                <copy todir="libs/" overwrite="true">
-                                    <fileset dir="Plugins/SkyWars/UltraSkyWars-WorldParser/target"
-                                             erroronmissingdir="false">
-                                        <include name="UltraSkyWars-WorldParser-*.jar" />
-                                    </fileset>
-                                </copy>
+<!--                                <copy todir="libs/" overwrite="true">-->
+<!--                                    <fileset dir="Plugins/SkyWars/UltraSkyWars-Game/target"-->
+<!--                                             erroronmissingdir="false">-->
+<!--                                        <include name="UltraSkyWars-Game-*.jar" />-->
+<!--                                    </fileset>-->
+<!--                                </copy>-->
+<!--                                <copy todir="libs/" overwrite="true">-->
+<!--                                    <fileset dir="Plugins/SkyWars/UltraSkyWars-Lobby/target"-->
+<!--                                             erroronmissingdir="false">-->
+<!--                                        <include name="UltraSkyWars-Lobby-*.jar" />-->
+<!--                                    </fileset>-->
+<!--                                </copy>-->
+<!--                                <copy todir="libs/" overwrite="true">-->
+<!--                                    <fileset dir="Plugins/SkyWars/UltraSkyWars-Setup/target"-->
+<!--                                             erroronmissingdir="false">-->
+<!--                                        <include name="UltraSkyWars-Setup-*.jar" />-->
+<!--                                    </fileset>-->
+<!--                                </copy>-->
+<!--                                <copy todir="libs/" overwrite="true">-->
+<!--                                    <fileset dir="Plugins/SkyWars/UltraSkyWars-WorldParser/target"-->
+<!--                                             erroronmissingdir="false">-->
+<!--                                        <include name="UltraSkyWars-WorldParser-*.jar" />-->
+<!--                                    </fileset>-->
+<!--                                </copy>-->
                             </target>
                         </configuration>
                         <goals>

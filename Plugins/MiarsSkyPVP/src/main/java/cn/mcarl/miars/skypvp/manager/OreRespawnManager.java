@@ -1,13 +1,8 @@
 package cn.mcarl.miars.skypvp.manager;
 
 import cn.mcarl.miars.skypvp.MiarsSkyPVP;
-import cn.mcarl.miars.skypvp.entitiy.OreBlock;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import cn.mcarl.miars.skypvp.entity.OreBlock;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;

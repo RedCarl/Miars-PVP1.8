@@ -152,6 +152,6 @@ public class ServerManager {
                     onStartServer();
                 }
             }
-        }.runTaskTimerAsynchronously(MiarsCore.getInstance(),0,300);
+        }.runTaskTimerAsynchronously(MiarsCore.getInstance(),0,600);
     }
 }

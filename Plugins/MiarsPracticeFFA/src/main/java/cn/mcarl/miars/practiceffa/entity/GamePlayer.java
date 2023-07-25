@@ -1,5 +1,6 @@
 package cn.mcarl.miars.practiceffa.entity;
 
+import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.core.publics.items.BackBed;
 import cn.mcarl.miars.core.publics.items.Ranks;
 import cn.mcarl.miars.core.utils.MiarsUtils;
@@ -82,7 +83,6 @@ public class GamePlayer {
         }else {
             this.practiceBackpack = PracticeBackpack.FFA;
            if (this.fInventory==null){
-//               this.fInventory = FFAGame.get();
                this.fInventory = NoDeBuff.get();
 
                FFAUtil.autoEquip(player,this.fInventory);
@@ -115,11 +115,6 @@ public class GamePlayer {
         Player p = getPlayer();
         FFAUtil.clearPlayerInv(p);
         this.queue = true;
-        switch (this.queueType){
-            case RANKED, UNRANKED -> {
-                MiarsUtils.initPlayerNametag(p," &b["+this.queueModel.getName()+"]",false);
-            }
-        }
         new QueueCancel().give(p,4);
     }
 

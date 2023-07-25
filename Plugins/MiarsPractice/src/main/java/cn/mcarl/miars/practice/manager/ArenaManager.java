@@ -5,10 +5,14 @@ import cn.mcarl.miars.core.manager.ServerManager;
 import cn.mcarl.miars.practice.MiarsPractice;
 import cn.mcarl.miars.practice.conf.PluginConfig;
 import cn.mcarl.miars.practice.entity.GamePlayer;
+import cn.mcarl.miars.storage.entity.MPlayer;
+import cn.mcarl.miars.storage.entity.MRank;
 import cn.mcarl.miars.storage.entity.practice.Arena;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.entity.practice.PlayerState;
 import cn.mcarl.miars.storage.entity.practice.enums.practice.QueueType;
+import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
+import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.*;
 import cn.mcarl.miars.storage.utils.BukkitUtils;
 import cn.mcarl.miars.storage.utils.ToolUtils;
@@ -36,7 +40,7 @@ public class ArenaManager {
 
     public void init(){
 
-        for (int i = 0; i < PluginConfig.PRACTICE_SITE.WORLD.get(); i++) {
+        for (int i = 0; i < PluginConfig.PRACTICE_SITE.WORLD.getNotNull(); i++) {
             WorldUtils.copyWorld(Bukkit.getWorld("world"),("world_"+(i+1)));
         }
 
@@ -173,82 +177,60 @@ public class ArenaManager {
         PracticeArenaStateDataStorage.getInstance().updateRedis(PluginConfig.PRACTICE_SITE.MODE.get());
 
         new BukkitRunnable() {
+            int i = 0;
             @Override
             public void run() {
-                for (int i = 0; i < 5; i++) {
-                    try {
-                        Player a = Bukkit.getPlayer(state.getPlayerA());
-                        Player b = Bukkit.getPlayer(state.getPlayerB());
+                try {
+                    Player a = Bukkit.getPlayer(state.getPlayerA());
+                    Player b = Bukkit.getPlayer(state.getPlayerB());
 
-                        if (a!=null && b!=null){
-                            if (i==0){
-                                JSONMessage.create(ColorParser.parse("&r")).send(a,b);
-                                JSONMessage.create(ColorParser.parse("&b&lMatch Found!")).send(a,b);
-                                JSONMessage.create(ColorParser.parse("&r")).send(a,b);
-                                JSONMessage.create(ColorParser.parse("&fLadder: "+state.getQueueType().getColor()+state.getQueueType().getName())).send(a,b);
-                                JSONMessage.create(ColorParser.parse("&r")).send(a,b);
-                            }
+                    if (a!=null && b!=null){
+                        JSONMessage.create(ColorParser.parse("&fMatch starting in &b"+(5-i)+"..."))
+                                .send(a,b);
+                        a.sendTitle(ColorParser.parse("&fMatch starting..."),ColorParser.parse("The match will be starting in &b"+(5-i)+"&f..."));
+                        b.sendTitle(ColorParser.parse("&fMatch starting..."),ColorParser.parse("The match will be starting in &b"+(5-i)+"&f..."));
 
-                            JSONMessage.create(ColorParser.parse("&b"+(5-i)+"..."))
+                        a.playSound(a.getLocation(), Sound.NOTE_PLING,1,1);
+                        b.playSound(b.getLocation(),Sound.NOTE_PLING,1,1);
+                        if (i == 4){
+                            ArenaManager.getInstance().startGame(state);
+                            JSONMessage.create(ColorParser.parse("&fThe match has started."))
                                     .send(a,b);
 
-                            a.playSound(a.getLocation(), Sound.NOTE_PLING,1,1);
-                            b.playSound(b.getLocation(),Sound.NOTE_PLING,1,1);
-                            if (i == 4){
-                                ArenaManager.getInstance().startGame(state);
-                                JSONMessage.create(ColorParser.parse("&fThe match has started!"))
-                                        .send(a,b);
-                                a.playSound(a.getLocation(),Sound.ORB_PICKUP,1,1);
-                                b.playSound(b.getLocation(),Sound.ORB_PICKUP,1,1);
-                                break;
-                            }
-                        }else {
-                            if (a!=null){
-                                // 5秒过后将玩家送出竞技场
-                                new BukkitRunnable() {
-                                    @Override
-                                    public void run() {
-                                        // 传送对战玩家至大厅
-                                        ServerManager.getInstance().sendPlayerToServer(a.getName(),"practice-ffa");
 
-                                        // 更新游戏房间状态为空闲，可以接纳下一批玩家
-                                        PracticeArenaStateDataStorage.getInstance().getArenaStateById(state).init();
-                                        PracticeArenaStateDataStorage.getInstance().updateRedis(PluginConfig.PRACTICE_SITE.MODE.get());
-                                    }
-                                }.runTaskLaterAsynchronously(MiarsPractice.getInstance(),100);
-                                cancel();
-                            }else if (b!=null){
+                            a.sendTitle(ColorParser.parse("&fMatch started!"),null);
+                            b.sendTitle(ColorParser.parse("&fMatch started!"),null);
+                            a.playSound(a.getLocation(),Sound.ORB_PICKUP,1,1);
+                            b.playSound(b.getLocation(),Sound.ORB_PICKUP,1,1);
+                            JSONMessage.create(ColorParser.parse("&r"))
+                                    .send(a,b);
+                            JSONMessage.create(ColorParser.parse("&4&l(WARNING) &cButterfly clicking / Block glitch is allowed &cand they may resulting into a ban."))
+                                    .send(a,b);
 
-                                // 5秒过后将玩家送出竞技场
-                                new BukkitRunnable() {
-                                    @Override
-                                    public void run() {
-                                        // 传送对战玩家至大厅
-                                        ServerManager.getInstance().sendPlayerToServer(b.getName(),"practice-ffa");
-
-                                        // 更新游戏房间状态为空闲，可以接纳下一批玩家
-                                        PracticeArenaStateDataStorage.getInstance().getArenaStateById(state).init();
-                                        PracticeArenaStateDataStorage.getInstance().updateRedis(PluginConfig.PRACTICE_SITE.MODE.get());
-                                    }
-                                }.runTaskLaterAsynchronously(MiarsPractice.getInstance(),100);
-                                cancel();
-                            }else {
-                                // 更新游戏房间状态为空闲，可以接纳下一批玩家
-                                PracticeArenaStateDataStorage.getInstance().getArenaStateById(state).init();
-                                PracticeArenaStateDataStorage.getInstance().updateRedis(PluginConfig.PRACTICE_SITE.MODE.get());
-                                cancel();
-                            }
+                            cancel();
+                        }
+                    }else {
+                        if (a!=null){
+                            ServerManager.getInstance().sendPlayerToServer(a.getName(),"practice-ffa");
                         }
 
+                        if (b!=null){
+                            ServerManager.getInstance().sendPlayerToServer(b.getName(),"practice-ffa");
+                        }
 
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {
-                        throw new RuntimeException(ex);
+                        // 更新游戏房间状态为空闲，可以接纳下一批玩家
+                        PracticeArenaStateDataStorage.getInstance().getArenaStateById(state).init();
+                        PracticeArenaStateDataStorage.getInstance().updateRedis(PluginConfig.PRACTICE_SITE.MODE.get());
+
+                        cancel();
                     }
+                }catch (IllegalArgumentException ignored){
+                    cancel();
                 }
-                cancel();
+
+                i++;
             }
-        }.runTaskAsynchronously(MiarsPractice.getInstance());
+        }.runTaskTimer(MiarsPractice.getInstance(),20,20);
     }
 
     /**
@@ -270,10 +252,6 @@ public class ArenaManager {
 
         // Build UHC 清理战场上的方块
         BuildUHCManager.getInstance().clearBlock(win.getPlayer().getWorld(),ArenaManager.getInstance().getArenaById(state));
-
-        // Boxing
-        BoxingManager.getInstance().clearBoxingData(win.getUuid());
-        BoxingManager.getInstance().clearBoxingData(fail.getUuid());
 
         state.setWin(win.getName());
         state.setEndTime(System.currentTimeMillis());
@@ -325,10 +303,13 @@ public class ArenaManager {
             );
         }
 
+        MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(win.getUuid());
+        MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
+
         // 为玩家发送胜利/失败提示
-        win.sendTitle(ColorParser.parse("&a&lVICTORY!"),ColorParser.parse("&7"+win.getName()+" &fwon the match"));
+        win.sendTitle(ColorParser.parse("&a&lVICTORY!"),ColorParser.parse(mRank.getNameColor()+win.getName()+" &fwon the match"));
         PracticeDailyStreakDataStorage.getInstance().putDailyStreakData(win.getPlayer(),state.getQueueType(), state.getFKitType(),true);
-        fail.sendTitle(ColorParser.parse("&c&lDEFEAT!"),ColorParser.parse("&7"+win.getName()+" &fwon the match"));
+        fail.sendTitle(ColorParser.parse("&c&lDEFEAT!"),ColorParser.parse(mRank.getNameColor()+win.getName()+" &fwon the match"));
         PracticeDailyStreakDataStorage.getInstance().putDailyStreakData(fail.getPlayer(),state.getQueueType(), state.getFKitType(),false);
 
 
@@ -371,7 +352,7 @@ public class ArenaManager {
                 PracticeArenaStateDataStorage.getInstance().getArenaStateById(state).init();
                 PracticeArenaStateDataStorage.getInstance().updateRedis(PluginConfig.PRACTICE_SITE.MODE.get());
             }
-        }.runTaskLaterAsynchronously(MiarsPractice.getInstance(),100);
+        }.runTaskLater(MiarsPractice.getInstance(),100);
 
 
         win.clearInv();

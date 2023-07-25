@@ -2,12 +2,9 @@ package com.nametagedit.plugin.api;
 
 import com.nametagedit.plugin.NametagManager;
 import com.nametagedit.plugin.api.data.FakeTeam;
-import com.nametagedit.plugin.api.data.GroupData;
 import com.nametagedit.plugin.api.data.Nametag;
 import lombok.AllArgsConstructor;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 /**
  * Implements the INametagAPI interface. There only
@@ -112,16 +109,6 @@ public final class NametagAPI implements INametagApi {
     public void showNametag(String player) {
         FakeTeam fakeTeam = manager.getFakeTeam(player);
         manager.setNametag(player, fakeTeam == null ? null : fakeTeam.getPrefix(), fakeTeam == null ? null : fakeTeam.getSuffix(), true);
-    }
-
-    @Override
-    public List<GroupData> getGroupData() {
-        return null;
-    }
-
-    @Override
-    public void saveGroupData(GroupData... groupData) {
-
     }
 
     @Override

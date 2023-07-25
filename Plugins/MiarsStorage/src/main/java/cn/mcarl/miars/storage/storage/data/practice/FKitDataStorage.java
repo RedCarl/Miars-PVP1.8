@@ -51,5 +51,16 @@ public class FKitDataStorage {
         }
     }
 
+    /**
+     * 删除套件数据
+     */
+    public void deleteFKitDataById(Integer id){
+        try {
+            MiarsStorage.getMySQLStorage().deleteFKitDataById(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }

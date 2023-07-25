@@ -7,7 +7,7 @@ import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.comphenix.protocol.wrappers.WrappedWatchableObject;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Maps;
-import gg.noob.lib.tab.client.ClientVersionUtil;
+import gg.noob.lib.util.ClientVersionUtil;
 import gg.noob.lib.util.EntityUtils;
 import gg.noob.lib.util.reflect.*;
 import io.netty.channel.Channel;
@@ -256,7 +256,7 @@ public class NMS_1_8_R3 {
             mapEntityTypes.put("FIREWORK", new Pair<>(76, 0.25f));
         }
     }
-    
+
     public static int getFreeEntityId() {
         return EntityUtils.getFakeEntityId();
     }
@@ -266,14 +266,14 @@ public class NMS_1_8_R3 {
         showFakeEntity(player, location, getEntityTypeId(entityType), entityId);
     }
 
-    
+
     public static void showFakeEntityLiving(Player player, Location location, EntityType entityType, int entityId) {
         Object dataWatcher = DATA_WATCHER_CONSTRUCTOR.newInstance(ENTITY_CLASS.cast(null));
         DATA_WATCHER_A_METHOD.invoke(dataWatcher, 15, (byte) 0);
         showFakeEntityLiving(player, location, getEntityTypeId(entityType), entityId, dataWatcher);
     }
 
-    
+
     public static void showFakeEntityArmorStand(Player player, Location location, int entityId, boolean invisible, boolean small, boolean clickable) {
         Object dataWatcher = DATA_WATCHER_CONSTRUCTOR.newInstance(ENTITY_CLASS.cast(null));
         DATA_WATCHER_A_METHOD.invoke(dataWatcher, 0, (byte) (invisible ? 0x20 : 0x00)); // Invisible
@@ -371,7 +371,7 @@ public class NMS_1_8_R3 {
         return skull;
     }
 
-    
+
     public static void showFakeEntityItem(Player player, Location location, ItemStack itemStack, int entityId) {
         Validate.notNull(player);
         Validate.notNull(location);
@@ -388,7 +388,7 @@ public class NMS_1_8_R3 {
         teleportFakeEntity(player, location, entityId);
     }
 
-    
+
     public static void updateFakeEntityCustomName(Player player, String name, int entityId) {
         Validate.notNull(player);
         Validate.notNull(name);
@@ -399,7 +399,7 @@ public class NMS_1_8_R3 {
         sendPacket(player, PACKET_ENTITY_METADATA_CONSTRUCTOR.newInstance(entityId, dataWatcher, true));
     }
 
-    
+
     public static void teleportFakeEntity(Player player, Location location, int entityId) {
         Validate.notNull(player);
         Validate.notNull(location);
@@ -418,7 +418,7 @@ public class NMS_1_8_R3 {
         sendPacket(player, teleport);
     }
 
-    
+
     public static void helmetFakeEntity(Player player, ItemStack itemStack, int entityId) {
         Validate.notNull(player);
         Validate.notNull(itemStack);
@@ -433,7 +433,7 @@ public class NMS_1_8_R3 {
         sendPacket(player, packet);
     }
 
-    
+
     public static void attachFakeEntity(Player player, int vehicleId, int entityId) {
         Validate.notNull(player);
         Object packet = PACKET_ATTACH_ENTITY_CONSTRUCTOR.newInstance();
@@ -447,7 +447,7 @@ public class NMS_1_8_R3 {
     }
 
     @SuppressWarnings("RedundantCast")
-    
+
     public static void hideFakeEntities(Player player, int... entityIds) {
         Validate.notNull(player);
         sendPacket(player, PACKET_ENTITY_DESTROY_CONSTRUCTOR.newInstance((Object) entityIds));

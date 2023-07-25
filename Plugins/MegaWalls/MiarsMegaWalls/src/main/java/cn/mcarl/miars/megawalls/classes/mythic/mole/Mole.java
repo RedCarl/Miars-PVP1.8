@@ -1,7 +1,7 @@
 //package cn.mcarl.miars.megawalls.classes.mythic.mole;
 //
 //import cn.mcarl.miars.megawalls.classes.*;
-//import cn.mcarl.miars.megawalls.game.entitiy.GamePlayer;
+//import cn.mcarl.miars.megawalls.game.entity.GamePlayer;
 //import cn.mcarl.miars.megawalls.game.manager.GameManager;
 //import cn.mcarl.miars.megawalls.game.manager.GamePlayerManager;
 //import cn.mcarl.miars.megawalls.utils.ItemBuilder;

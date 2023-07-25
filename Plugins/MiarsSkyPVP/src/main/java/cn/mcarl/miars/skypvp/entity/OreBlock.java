@@ -1,4 +1,4 @@
-package cn.mcarl.miars.skypvp.entitiy;
+package cn.mcarl.miars.skypvp.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

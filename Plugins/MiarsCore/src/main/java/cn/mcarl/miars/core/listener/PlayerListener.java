@@ -19,6 +19,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -38,9 +39,9 @@ public class PlayerListener implements Listener {
     static {
         ModSettings modSettings = new ModSettings();
         // Go through all the items in the list, and disable each mod.
-        for (Mods mod : List.of(Mods.HYPIXEL_MOD)) {
-            modSettings.addModSetting(mod.getModId(), new ModSettings.ModSetting(false, new HashMap<>()));
-        }
+//        for (Mods mod : List.of(Mods.HYPIXEL_MOD)) {
+//            modSettings.addModSetting(mod.getModId(), new ModSettings.ModSetting(false, new HashMap<>()));
+//        }
         LC_PACKET_MOD_SETTINGS = new LCPacketModSettings(modSettings);
     }
     // Lunar Client end
@@ -54,10 +55,6 @@ public class PlayerListener implements Listener {
 
         player.setGameMode(GameMode.SURVIVAL);
 
-        if (Boolean.TRUE.equals(PluginConfig.SITE.NAME_TAG.get())){
-            MiarsUtils.initPlayerNametag(player,true);
-        }
-
         MiarsCore.getInstance().getTabHeaderAndFooter().show(player);
 
         // 禁止玩家进入消息
@@ -68,9 +65,14 @@ public class PlayerListener implements Listener {
     public void PlayerQuitEvent(PlayerQuitEvent e){
         Player player = e.getPlayer();
 
+        // DataCache
         MPlayerDataStorage.getInstance().clearUserCacheData(player);
 
+        // Tab
         MiarsCore.getInstance().getTabHeaderAndFooter().hide(player);
+
+        // NameTag
+        MiarsCore.getNametagAPI().clearNametag(player);
 
         // 禁止玩家进入消息
         e.setQuitMessage(null);
@@ -81,7 +83,6 @@ public class PlayerListener implements Listener {
         Player player = e.getPlayer();
         player.sendMessage(ColorParser.parse("&7You changed the mode to &b"+e.getNewGameMode().name()+" &7 by &b"+e.getPlayer().getName()+" &7("+(player.isOnline()?"&aOnline":"&cOffline")+"&7)"));
     }
-
 
     // Lunar Client Start
     @EventHandler
@@ -98,7 +99,7 @@ public class PlayerListener implements Listener {
             LunarClientAPIUtils.sendTitle(e.getPlayer(),e.getTitle());
         }
         if (e.getSubtitle()!=null){
-            LunarClientAPIUtils.sendSubTitle(e.getPlayer(),e.getTitle());
+            LunarClientAPIUtils.sendSubTitle(e.getPlayer(),e.getSubtitle());
         }
 
     }

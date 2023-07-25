@@ -1,4 +1,4 @@
-package cn.mcarl.miars.skypvp.entitiy;
+package cn.mcarl.miars.skypvp.entity;
 
 import cn.mcarl.miars.core.utils.MiarsUtils;
 import cn.mcarl.miars.skypvp.utils.PlayerUtils;

@@ -1,8 +1,8 @@
 package cn.mcarl.miars.skypvp.manager;
 
 import cn.mcarl.miars.skypvp.MiarsSkyPVP;
-import cn.mcarl.miars.skypvp.entitiy.GamePlayer;
-import cn.mcarl.miars.skypvp.entitiy.LuckyBlock;
+import cn.mcarl.miars.skypvp.entity.GamePlayer;
+import cn.mcarl.miars.skypvp.entity.LuckyBlock;
 import cn.mcarl.miars.skypvp.enums.LuckBlockType;
 import cn.mcarl.miars.skypvp.utils.RotatingHead;
 import org.bukkit.*;

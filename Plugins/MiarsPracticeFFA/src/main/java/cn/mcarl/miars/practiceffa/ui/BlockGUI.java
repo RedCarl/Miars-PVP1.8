@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class BlockGUI extends GUI {
     public BlockGUI() {
-        super(GUIType.SIX_BY_NINE, "&0快拿走它们！");
+        super(GUIType.SIX_BY_NINE, "&0Blocks");
 
 
         for (int i = 0; i <= 15; i++) {
@@ -63,7 +63,6 @@ public class BlockGUI extends GUI {
 
 
     public static void open(Player player) {
-        player.closeInventory();
         BlockGUI gui = new BlockGUI();
         gui.openGUI(player);
     }

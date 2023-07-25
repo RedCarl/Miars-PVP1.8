@@ -26,7 +26,7 @@ public class FKitEditGUI extends GUI {
     final FKit fKit;
 
     public FKitEditGUI(Player player,FKit fKit) {
-        super(GUIType.SIX_BY_NINE, "&0编辑好后记得保存!");
+        super(GUIType.SIX_BY_NINE, "&0Edit");
         this.player = player;
         this.fKit = fKit;
         load();
@@ -76,10 +76,26 @@ public class FKitEditGUI extends GUI {
 
         setItem(new GUIItem(GUIUtils.getLineItem()),36,37,38,39,40,41,42,43,44);
 
+
+        // 删除
+        setItem(53,new GUIItem(
+                new ItemBuilder(Material.BARRIER)
+                        .setName("&cDelete Loadout")
+                        .toItemStack()
+        ){
+            @Override
+            public void onClick(Player clicker, ClickType type) {
+                FKitDataStorage.getInstance().putFKitData(fKit);
+                player.closeInventory();
+                player.sendMessage(ColorParser.parse("&cLoadout delete."));
+            }
+        });
+
         // 保存
         setItem(53,new GUIItem(
-                new ItemBuilder(Material.PAPER)
-                        .setName("&a保存数据")
+                new ItemBuilder(Material.INK_SACK)
+                        .setName("&aSave loadout")
+                        .setData((short) 10)
                         .toItemStack()
         ){
             @Override
@@ -118,7 +134,7 @@ public class FKitEditGUI extends GUI {
 
                 FKitDataStorage.getInstance().putFKitData(fKit);
                 player.closeInventory();
-                player.sendMessage(ColorParser.parse("&7数据保存成功..."));
+                player.sendMessage(ColorParser.parse("&7Data save..."));
             }
         });
     }
@@ -135,7 +151,6 @@ public class FKitEditGUI extends GUI {
     }
 
     public static void open(Player player, FKit fKit) {
-        player.closeInventory();
         FKitEditGUI gui = new FKitEditGUI(player,fKit);
         gui.openGUI(player);
     }

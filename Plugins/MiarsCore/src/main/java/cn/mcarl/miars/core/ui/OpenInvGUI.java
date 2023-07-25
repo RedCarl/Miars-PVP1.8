@@ -14,6 +14,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * @Author: carl0
  * @DATE: 2023/1/5 23:53
@@ -50,6 +54,37 @@ public class OpenInvGUI extends GUI {
         for (int i = 36; i < 45; i++) {
             setItem(i, new GUIItem(GUIUtils.getLineItem()));
         }
+
+        setItem(45,new GUIItem(fInventory.getHelmet()));
+        setItem(46,new GUIItem(fInventory.getChestPlate()));
+        setItem(47,new GUIItem(fInventory.getLeggings()));
+        setItem(48,new GUIItem(fInventory.getBoots()));
+
+        setItem(49,new GUIItem(
+                new ItemBuilder(Material.SKULL_ITEM)
+                        .setData((short) 3)
+                        .setSkullOwner(name)
+                        .setName("&bPlayer Information")
+                        .setLore(
+                                "",
+                                "&fHealth: &b"+playerState.getHealth()+"/20",
+                                "&fHunger: &b"+playerState.getHunger()+"/20"
+                        )
+                .toItemStack()
+        ));
+        List<String> potion = new ArrayList<>();
+        playerState.getPotionEffects().forEach(i->{
+            AtomicReference<String> lore = new AtomicReference<>("");
+            i.keySet().forEach(a-> lore.set("&f"+a +" &7- &b"+ i.get(a).toString()));
+            potion.add(lore.get());
+        });
+
+        setItem(50,new GUIItem(
+                new ItemBuilder(Material.POTION)
+                        .setName("&bPotion Effects")
+                        .setLore(potion)
+                .toItemStack()
+        ));
 
         setItem(51,getHealthPotions());
         setItem(52,getMatchStats());
@@ -129,7 +164,6 @@ public class OpenInvGUI extends GUI {
 
 
     public static void open(Player player, ArenaState state, String name) {
-        player.closeInventory();
         OpenInvGUI gui = new OpenInvGUI(player,state,name);
         gui.openGUI(player);
     }

@@ -4,6 +4,7 @@ import cn.mcarl.bungee.MiarsBungee;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cn.mcarl.bungee.util.bungee.ServerHelper;
 import net.md_5.bungee.api.AbstractReconnectHandler;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ServerKickEvent;
@@ -19,36 +20,23 @@ public class PlayerListener implements Listener {
 
   @EventHandler
   public void onServerKickEvent(ServerKickEvent ev) {
-    var player = ev.getPlayer();
-    var kickedFrom = originOfKick(player).getName();
-//    var kickTo = ServerHelper.getLobbyServer();
-    var kickTo = ServerHelper.getServerInfo("Practice-ffa");
-
+    ServerInfo kickedFrom;
+    if (ev.getPlayer().getServer() != null) {
+      kickedFrom = ev.getPlayer().getServer().getInfo();
+    } else if (this.plugin.getProxy().getReconnectHandler() != null) {
+      kickedFrom = this.plugin.getProxy().getReconnectHandler().getServer(ev.getPlayer());
+    } else {
+      kickedFrom = AbstractReconnectHandler.getForcedHost(ev.getPlayer().getPendingConnection());
+      if (kickedFrom == null) {
+        kickedFrom = ProxyServer.getInstance().getServerInfo(ev.getPlayer().getPendingConnection().getListener().getDefaultServer());
+      }
+    }
+    ServerInfo kickTo = this.plugin.getProxy().getServerInfo("practice-ffa");
     if (kickedFrom != null && kickedFrom.equals(kickTo)) {
       return;
     }
-
     ev.setCancelled(true);
-    ev.setCancelServer(plugin.getProxy().getServers().get(kickTo));
-
-    player.sendMessage(ColorParser.parse("&cDue to the restart and maintenance of your server, you have been transferred to the lobby."));
-  }
-
-  private ServerInfo originOfKick(ProxiedPlayer player) {
-    if (player.getServer() != null) {
-      return player.getServer().getInfo();
-    } else if (plugin.getProxy().getReconnectHandler() != null) {
-      return plugin.getProxy().getReconnectHandler().getServer(player);
-    } else {
-      final var pendingConnection = player.getPendingConnection();
-      final var forcedHost = AbstractReconnectHandler.getForcedHost(pendingConnection);
-
-      if (forcedHost != null) {
-        return forcedHost;
-      } else {
-        final var defaultServer = pendingConnection.getListener().getServerPriority().get(0);
-        return plugin.getProxy().getServerInfo(defaultServer);
-      }
-    }
+    ev.setCancelServer(kickTo);
+    ev.getPlayer().sendMessage(ColorParser.parse("&cDue to the restart and maintenance of your server, you have been transferred to the lobby."));
   }
 }

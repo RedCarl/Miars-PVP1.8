@@ -2,11 +2,11 @@ package cn.mcarl.miars.storage.storage.data.practice;
 
 import cn.mcarl.miars.storage.MiarsStorage;
 import cn.mcarl.miars.storage.entity.practice.ArenaState;
+import cn.mcarl.miars.storage.entity.practice.ArenaState;
 import cn.mcarl.miars.storage.entity.practice.enums.practice.FKitType;
 import cn.mcarl.miars.storage.entity.practice.enums.practice.QueueType;
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONException;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,28 +23,29 @@ public class PracticeArenaStateDataStorage {
         return instance;
     }
 
-    List<ArenaState> arenaState = new ArrayList<>();
+    List<ArenaState> arenaStates = new ArrayList<>();
 
 
 
     public void init(String key,List<ArenaState> data){
-        this.arenaState = data;
+        this.arenaStates = data;
         // 更新Redis房间信息
-        setArenaStateRedisList(arenaState,key);
+        setArenaStateRedisList(arenaStates,key);
     }
 
     public ArenaState getArenaStateById(ArenaState state){
         AtomicReference<ArenaState> data = new AtomicReference<>(new ArenaState());
 
-        arenaState.forEach(arenaState -> {
-            if (arenaState.getArenaId().equals(state.getArenaId()) && arenaState.getWorld().equals(state.getWorld())){
-                data.set(arenaState);
+        arenaStates.forEach(arenaStates -> {
+            if (arenaStates.getArenaId().equals(state.getArenaId()) && arenaStates.getWorld().equals(state.getWorld())){
+                data.set(arenaStates);
             }
         });
         return data.get();
     }
+    
     public ArenaState getArenaStateByPlayer(String player){
-        for (ArenaState a:arenaState) {
+        for (ArenaState a:arenaStates) {
             if (
                     (a.getPlayerA()!=null && a.getPlayerA().equals(player)) ||
                     (a.getPlayerB()!=null && a.getPlayerB().equals(player))
@@ -56,14 +57,14 @@ public class PracticeArenaStateDataStorage {
     }
 
     public void updateRedis(String key){
-        setArenaStateRedisList(arenaState,key);
+        setArenaStateRedisList(arenaStates,key);
     }
 
     public ArenaState isNullArena(){
 
         List<ArenaState> list = new ArrayList<>();
 
-        for (ArenaState state:this.arenaState){
+        for (ArenaState state:this.arenaStates){
             if (state.getState() == ArenaState.State.IDLE){
                 list.add(state);
             }
@@ -76,6 +77,11 @@ public class PracticeArenaStateDataStorage {
         return null;
     }
 
+    /**
+     * 获取房间状态,注意获取频率
+     * @param key
+     * @return
+     */
     public List<ArenaState> getArenaStateRedisList(String key){
         List<ArenaState> list = new ArrayList<>();
         try {
@@ -88,11 +94,18 @@ public class PracticeArenaStateDataStorage {
         return list;
     }
 
+    /**
+     * 设置房间状态
+     * @param list
+     * @param key
+     */
     public void setArenaStateRedisList(List<ArenaState> list,String key){
         if (list.size()==0){
             MiarsStorage.getRedisStorage().delJedis(key);
+            return;
         }
-        MiarsStorage.getRedisStorage().setJedis(key,JSONArray.toJSON(list).toString());
+        list.forEach(ArenaState::formatRedis);
+        MiarsStorage.getRedisStorage().setJedis(key, JSONArray.toJSONString(list));
     }
 
     /**
@@ -106,12 +119,16 @@ public class PracticeArenaStateDataStorage {
         data.setFKitType(FKitType.valueOf(key));
 
         // 更新Redis房间信息
-        setArenaStateRedisList(arenaState,key);
+        setArenaStateRedisList(arenaStates,key);
     }
 
 
-
-    // FFA
+    /**
+     * 获取正在游玩的人数By匹配类型+游戏模式
+     * @param fKitType
+     * @param queueType
+     * @return
+     */
     public Integer getArenaStateByQueueAndFig(FKitType fKitType, QueueType queueType){
         int i = 0;
         for (ArenaState a:getArenaStateRedisList(fKitType.name())) {
@@ -122,6 +139,11 @@ public class PracticeArenaStateDataStorage {
         return i;
     }
 
+    /**
+     * 获取匹配中的玩家数量By匹配类型(普通 排位)
+     * @param type
+     * @return
+     */
     public Integer getGamePlayersByQueueType(QueueType type){
         int i = 0;
         for (FKitType t:FKitType.values()) {

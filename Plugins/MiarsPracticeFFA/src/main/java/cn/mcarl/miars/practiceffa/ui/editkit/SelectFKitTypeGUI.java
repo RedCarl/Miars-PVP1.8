@@ -29,7 +29,7 @@ public class SelectFKitTypeGUI extends GUI {
 
         int i = 10;
         for (FKitType ft:FKitType.values()) {
-            setItem(i,new GUIItem(CommunityGUIItem.getPracticeTypeItem(player,ft, null)){
+            setItem(i,new GUIItem(CommunityGUIItem.getPracticeTypeItem(player,ft, null,true)){
                 @Override
                 public void onClick(Player clicker, ClickType type) {
                     SelectFKitEditGUI.open(player,ft);
@@ -37,11 +37,9 @@ public class SelectFKitTypeGUI extends GUI {
             });
             i++;
         }
-
     }
 
     public static void open(Player player) {
-        player.closeInventory();
         SelectFKitTypeGUI gui = new SelectFKitTypeGUI(player);
         gui.openGUI(player);
     }

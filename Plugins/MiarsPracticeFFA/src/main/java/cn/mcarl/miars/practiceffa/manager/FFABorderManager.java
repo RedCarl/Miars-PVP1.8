@@ -31,18 +31,18 @@ public class FFABorderManager {
 //        tick();
     }
 
-    private void tick(){
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                CombatManager.getInstance().getCombatPlayers().forEach((uuid)->{
-                    Player player = Bukkit.getPlayer(uuid);
-                    if (CombatManager.getInstance().isCombat(player)){
-                        FFAUtil.setVirtualBorder(player);
-                    }
-                });
-            }
-        }.runTaskTimerAsynchronously(MiarsPracticeFFA.getInstance(),PluginConfig.FFA_SITE.BORDER_TICK.get(),PluginConfig.FFA_SITE.BORDER_TICK.get());
-    }
+//    private void tick(){
+//        new BukkitRunnable() {
+//            @Override
+//            public void run() {
+//                CombatManager.getInstance().getCombatPlayers().forEach((uuid)->{
+//                    Player player = Bukkit.getPlayer(uuid);
+//                    if (CombatManager.getInstance().isCombat(player)){
+//                        FFAUtil.setVirtualBorder(player);
+//                    }
+//                });
+//            }
+//        }.runTaskTimerAsynchronously(MiarsPracticeFFA.getInstance(),PluginConfig.FFA_SITE.BORDER_TICK.get(),PluginConfig.FFA_SITE.BORDER_TICK.get());
+//    }
 
 }

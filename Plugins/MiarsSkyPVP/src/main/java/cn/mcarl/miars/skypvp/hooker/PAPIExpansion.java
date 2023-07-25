@@ -1,12 +1,10 @@
 package cn.mcarl.miars.skypvp.hooker;
 
-import cn.mcarl.miars.skypvp.entitiy.GamePlayer;
+import cn.mcarl.miars.skypvp.entity.GamePlayer;
 import cn.mcarl.miars.storage.entity.MPlayer;
 import cn.mcarl.miars.storage.entity.MRank;
-import cn.mcarl.miars.storage.entity.ffa.FPlayer;
 import cn.mcarl.miars.storage.storage.data.MPlayerDataStorage;
 import cn.mcarl.miars.storage.storage.data.MRankDataStorage;
-import cn.mcarl.miars.storage.storage.data.practice.FPlayerDataStorage;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
