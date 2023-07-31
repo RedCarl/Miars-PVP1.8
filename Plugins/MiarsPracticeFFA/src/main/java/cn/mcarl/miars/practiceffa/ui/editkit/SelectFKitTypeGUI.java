@@ -29,13 +29,19 @@ public class SelectFKitTypeGUI extends GUI {
 
         int i = 10;
         for (FKitType ft:FKitType.values()) {
-            setItem(i,new GUIItem(CommunityGUIItem.getPracticeTypeItem(player,ft, null,true)){
-                @Override
-                public void onClick(Player clicker, ClickType type) {
-                    SelectFKitEditGUI.open(player,ft);
+            switch (ft){
+                case SUMO,BOXING -> {
                 }
-            });
-            i++;
+                default -> {
+                    setItem(i,new GUIItem(CommunityGUIItem.getPracticeTypeItem(player,ft, null,true)){
+                        @Override
+                        public void onClick(Player clicker, ClickType type) {
+                            SelectFKitEditGUI.open(player,ft);
+                        }
+                    });
+                    i++;
+                }
+            }
         }
     }
 

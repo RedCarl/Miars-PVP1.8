@@ -1,15 +1,9 @@
 package cn.mcarl.miars.core.manager;
 
 import cn.mcarl.miars.core.MiarsCore;
-import cn.mcarl.miars.core.impl.lunarclient.LunarClientAPI;
-import cn.mcarl.miars.core.impl.lunarclient.cooldown.LunarClientAPICooldown;
 import cn.mcarl.miars.storage.utils.ToolUtils;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -42,7 +36,6 @@ public class EnderPearlManager {
             }
         }else {
             hashMap.put(player.getUniqueId(),System.currentTimeMillis());
-            LunarClientAPICooldown.sendCooldown(player, "EnderPearl");
             new BukkitRunnable() {
                 @Override
                 public void run() {

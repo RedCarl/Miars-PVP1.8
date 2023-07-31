@@ -11,12 +11,16 @@ import cn.mcarl.miars.practiceffa.listener.PlayerListener;
 import cn.mcarl.miars.practiceffa.manager.*;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeDailyStreakDataStorage;
 import cn.mcarl.miars.storage.storage.data.practice.PracticeQueueDataStorage;
+import gg.noob.lib.hologram.BaseHologram;
+import gg.noob.lib.hologram.Hologram;
+import gg.noob.lib.hologram.HologramManager;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * @Author: carl0
@@ -46,7 +50,6 @@ public class MiarsPracticeFFA extends JavaPlugin {
         regListener(new PlayerListener());
         regListener(new BlockListener());
         regListener(new EnderPearlListener());
-        regListener(new LeaderboardsDailyWins());
 
         log("正在注册指令...");
         regCommand("Duel",new DuelCommand());
@@ -71,6 +74,17 @@ public class MiarsPracticeFFA extends JavaPlugin {
 
         log("正在初始化 DeathChest 模块...");
         DeathChestManager.getInstance().init();
+
+        log("正在初始化 LeaderboardsHologram 组件...");
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                HologramManager hologramManager = MiarsCore.getInstance().getHologramManager();
+                Hologram leaderboardHologram = new Hologram(new LeaderboardsHologram());
+                leaderboardHologram.run();
+                hologramManager.registerHologram(leaderboardHologram);
+            }
+        }.runTaskLater(this,1L);
 
 //        log("初始化数据包...");
 //        MiarsCore.getProtocolManager().addPacketListener(new ProtocolListener());

@@ -5,8 +5,7 @@ import cn.mcarl.miars.core.MiarsCore;
 import cn.mcarl.miars.core.listener.EnderPearlListener;
 import cn.mcarl.miars.practice.command.ArenaCreateCommand;
 import cn.mcarl.miars.practice.conf.PluginConfig;
-import cn.mcarl.miars.practice.listener.BoxingListener;
-import cn.mcarl.miars.practice.listener.GlobalListener;
+import cn.mcarl.miars.practice.listener.*;
 import cn.mcarl.miars.practice.manager.ArenaManager;
 import cn.mcarl.miars.practice.manager.ConfigManager;
 import cn.mcarl.miars.practice.manager.QueueManager;
@@ -45,10 +44,20 @@ public class MiarsPractice extends JavaPlugin {
         log("正在注册监听器...");
         regListener(new GlobalListener());
         regListener(new EnderPearlListener());
-
         switch (FKitType.valueOf(PluginConfig.PRACTICE_SITE.MODE.getNotNull())){
+            case NO_DEBUFF -> {
+                regListener(new NodeBuffListener());
+            }
+            case BUILD_UHC -> {
+            }
             case BOXING -> {
                 regListener(new BoxingListener());
+            }
+            case SUMO -> {
+                regListener(new SumoListener());
+            }
+            case COMBO -> {
+                regListener(new ComboListener());
             }
         }
 

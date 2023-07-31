@@ -132,14 +132,7 @@ public class ScoreBoardManager {
                 }
             }
             case END -> {
-//                int seconds = (int) ((state.getEndTime() - state.getStartTime()) / 1000);
-//                int minutes = seconds / 60;
-//                int remainingSeconds = seconds % 60;
-//                String time = decimalFormat.format(minutes) + ":" + decimalFormat.format(remainingSeconds);
-//                lines.add("&fMap: &b" +arena.getName());
-//                lines.add("&fDuration: &b" + time);
-//                lines.add("");
-                lines.add("&fMatch ennded!");
+                lines.add("&fMatch ended!");
             }
         }
 

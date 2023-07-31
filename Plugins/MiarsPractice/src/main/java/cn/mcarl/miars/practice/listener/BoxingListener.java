@@ -32,15 +32,13 @@ public class BoxingListener implements Listener {
         if (e.getEntity() instanceof Player player){
             e.setFoodLevel(20);
         }
-
     }
-
 
     @EventHandler
     public void EntityDamageByEntityEvent(EntityDamageByEntityEvent e){
+        e.setDamage(0);
         if (e.getEntity() instanceof Player player){
             if (e.getDamager() instanceof Player damager){
-                e.setDamage(0);
                 if (e.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK){
                     ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(damager.getName());
 
@@ -72,6 +70,11 @@ public class BoxingListener implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void EntityDamageEvent(EntityDamageEvent e){
+        e.setDamage(0);
     }
 
 }

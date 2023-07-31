@@ -76,8 +76,8 @@ public class PlayerListener implements Listener {
                                 null,
                                 player.getUniqueId().toString(),
                                 ft,
-                                "Default",
-                                FFAUtil.getFI(ft),
+                                "Loadout 1",
+                                FFAUtil.getByFKitType(ft),
                                 0,
                                 null,
                                 new Date(System.currentTimeMillis())
@@ -121,10 +121,9 @@ public class PlayerListener implements Listener {
 
         if (CombatManager.getInstance().isCombat(player)){
             if (FFAUtil.isItemRange(e.getTo(),PluginConfig.FFA_SITE.LOCATION.getNotNull(),PluginConfig.FFA_SITE.RADIUS.getNotNull())){
-                player.teleport(e.getFrom());
-                e.setCancelled(true);
-                Vector v = player.getVelocity();
 
+                player.teleport(e.getFrom());
+                Vector v = player.getVelocity();
                 // 写死的，需要后期改善
                 if (player.getLocation().getX()<=-50){
                     v.setX(-0.5);
@@ -139,8 +138,9 @@ public class PlayerListener implements Listener {
                     v.setZ(0.5);
                     v.setY(0.5);
                 }
-
                 player.setVelocity(v);
+
+                e.setCancelled(true);
             }
         }else {
             GamePlayer.get(player).initData();

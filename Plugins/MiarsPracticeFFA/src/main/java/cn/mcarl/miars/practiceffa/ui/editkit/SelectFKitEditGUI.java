@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: carl0
@@ -24,80 +25,56 @@ public class SelectFKitEditGUI extends GUI {
 
     final Player player;
     final FKitType fKitType;
-    final List<FKit> invs;
+    final Map<String,FKit> invs;
 
 
     public SelectFKitEditGUI(Player player, FKitType fKitType) {
-        super(GUIType.ONE_BY_NINE, "&0Select Kit");
+        super(GUIType.ONE_BY_NINE, "&0Archer Loadouts");
 
         this.fKitType = fKitType;
         this.player = player;
-        this.invs = FKitDataStorage.getInstance().getFKitData(player.getUniqueId(),this.fKitType);
-
-        //排序
-        CustomSort.sort(invs,"power",true);
+        this.invs = FKitDataStorage.getInstance().getFKitDataByMap(player.getUniqueId(),this.fKitType);
 
         load();
     }
 
     private void load(){
-        for (int i = 1; i <= 9 ; i++) {
-            
-            if (i == 8 && (player.hasPermission("practice.kits.9"))){
-                setBookItem(i);
-                continue;
-            }
-
-            if (i >= 6 && (player.hasPermission("practice.kits.7") || player.hasPermission("practice.kits.9"))){
-                setBookItem(i);
-                continue;
-            }
-
-            if (i >= 4 && (player.hasPermission("practice.kits.5") || player.hasPermission("practice.kits.7") || player.hasPermission("practice.kits.9"))){
-                setBookItem(i);
-                continue;
-            }
-
-            if (i >= 2 && (player.hasPermission("practice.kits.3") || player.hasPermission("practice.kits.5") || player.hasPermission("practice.kits.7") || player.hasPermission("practice.kits.9"))){
-                setBookItem(i);
-                continue;
-            }
-
-            if (i == 1 && (player.hasPermission("practice.kits.1") || player.hasPermission("practice.kits.3") || player.hasPermission("practice.kits.5") || player.hasPermission("practice.kits.7") || player.hasPermission("practice.kits.9"))){
-                setBookItem(i);
-                continue;
-            }
-
-
-            
-            setItem(i-1, new GUIItem(
-                    new ItemBuilder(Material.BARRIER)
-                            .setName("&c很抱歉，您没有解锁该位置。")
-                            .toItemStack()
-            ));
-
-        }
+        setBookItem(0,"Loadout 1");
+        setBookItem(2,"Loadout 2");
+        setBookItem(4,"Loadout 3");
+        setBookItem(6,"Loadout 4");
+        setBookItem(8,"Loadout 5");
     }
 
-    public void setBookItem(int i){
-        setItem(i-1, new GUIItem(
-                new ItemBuilder((i<=invs.size() ? Material.BOOK : Material.PAPER))
-                        .setName((i<=invs.size() ? invs.get(i-1).getName()+"&f( "+invs.get(i-1).getPower()+" )" : "&f空"))
-                        .addLoreLine((i<=invs.size() ? "&7您可以继续编辑这个模式背包。" : "&7这个位置并没有被使用。"))
-                        .addLoreLine("&r")
-                        .addLoreLine((i<=invs.size() ? "&a左键编辑背包 &7/ &a右键顺序靠前" : "&a点击创建"))
+    public void setBookItem(int i,String name){
+
+        setItem(i, new GUIItem(
+                new ItemBuilder((invs.containsKey(name) ? Material.BOOK : Material.PAPER))
+                        .setName("&b"+name)
                         .toItemStack()
         ){
             @Override
             public void onClick(Player clicker, ClickType type) {
                 if (type.isLeftClick()){
                     // 是否有数据
-                    if (i<=invs.size()){
+                    if (invs.containsKey(name)){
                         // 有数据
-                        FKitEditGUI.open(player,invs.get(i-1));
+                        FKitEditGUI.open(player,invs.get(name));
                     }else {
                         // 没数据
-                        FKitEditGUI.open(player,new FKit(null,player.getUniqueId().toString(),fKitType,null, FFAUtil.getByFKitType(fKitType),null,null,null));
+                        FKitEditGUI.open(
+                                player,
+                                new FKit(
+                                        null,
+                                        player.getUniqueId().toString(),
+                                        fKitType,
+                                        name,
+                                        FFAUtil.getByFKitType(fKitType),
+                                        i,
+                                        null,
+                                        null
+                                )
+                        );
                     }
                 }
             }

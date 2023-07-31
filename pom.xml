@@ -112,29 +112,29 @@
 
     <dependencies>
 
-<!--        &lt;!&ndash; ImanitySpigot API &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.imanity.imanityspigot</groupId>-->
-<!--            <artifactId>api</artifactId>-->
-<!--            <version>2022.05.3b1</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
-
-<!--        &lt;!&ndash; Original PaperSpigot &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.imanity.paperspigot</groupId>-->
-<!--            <artifactId>paper1.8.8</artifactId>-->
-<!--            <version>1.8.8</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
-
+        <!-- ImanitySpigot API -->
         <dependency>
-            <groupId>ga.windpvp.windspigot</groupId>
-            <artifactId>KazerSpigot</artifactId>
-            <version>1.8.8-R0.2-SNAPSHOT</version>
-            <type>jar</type>
+            <groupId>org.imanity.imanityspigot</groupId>
+            <artifactId>api</artifactId>
+            <version>2022.05.3b1</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Original PaperSpigot -->
+        <dependency>
+            <groupId>org.imanity.paperspigot</groupId>
+            <artifactId>paper1.8.8</artifactId>
+            <version>1.8.8</version>
+            <scope>provided</scope>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>ga.windpvp.windspigot</groupId>-->
+<!--            <artifactId>KazerSpigot</artifactId>-->
+<!--            <version>1.8.8-R0.2-SNAPSHOT</version>-->
+<!--            <type>jar</type>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.alibaba</groupId>

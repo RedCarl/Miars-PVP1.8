@@ -59,7 +59,6 @@ public class ScoreBoardManager {
 
         Player p = board.getPlayer();
         FPlayer fPlayer = FPlayerDataStorage.getInstance().getFPlayer(p);
-        // RankScore score = RankScoreDataStorage.getInstance().getRankScore(p.getUniqueId(),1);
 
         List<String> lines = new ArrayList<>();
         board.updateTitle("&b&lPractice");
@@ -72,8 +71,8 @@ public class ScoreBoardManager {
         // FFA竞技场后开启
         if (!FFAUtil.isItemRange(
                 p.getLocation(),
-                PluginConfig.FFA_SITE.LOCATION.get(),
-                PluginConfig.FFA_SITE.RADIUS.get()
+                PluginConfig.FFA_SITE.LOCATION.getNotNull(),
+                PluginConfig.FFA_SITE.RADIUS.getNotNull()
         )){
             lines.add("");
             // 战斗模式的计分板
@@ -83,11 +82,6 @@ public class ScoreBoardManager {
                 if (opponent==null) {
                     CombatManager.getInstance().clear(p);
                 }else {
-//                    MPlayer mPlayer = MPlayerDataStorage.getInstance().getMPlayer(opponent);
-//                    MRank mRank = MRankDataStorage.getInstance().getMRank(mPlayer.getRank());
-//                    lines.add("&fOpponent");
-//                    lines.add(mRank.getNameColor() + opponent.getName());
-//                    lines.add("");
 
                     int milliseconds = CombatManager.getInstance().getLastMilliSeconds(p);
                     double seconds = milliseconds / 1000.0;

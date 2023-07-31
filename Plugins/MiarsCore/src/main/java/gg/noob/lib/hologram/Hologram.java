@@ -39,7 +39,7 @@ public class Hologram {
 
                 i++;
 
-                location.add(0, -0.23, 0);
+                location.add(0, -0.3, 0);
             }
 
             lines.put(viewer.getUniqueId(), list);

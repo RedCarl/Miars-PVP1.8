@@ -7,9 +7,6 @@ import cn.mcarl.miars.core.command.MiarsCommand;
 import cn.mcarl.miars.core.command.MoneyCommand;
 import cn.mcarl.miars.core.hooker.MiarsEconomy;
 import cn.mcarl.miars.core.hooker.PAPIExpansion;
-import cn.mcarl.miars.core.impl.lunarclient.LunarClientAPI;
-import cn.mcarl.miars.core.impl.lunarclient.cooldown.LCCooldown;
-import cn.mcarl.miars.core.impl.lunarclient.cooldown.LunarClientAPICooldown;
 import cn.mcarl.miars.core.listener.CitizensListener;
 import cn.mcarl.miars.core.listener.PlayerListener;
 import cn.mcarl.miars.core.listener.WorldListener;
@@ -27,6 +24,8 @@ import com.nametagedit.plugin.api.NametagAPI;
 import com.nametagedit.plugin.invisibility.InvisibilityTask;
 import dev.fls.tablist.TabHeaderAndFooter;
 import gg.noob.lib.hologram.HologramManager;
+import gg.noob.lib.hologram.click.listener.HologramClickListener;
+import gg.noob.lib.hologram.listener.HologramListener;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.luckperms.api.LuckPerms;
@@ -65,6 +64,8 @@ public class MiarsCore extends JavaPlugin {
     private static NametagAPI nametagAPI;
     @Getter
     private TabHeaderAndFooter tabHeaderAndFooter;
+    @Getter
+    private HologramManager hologramManager;
 
     @Override
     public void onLoad() {
@@ -176,9 +177,10 @@ public class MiarsCore extends JavaPlugin {
         log("正在初始化 Tab 模块...");
         tabHeaderAndFooter = new TabHeaderAndFooter(this);
 
-        log("正在初始化 LunarClientAPi 模块...");
-        new LunarClientAPI().onEnable();
-        registerLunarClientCoolDownAPI("EnderPearl", 12 * 1000L, Material.ENDER_PEARL);
+        log("正在初始化 Hologram 模块...");
+        hologramManager = new HologramManager();
+        ProtocolLibrary.getProtocolManager().addPacketListener(new HologramClickListener());
+        regListener(new HologramListener());
 
         log("当前服务端版本 "+Bukkit.getServer().getVersion());
 
@@ -250,12 +252,6 @@ public class MiarsCore extends JavaPlugin {
         }
         econ = rsp.getProvider();
         return econ != null;
-    }
-
-    public void registerLunarClientCoolDownAPI(String name, long ms, Material itemId) {
-        LunarClientAPICooldown.registerCooldown(new LCCooldown(name, ms, itemId));
-
-       log("Registered lunar client coolDown API: " + name);
     }
 
 }

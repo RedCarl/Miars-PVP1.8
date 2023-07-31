@@ -116,6 +116,8 @@ public class GamePlayer {
         FFAUtil.clearPlayerInv(p);
         this.queue = true;
         new QueueCancel().give(p,4);
+
+//        MiarsUtils.initPlayerNametag(p,queueType.getColor()+" ["+queueModel.getName()+"]",false);
     }
 
     public static GamePlayer get(Player player){
@@ -124,7 +126,7 @@ public class GamePlayer {
 
     public static void remove(Player player){
         GamePlayerManager.getInstance().remove(player);
-        FFAUtil.initializePlayer(player);
+//        FFAUtil.initializePlayer(player);
     }
 
     public static void init(Player player){

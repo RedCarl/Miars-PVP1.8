@@ -179,9 +179,6 @@ public class GlobalListener implements Listener {
                 player.teleport(arena.getLoc2());
             }
         }
-
-
-
     }
 
     @EventHandler
@@ -195,7 +192,6 @@ public class GlobalListener implements Listener {
 
 //        deathPlayer.spigot().respawn(); // 自动重生
         deathPlayer.setHealth(20);
-        deathPlayer.getLocation().getWorld().strikeLightning(deathPlayer.getLocation());// 死亡霹雷
 
         FPlayer deathFPlayer = FPlayerDataStorage.getInstance().getFPlayer(deathPlayer);
         deathFPlayer.addDeathCount();

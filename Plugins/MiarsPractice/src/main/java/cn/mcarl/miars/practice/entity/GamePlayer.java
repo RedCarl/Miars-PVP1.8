@@ -24,7 +24,7 @@ public class GamePlayer {
     private Collection<PotionEffect> activePotionEffects;
 
     public static GamePlayer get(Player player){
-        return                                     new GamePlayer(
+        return new GamePlayer(
                 player.getUniqueId(),
                 player.getName(),
                 player.getHealth(),

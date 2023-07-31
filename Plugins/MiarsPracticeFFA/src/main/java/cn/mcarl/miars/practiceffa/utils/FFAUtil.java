@@ -370,28 +370,6 @@ public class FFAUtil {
             case NO_DEBUFF -> {
                 return NoDeBuff.get();
             }
-        }
-
-        return null;
-    }
-
-    public static void clearPlayerInv(Player p){
-
-        p.getInventory().clear();
-        p.getInventory().setItem(39,null);
-        p.getInventory().setItem(38,null);
-        p.getInventory().setItem(37,null);
-        p.getInventory().setItem(36,null);
-    }
-
-
-
-
-    public static FInventory getFI(FKitType ft){
-        switch (ft){
-            case NO_DEBUFF -> {
-                return NoDeBuff.get();
-            }
             case BUILD_UHC -> {
                 return BuildUHC.get();
             }
@@ -410,6 +388,15 @@ public class FFAUtil {
         }
 
         return null;
+    }
+
+    public static void clearPlayerInv(Player p){
+
+        p.getInventory().clear();
+        p.getInventory().setItem(39,null);
+        p.getInventory().setItem(38,null);
+        p.getInventory().setItem(37,null);
+        p.getInventory().setItem(36,null);
     }
 
 

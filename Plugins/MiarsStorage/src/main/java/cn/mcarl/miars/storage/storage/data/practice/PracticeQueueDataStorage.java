@@ -164,6 +164,9 @@ public class PracticeQueueDataStorage {
      * @return 是否
      */
     public long getQueueTime(FPlayer fPlayer){
+        if (queueTime.get(fPlayer.getName())==null){
+            return 0;
+        }
         return (System.currentTimeMillis()  - queueTime.get(fPlayer.getName()))/1000;
     }
 

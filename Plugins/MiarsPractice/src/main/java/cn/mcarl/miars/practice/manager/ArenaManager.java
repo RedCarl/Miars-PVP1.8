@@ -101,22 +101,14 @@ public class ArenaManager {
                         readyGame(state);
                         cancel();
                     }else {
-                        if (player_a != null) {
-                            player_a.sendTitle(new Title(ColorParser.parse("&bWaiting for the opponent...")));
-                        }
-                        if (player_b != null) {
-                            player_b.sendTitle(new Title(ColorParser.parse("&bWaiting for the opponent...")));
-                        }
 
                         if (i>=5){
                             // 传送对战玩家至大厅
                             if (player_a != null) {
                                 ServerManager.getInstance().sendPlayerToServer(player_a.getName(), "practice-ffa");
-                                player_a.sendTitle(new Title(ColorParser.parse("&3Opponent not connected.")));
                             }
                             if (player_b != null) {
                                 ServerManager.getInstance().sendPlayerToServer(player_b.getName(), "practice-ffa");
-                                player_b.sendTitle(new Title(ColorParser.parse("&3Opponent not connected.")));
                             }
                             state.setState(ArenaState.State.IDLE);
                             // 更新游戏房间状态为空闲，可以接纳下一批玩家
@@ -126,22 +118,14 @@ public class ArenaManager {
                         }
                     }
                 } catch (NullPointerException | IllegalArgumentException e) {
-                    if (player_a != null) {
-                        player_a.sendTitle(new Title("&bWaiting for the opponent..."));
-                    }
-                    if (player_b != null) {
-                        player_b.sendTitle(new Title("&bWaiting for the opponent..."));
-                    }
 
                     if (i>=5){
                         // 传送对战玩家至大厅
                         if (player_a != null) {
                             ServerManager.getInstance().sendPlayerToServer(player_a.getName(), "practice-ffa");
-                            player_a.sendTitle(new Title(ColorParser.parse("&3Opponent not connected.")));
                         }
                         if (player_b != null) {
                             ServerManager.getInstance().sendPlayerToServer(player_b.getName(), "practice-ffa");
-                            player_b.sendTitle(new Title(ColorParser.parse("&3Opponent not connected.")));
                         }
                         state.setState(ArenaState.State.IDLE);
                         // 更新游戏房间状态为空闲，可以接纳下一批玩家
@@ -178,6 +162,7 @@ public class ArenaManager {
 
         new BukkitRunnable() {
             int i = 0;
+            int wait = 0;
             @Override
             public void run() {
                 try {
@@ -187,48 +172,52 @@ public class ArenaManager {
                     if (a!=null && b!=null){
                         JSONMessage.create(ColorParser.parse("&fMatch starting in &b"+(5-i)+"..."))
                                 .send(a,b);
-                        a.sendTitle(ColorParser.parse("&fMatch starting..."),ColorParser.parse("The match will be starting in &b"+(5-i)+"&f..."));
-                        b.sendTitle(ColorParser.parse("&fMatch starting..."),ColorParser.parse("The match will be starting in &b"+(5-i)+"&f..."));
 
                         a.playSound(a.getLocation(), Sound.NOTE_PLING,1,1);
                         b.playSound(b.getLocation(),Sound.NOTE_PLING,1,1);
+
                         if (i == 4){
                             ArenaManager.getInstance().startGame(state);
                             JSONMessage.create(ColorParser.parse("&fThe match has started."))
                                     .send(a,b);
 
-
-                            a.sendTitle(ColorParser.parse("&fMatch started!"),null);
-                            b.sendTitle(ColorParser.parse("&fMatch started!"),null);
                             a.playSound(a.getLocation(),Sound.ORB_PICKUP,1,1);
                             b.playSound(b.getLocation(),Sound.ORB_PICKUP,1,1);
+
                             JSONMessage.create(ColorParser.parse("&r"))
                                     .send(a,b);
                             JSONMessage.create(ColorParser.parse("&4&l(WARNING) &cButterfly clicking / Block glitch is allowed &cand they may resulting into a ban."))
                                     .send(a,b);
+                            JSONMessage.create(ColorParser.parse("&r"))
+                                    .send(a,b);
 
                             cancel();
                         }
+
+                        i++;
                     }else {
-                        if (a!=null){
-                            ServerManager.getInstance().sendPlayerToServer(a.getName(),"practice-ffa");
+                        // 如果两位玩家还没完全进入游戏则等待5秒钟，如果还是没人就踢人。
+                        if (wait>=5){
+                            if (a!=null){
+                                ServerManager.getInstance().sendPlayerToServer(a.getName(),"practice-ffa");
+                            }
+
+                            if (b!=null){
+                                ServerManager.getInstance().sendPlayerToServer(b.getName(),"practice-ffa");
+                            }
+
+                            // 更新游戏房间状态为空闲，可以接纳下一批玩家
+                            PracticeArenaStateDataStorage.getInstance().getArenaStateById(state).init();
+                            PracticeArenaStateDataStorage.getInstance().updateRedis(PluginConfig.PRACTICE_SITE.MODE.get());
+
+                            cancel();
                         }
 
-                        if (b!=null){
-                            ServerManager.getInstance().sendPlayerToServer(b.getName(),"practice-ffa");
-                        }
-
-                        // 更新游戏房间状态为空闲，可以接纳下一批玩家
-                        PracticeArenaStateDataStorage.getInstance().getArenaStateById(state).init();
-                        PracticeArenaStateDataStorage.getInstance().updateRedis(PluginConfig.PRACTICE_SITE.MODE.get());
-
-                        cancel();
+                        wait++;
                     }
                 }catch (IllegalArgumentException ignored){
                     cancel();
                 }
-
-                i++;
             }
         }.runTaskTimer(MiarsPractice.getInstance(),20,20);
     }
@@ -246,6 +235,9 @@ public class ArenaManager {
      * 游戏结束
      */
     public void endGame(GamePlayer win, GamePlayer fail){
+
+        // 击杀特效
+        fail.getPlayer().getLocation().getWorld().strikeLightning( fail.getPlayer().getLocation());// 死亡霹雷
 
         // 设置本场游戏情况
         ArenaState state = PracticeArenaStateDataStorage.getInstance().getArenaStateByPlayer(win.getName());;
@@ -390,7 +382,7 @@ public class ArenaManager {
                 PracticeArenaStateDataStorage.getInstance().updateRedis(PluginConfig.PRACTICE_SITE.MODE.get());
                 cancel();
             }
-        }.runTaskLaterAsynchronously(MiarsPractice.getInstance(),100);
+        }.runTaskLater(MiarsPractice.getInstance(),100);
     }
 
     public void clear(){
